@@ -29,7 +29,6 @@ function Categories() {
                   className="categories__item set-bg"
                   style={{ backgroundImage: `url(${imageUrl})` }}
                 >
-                  
                   <div className="categories__text">
                     <h4>Men’s fashion</h4>
                     <p>358 items</p>
@@ -42,7 +41,6 @@ function Categories() {
                   className="categories__item set-bg"
                   style={{ backgroundImage: `url(${imageUrl})` }}
                 >
-                  >
                   <div className="categories__text">
                     <h4>Kid’s fashion</h4>
                     <p>273 items</p>
@@ -55,7 +53,6 @@ function Categories() {
                   className="categories__item set-bg"
                   style={{ backgroundImage: `url(${imageUrl})` }}
                 >
-                  >
                   <div className="categories__text">
                     <h4>Cosmetics</h4>
                     <p>159 items</p>
@@ -68,7 +65,6 @@ function Categories() {
                   className="categories__item set-bg"
                   style={{ backgroundImage: `url(${imageUrl})` }}
                 >
-                  >
                   <div className="categories__text">
                     <h4>Accessories</h4>
                     <p>792 items</p>
