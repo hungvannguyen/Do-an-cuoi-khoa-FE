@@ -6,10 +6,21 @@ import "../Styles/css/style.css";
 import Search from "../../../components/Search/Search";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-
+import { Dropdown } from "react-bootstrap";
 function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [active, setActive] = useState(0);
+  const hasSessionData = sessionStorage.getItem("token") !== null;
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const handleMouseEnter = () => {
+    setIsDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    setIsDropdownOpen(false);
+  };
+
   const handleMenuClick = (index) => {
     setActive(index);
   };
@@ -124,10 +135,26 @@ function Header() {
             </div>
             <div className="col-lg-3">
               <div className="header__right">
-                <div className="header__right__auth">
-                  <Link to="#">Đăng nhập</Link>
-                  <Link to="#">Đăng ký</Link>
-                </div>
+                {hasSessionData ? (
+                  <div className="header__right__auth">
+                    <Link to="/login">Đăng nhập</Link>
+                    <Link to="#">Đăng ký</Link>
+                  </div>
+                ) : (
+                  <Dropdown
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                  >
+                    <Dropdown.Toggle variant="primary" id="dropdown-hover">
+                      Hover me
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu show={isDropdownOpen}>
+                      <Dropdown.Item href="#profile">Profile</Dropdown.Item>
+                      <Dropdown.Item href="#settings">Settings</Dropdown.Item>
+                      <Dropdown.Item href="#logout">Logout</Dropdown.Item>
+                    </Dropdown.Menu>
+                  </Dropdown>
+                )}
                 <ul className="header__right__widget">
                   <li>
                     <span

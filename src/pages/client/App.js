@@ -4,6 +4,7 @@ import ProductDetail from "./Products/ProductDetail";
 import Cart from "./ShoppingCart/ShoppingCart";
 import Checkout from "./ShoppingCart/Checkout";
 import Profile from "../../components/Profile/Profile";
+import Login from "../login_resgis/Login";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
@@ -20,6 +21,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
       <Footer />
     </div>

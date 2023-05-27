@@ -2018,7 +2018,7 @@ ol {
 	position: absolute;
 	left: 0;
 	top: 13px;
-	
+
 	background: #e1e1e1;
 	content: "";
 }
@@ -2027,7 +2027,7 @@ ol {
 	position: absolute;
 	right: 0;
 	top: 13px;
-	
+
 	background: #e1e1e1;
 	content: "";
 }
@@ -2350,7 +2350,7 @@ ol {
 	color: #ca1515;
 }
 
-.checkout__form .checkout__form__input input  {
+.checkout__form .checkout__form__input input {
 	height: 50px;
 	width: 100%;
 	border: 1px solid #e1e1e1;
@@ -2360,8 +2360,8 @@ ol {
 	padding-left: 20px;
 	color: #666666;
 }
-.checkout__form__input select
-{
+
+.checkout__form__input select {
 	height: 50px;
 	width: 100%;
 	border: 1px solid #e1e1e1;
@@ -3799,5 +3799,25 @@ ol {
 	.search-model-form input {
 		width: 100%;
 		font-size: 24px;
+	}
+}
+
+
+/* Login form */
+.divider:after,
+.divider:before {
+	content: "";
+	flex: 1;
+	height: 1px;
+	background: #eee;
+}
+
+.h-custom {
+	height: calc(100% - 73px);
+}
+
+@media (max-width: 450px) {
+	.h-custom {
+		height: 100%;
 	}
 }
