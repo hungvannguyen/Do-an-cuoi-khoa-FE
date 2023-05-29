@@ -372,7 +372,7 @@ ol {
 	left: 0;
 	top: 56px;
 	width: 150px;
-	background: #111111;
+	background: white;
 	text-align: left;
 	padding: 2px 0;
 	z-index: 9;
@@ -390,7 +390,7 @@ ol {
 
 .header__menu ul li .dropdown li a {
 	font-size: 14px;
-	color: #ffffff;
+	color: black;
 	font-weight: 400;
 	padding: 8px 20px;
 	text-transform: capitalize;

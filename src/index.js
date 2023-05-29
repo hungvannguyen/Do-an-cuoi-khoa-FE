@@ -2,14 +2,16 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./pages/client/App";
+import axios from "axios";
+import API_BASE_URL from "./apiConfig";
 import reportWebVitals from "./reportWebVitals";
-import "bootstrap/dist/css/bootstrap.min.css";
-import 'bootstrap/dist/js/bootstrap.js';
-import 'jquery/dist/jquery.min.js';
-
-
+import "jquery/dist/jquery.min.js";
+import "./pages/client/Styles/css/font-awesome.min.css";
 // React-router-dom imports
 import { BrowserRouter as Router } from "react-router-dom";
+
+
+axios.defaults.baseURL = API_BASE_URL;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

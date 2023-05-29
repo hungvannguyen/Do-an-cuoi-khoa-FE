@@ -6,19 +6,18 @@ import "../Styles/css/style.css";
 import Search from "../../../components/Search/Search";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Dropdown } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
+
 function Header() {
+  const navigate = useNavigate();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [active, setActive] = useState(0);
-  const hasSessionData = sessionStorage.getItem("token") !== null;
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-  const handleMouseEnter = () => {
-    setIsDropdownOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDropdownOpen(false);
+  let hasSessionData = sessionStorage.getItem("token") !== null;
+  console.log(hasSessionData);
+  const handleLogout = () => {
+    sessionStorage.removeItem("token");
+    hasSessionData = false;
+    navigate("/");
   };
 
   const handleMenuClick = (index) => {
@@ -136,44 +135,80 @@ function Header() {
             <div className="col-lg-3">
               <div className="header__right">
                 {hasSessionData ? (
-                  <div className="header__right__auth">
-                    <Link to="/login">Đăng nhập</Link>
-                    <Link to="#">Đăng ký</Link>
+                  // <ul className="header__right__widget">
+                  //   <li>
+                  //     <span
+                  //       className="fa fa-power-off"
+                  //       onClick={handleLogout}
+                  //     ></span>
+                  //   </li>
+                  //   <li>
+                  //     <Link to="#">
+                  //       <span className="fa fa-truck"></span>
+                  //     </Link>
+                  //   </li>
+                  //   <li>
+                  //     <Link to="#">
+                  //       <span className="fa-solid fa-user"></span>
+                  //     </Link>
+                  //   </li>
+                  // </ul>
+                  <div class="dropdown header__right__widget">
+                    <a
+                      className="dropdown-toggle fa-solid fa-user"
+                      href="#"
+                      role="button"
+                      id="dropdownMenuLink"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                      style={{ color: "black" }}
+                    ></a>
+
+                    <ul
+                      className="dropdown-menu"
+                      aria-labelledby="dropdownMenuLink"
+                    >
+                      <li>
+                        <Link className="dropdown-item" to="/profile">
+                          Hồ sơ
+                        </Link>
+                      </li>
+                      <li>
+                        <Link className="dropdown-item" to="#">
+                          Đơn mua
+                        </Link>
+                      </li>
+                      <li className="d-flex justify-co">
+                        <span className="dropdown-item" onClick={handleLogout}>
+                          Đăng xuất <i className="fa fa-power-off"> </i>
+                        </span>
+                      </li>
+                    </ul>
                   </div>
                 ) : (
-                  <Dropdown
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <Dropdown.Toggle variant="primary" id="dropdown-hover">
-                      Hover me
-                    </Dropdown.Toggle>
-                    <Dropdown.Menu show={isDropdownOpen}>
-                      <Dropdown.Item href="#profile">Profile</Dropdown.Item>
-                      <Dropdown.Item href="#settings">Settings</Dropdown.Item>
-                      <Dropdown.Item href="#logout">Logout</Dropdown.Item>
-                    </Dropdown.Menu>
-                  </Dropdown>
+                  <div className="header__right__auth">
+                    <Link to="/login">Đăng nhập</Link>
+                    <Link to="/regis">Đăng ký</Link>
+                  </div>
                 )}
-                <ul className="header__right__widget">
+                <ul
+                  className="header__right__widget"
+                  style={{ marginLeft: 10 }}
+                >
                   <li>
                     <span
-                      className="icon_search search-switch"
+                      className="fa-solid fa-magnifying-glass"
                       onClick={handleSearchToggle}
                     ></span>
                   </li>
-                  <li>
-                    <Link to="#">
-                      <span className="icon_heart_alt"></span>
-                      <div className="tip">2</div>
-                    </Link>
-                  </li>
+
                   <li>
                     <Link to="/cart">
-                      <span className="icon_bag_alt"></span>
+                      <span className="fa-solid fa-cart-shopping"></span>
                       <div className="tip">2</div>
                     </Link>
                   </li>
+                  <li></li>
                 </ul>
               </div>
             </div>

@@ -1,17 +1,65 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 function Checkout() {
   const [city, setCity] = useState([]);
+  const [district, setDistrict] = useState([]);
+  const [ward, setWard] = useState([]);
+  const [selectedCityId, setSelectedCityId] = useState("");
+  const [selectedDistrictId, setSelectedDistrictId] = useState("");
+  useEffect(() => {
+    const cityList = axios
+      .get("/address/city/all", {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+      .then((res) => {
+        setCity(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
-  const cityList = axios
-    .get("http://127.0.0.1:8000/Address/get_all_city_address_city_all_get")
-    .then((res) => {
-      setCity(res.data);
-    })
-    .catch((error) => {
+  const handleCityChange = async (event) => {
+    const selectedCityId = event.target.value;
+    try {
+      const response = await axios.get(`/address/district/${selectedCityId}`, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+        },
+      });
+      console.log(response.data);
+      setDistrict(response.data);
+      setSelectedCityId(selectedCityId);
+    } catch (error) {
       console.log(error);
-    });
-  console.log(city);
+    }
+  };
+
+  console.log(selectedCityId);
+
+  const handleDistrictChange = async (event) => {
+    const selectedDistrictId = event.target.value;
+    setSelectedCityId(selectedCityId);
+
+    try {
+      const response = await axios.get(
+        `/address/ward/${selectedCityId}/${selectedDistrictId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log(response.data);
+      setWard(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <section className="checkout spad">
       <div className="container">
@@ -47,12 +95,6 @@ function Checkout() {
                 <div className="col-lg-12">
                   <div className="checkout__form__input">
                     <p>
-                      Country <span>*</span>
-                    </p>
-                    <input type="text" />
-                  </div>
-                  <div className="checkout__form__input">
-                    <p>
                       Email <span>*</span>
                     </p>
                     <input type="text" placeholder="Email" />
@@ -69,22 +111,27 @@ function Checkout() {
                       <p>
                         Thành phố <span>*</span>
                       </p>
-                      <select>
+                      <select onChange={handleCityChange}>
                         <option value="">-- Chọn thành phố --</option>
-                        <option value="city1">Thành phố 1</option>
-                        <option value="city2">Thành phố 2</option>
-                        <option value="city3">Thành phố 3</option>
+                        {city.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                     <div className="checkout__form__input col-lg-6 col-md-6 col-sm-6">
                       <p>
                         Quận/Huyện <span>*</span>
                       </p>
-                      <select>
+                      <select onChange={handleDistrictChange}>
                         <option value="">-- Chọn quận/huyện --</option>
-                        <option value="district1">Quận/Huyện 1</option>
-                        <option value="district2">Quận/Huyện 2</option>
-                        <option value="district3">Quận/Huyện 3</option>
+                        {district.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
+                        ...
                       </select>
                     </div>
                     <div className="checkout__form__input col-lg-6 col-md-6 col-sm-6">
@@ -93,9 +140,11 @@ function Checkout() {
                       </p>
                       <select>
                         <option value="">-- Chọn phường/xã --</option>
-                        <option value="ward1">Phường/Xã 1</option>
-                        <option value="ward2">Phường/Xã 2</option>
-                        <option value="ward3">Phường/Xã 3</option>
+                        {ward.map((item) => (
+                          <option key={item.id} value={item.id}>
+                            {item.name}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   </div>
@@ -114,42 +163,6 @@ function Checkout() {
                       Email <span>*</span>
                     </p>
                     <input type="text" />
-                  </div>
-                </div>
-                <div className="col-lg-12">
-                  <div className="checkout__form__checkbox">
-                    <label htmlFor="acc">
-                      Create an account?
-                      <input type="checkbox" id="acc" />
-                      <span className="checkmark"></span>
-                    </label>
-                    <p>
-                      Create an account by entering the information below. If
-                      you are a returning customer, login at the top of the
-                      page.
-                    </p>
-                  </div>
-                  <div className="checkout__form__input">
-                    <p>
-                      Account Password <span>*</span>
-                    </p>
-                    <input type="text" />
-                  </div>
-                  <div className="checkout__form__checkbox">
-                    <label htmlFor="note">
-                      Note about your order, e.g, special note for delivery
-                      <input type="checkbox" id="note" />
-                      <span className="checkmark"></span>
-                    </label>
-                  </div>
-                  <div className="checkout__form__input">
-                    <p>
-                      Order notes <span>*</span>
-                    </p>
-                    <input
-                      type="text"
-                      placeholder="Note about your order, e.g, special note for delivery"
-                    />
                   </div>
                 </div>
               </div>
@@ -189,15 +202,6 @@ function Checkout() {
                   </ul>
                 </div>
                 <div className="checkout__order__widget">
-                  <label htmlFor="o-acc">
-                    Create an account?
-                    <input type="checkbox" id="o-acc" />
-                    <span className="checkmark"></span>
-                  </label>
-                  <p>
-                    Create an account by entering the information below. If you
-                    are a returning customer, login at the top of the page.
-                  </p>
                   <label htmlFor="check-payment">
                     Cheque payment
                     <input type="checkbox" id="check-payment" />

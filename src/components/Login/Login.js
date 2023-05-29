@@ -11,13 +11,13 @@ function Login() {
     setPassword(password);
 
     axios
-      .post("http://127.0.0.1:8000/user/login", {
+      .post("/user/login", {
         account: username,
         password: password,
       })
       .then((response) => {
         sessionStorage.setItem("token", response.data.token);
-        
+        console.log(sessionStorage.getItem("token") )
         navigate("/");
       })
       .catch((error) => {
