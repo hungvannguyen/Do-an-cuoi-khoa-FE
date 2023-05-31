@@ -1,8 +1,93 @@
 import image from "../../assest/image/image.png";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Cart() {
   const imageUrl = image;
+  const [cart, setCart] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  useEffect(() => {
+    axios
+      .get("/cart/all", {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        setCart(response.data.products);
+        setTotalPrice(response.data.total_price);
+        console.log(response.data);
+        console.log(response.data.total_price);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const formatNumber = (number) => {
+    return number.toLocaleString("vi-VN");
+  };
+
+  const formatPrice = (price, salePrice, isSale) => {
+    if (
+      Array.isArray(price) &&
+      Array.isArray(salePrice) &&
+      Array.isArray(isSale) &&
+      price.length === salePrice.length &&
+      price.length === isSale.length
+    ) {
+      const formattedPrices = [];
+
+      for (let i = 0; i < price.length; i++) {
+        const currentPrice = price[i];
+        const currentSalePrice = salePrice[i];
+        const currentIsSale = isSale[i];
+
+        if (
+          typeof currentPrice !== "undefined" &&
+          currentPrice !== null &&
+          typeof currentPrice.toLocaleString === "function"
+        ) {
+          const formattedPrice = currentPrice.toLocaleString("vi-VN");
+
+          if (currentIsSale === 1) {
+            const formattedSalePrice = currentSalePrice.toLocaleString("vi-VN");
+            const originalPrice = `<span>${formattedPrice} đ</span>`;
+            formattedPrices.push(` ${formattedSalePrice} đ ${originalPrice} `);
+          } else {
+            formattedPrices.push(`${formattedPrice} đ`);
+          }
+        } else {
+          formattedPrices.push("");
+        }
+      }
+
+      return formattedPrices;
+    } else {
+      return [];
+    }
+  };
+
+  const isSale = cart.map((product) => product.is_sale);
+  const price = cart.map((product) => product.price);
+  const salePrice = cart.map((product) =>
+    product.is_sale === 1 ? product.sale_price : null
+  );
+
+  const formattedPrices = formatPrice(price, salePrice, isSale);
+
+  const priceContainers = document.querySelectorAll(".cart__price");
+  priceContainers.forEach((container, index) => {
+    if (formattedPrices[index]) {
+      if (isSale[index] === 1) {
+        container.innerHTML = formattedPrices[index];
+      } else {
+        container.textContent = formattedPrices[index];
+      }
+    }
+  });
   return (
     <section className="shop-cart spad">
       <div className="container">
@@ -20,81 +105,26 @@ function Cart() {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td className="cart__product__item">
-                      <img src={imageUrl} alt="" width="90" />
-                      <div className="cart__product__item__title">
-                        <h6>Chain bucket bag</h6>
-                        <div className="rating">
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
+                  {cart.map((item) => (
+                    <tr>
+                      <td className="cart__product__item">
+                        <img src={imageUrl} alt="" width="90" />
+                        <div className="cart__product__item__title">
+                          <h6>{item.name}</h6>
                         </div>
-                      </div>
-                    </td>
-                    <td className="cart__price">$ 150.0</td>
-                    <td className="cart__quantity">
-                      <div className="pro-qty">
-                        <input type="text" value="1" />
-                      </div>
-                    </td>
-                    <td className="cart__total">$ 300.0</td>
-                    <td className="cart__close">
-                      <span className="icon_close"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="cart__product__item">
-                      <img src={imageUrl} alt="" width="90" />
-                      <div className="cart__product__item__title">
-                        <h6>Chain bucket bag</h6>
-                        <div className="rating">
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
+                      </td>
+                      <td className="cart__price"></td>
+                      <td className="cart__quantity">
+                        <div className="pro-qty">
+                          <input type="text" value={item.quantity} />
                         </div>
-                      </div>
-                    </td>
-                    <td className="cart__price">$ 150.0</td>
-                    <td className="cart__quantity">
-                      <div className="pro-qty">
-                        <input type="text" value="1" />
-                      </div>
-                    </td>
-                    <td className="cart__total">$ 300.0</td>
-                    <td className="cart__close">
-                      <span className="icon_close"></span>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td className="cart__product__item">
-                      <img src={imageUrl} alt="" width="90" />
-                      <div className="cart__product__item__title">
-                        <h6>Chain bucket bag</h6>
-                        <div className="rating">
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                          <i className="fa fa-star"></i>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="cart__price">$ 150.0</td>
-                    <td className="cart__quantity">
-                      <div className="pro-qty">
-                        <input type="text" value="1" />
-                      </div>
-                    </td>
-                    <td className="cart__total">$ 300.0</td>
-                    <td className="cart__close">
-                      <span className="icon_close"></span>
-                    </td>
-                  </tr>
+                      </td>
+                      <td className="cart__total">$ 300.0</td>
+                      <td className="cart__close">
+                        <span className="icon_close"></span>
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
@@ -130,11 +160,11 @@ function Cart() {
             <div className="cart__total__procced">
               <h6>Cart total</h6>
               <ul>
-                <li>
+                {/* <li>
                   Subtotal <span>$ 750.0</span>
-                </li>
+                </li> */}
                 <li>
-                  Total <span>$ 750.0</span>
+                  Total <span>{formatNumber(totalPrice)} đ</span>
                 </li>
               </ul>
               <Link to="/checkout" className="primary-btn">

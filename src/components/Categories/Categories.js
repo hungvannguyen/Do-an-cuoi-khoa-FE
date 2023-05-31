@@ -1,6 +1,12 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
 import image from "../../assest/image/image.png";
 
 function Categories() {
+
+
+
+
   const imageUrl = image;
   return (
     <section className="categories">

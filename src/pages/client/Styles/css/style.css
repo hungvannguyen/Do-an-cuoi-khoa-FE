@@ -1010,6 +1010,7 @@ ol {
 	margin-right: 18px;
 	display: inline-block;
 	position: relative;
+	text-decoration: none;
 }
 
 .breadcrumb__links a:after {
@@ -1282,8 +1283,9 @@ ol {
 }
 
 .product__item__text h6 a {
-	font-size: 14px;
+	font-size: 20px;
 	color: #111111;
+	text-decoration: none;
 }
 
 .product__item__text .rating {
@@ -2140,6 +2142,13 @@ ol {
 	color: #ca1515;
 	font-weight: 600;
 	width: 190px;
+}
+
+.cart__price span {
+	font-size: 14px;
+	color: #b1b0b0;
+	text-decoration: line-through;
+	margin-left: 4px;
 }
 
 .shop__cart__table tbody tr .cart__quantity {

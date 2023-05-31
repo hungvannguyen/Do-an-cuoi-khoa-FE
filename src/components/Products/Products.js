@@ -1,11 +1,90 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../../assest/image/image.png";
+import axios from "axios";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
 function Products() {
+  const navigate = useNavigate();
   const imageUrl = image;
   const [CollapseOpen, setCollapseOpen] = useState(true);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("/product/all/active")
+      .then((response) => {
+        setProducts(response.data);
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  const handleProductClick = (id) => {
+    navigate(`/product/detail/${id}`);
+  };
+
+  const formatPrice = (price, salePrice, isSale) => {
+    if (
+      Array.isArray(price) &&
+      Array.isArray(salePrice) &&
+      Array.isArray(isSale) &&
+      price.length === salePrice.length &&
+      price.length === isSale.length
+    ) {
+      const formattedPrices = [];
+
+      for (let i = 0; i < price.length; i++) {
+        const currentPrice = price[i];
+        const currentSalePrice = salePrice[i];
+        const currentIsSale = isSale[i];
+
+        if (
+          typeof currentPrice !== "undefined" &&
+          currentPrice !== null &&
+          typeof currentPrice.toLocaleString === "function"
+        ) {
+          const formattedPrice = currentPrice.toLocaleString("vi-VN");
+
+          if (currentIsSale === 1) {
+            const formattedSalePrice = currentSalePrice.toLocaleString("vi-VN");
+            const originalPrice = `<span>${formattedPrice} đ</span>`;
+            formattedPrices.push(` ${formattedSalePrice} đ ${originalPrice} `);
+          } else {
+            formattedPrices.push(`${formattedPrice} đ`);
+          }
+        } else {
+          formattedPrices.push("");
+        }
+      }
+
+      return formattedPrices;
+    } else {
+      return [];
+    }
+  };
+
+  const isSale = products.map((product) => product.is_sale);
+  const price = products.map((product) => product.price);
+  const salePrice = products.map((product) =>
+    product.is_sale === 1 ? product.sale_price : null
+  );
+
+  const formattedPrices = formatPrice(price, salePrice, isSale);
+
+  const priceContainers = document.querySelectorAll(".product__price");
+  priceContainers.forEach((container, index) => {
+    if (formattedPrices[index]) {
+      if (isSale[index] === 1) {
+        container.innerHTML = formattedPrices[index];
+      } else {
+        container.textContent = formattedPrices[index];
+      }
+    }
+  });
 
   const handleCollapseToggle = () => {
     setCollapseOpen(!CollapseOpen);
@@ -97,7 +176,7 @@ function Products() {
                     </div>
                   </div>
                 </div>
-              
+
                 <a href="#">Filter</a>
               </div>
 
@@ -152,246 +231,48 @@ function Products() {
           </div>
           <div className="col-lg-9 col-md-9">
             <div className="row">
-              <div className="col-lg-4 col-md-6">
-                <div className="product__item">
+              {products.map((product) => (
+                <div className="col-lg-4 col-md-6" key={product.id}>
                   <div
-                    className="product__item__pic set-bg"
-                    style={{ backgroundImage: `url(${imageUrl})` }}
+                    className={`product__item${product.is_sale ? " sale" : ""}`}
                   >
-                    <div className="label new">New</div>
-                    <ul className="product__hover">
-                      <li>
-                        <a href={image} className="image-popup">
-                          <span className="arrow_expand"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_heart_alt"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_bag_alt"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h6>
-                      <a href="#">Furry hooded parka</a>
-                    </h6>
-                    <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
+                    <div
+                      className="product__item__pic set-bg"
+                      style={{ backgroundImage: `url(${imageUrl})` }}
+                      onClick={() => handleProductClick(product.id)}
+                    >
+                      <div className={`label${product.is_sale ? " sale" : ""}`}>
+                        {product.is_sale ? " Sale" : ""}
+                      </div>
+
+                      <ul className="product__hover">
+                        <li>
+                          <a href="#">
+                            <span className="fa-solid fa-cart-shopping"></span>
+                          </a>
+                        </li>
+                      </ul>
                     </div>
-                    <div className="product__price">$ 59.0</div>
+                    <div className="product__item__text">
+                      <h6>
+                        <Link to={`/product/detail/${product.id}`}>
+                          {product.name}
+                        </Link>
+                      </h6>
+                      {/* <div className="rating">
+                      <i className="fa fa-star"></i>
+                      <i className="fa fa-star"></i>
+                      <i className="fa fa-star"></i>
+                      <i className="fa fa-star"></i>
+                      <i className="fa fa-star"></i>
+                    </div> */}
+                      <div className="product__price">
+                        {formatPrice(product.price)} đ <span> 59.0 đ</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-               <div className="col-lg-4 col-md-6">
-                <div className="product__item">
-                  <div
-                    className="product__item__pic set-bg"
-                    style={{ backgroundImage: `url(${imageUrl})` }}
-                  >
-                    <div className="label new">New</div>
-                    <ul className="product__hover">
-                      <li>
-                        <a href={image} className="image-popup">
-                          <span className="arrow_expand"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_heart_alt"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_bag_alt"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h6>
-                      <a href="#">Furry hooded parka</a>
-                    </h6>
-                    <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                    </div>
-                    <div className="product__price">$ 59.0</div>
-                  </div>
-                </div>
-              </div>
-               <div className="col-lg-4 col-md-6">
-                <div className="product__item">
-                  <div
-                    className="product__item__pic set-bg"
-                    style={{ backgroundImage: `url(${imageUrl})` }}
-                  >
-                    <div className="label new">New</div>
-                    <ul className="product__hover">
-                      <li>
-                        <a href={image} className="image-popup">
-                          <span className="arrow_expand"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_heart_alt"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_bag_alt"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h6>
-                      <a href="#">Furry hooded parka</a>
-                    </h6>
-                    <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                    </div>
-                    <div className="product__price">$ 59.0</div>
-                  </div>
-                </div>
-              </div>
-               <div className="col-lg-4 col-md-6">
-                <div className="product__item">
-                  <div
-                    className="product__item__pic set-bg"
-                    style={{ backgroundImage: `url(${imageUrl})` }}
-                  >
-                    <div className="label new">New</div>
-                    <ul className="product__hover">
-                      <li>
-                        <a href={image} className="image-popup">
-                          <span className="arrow_expand"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_heart_alt"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_bag_alt"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h6>
-                      <a href="#">Furry hooded parka</a>
-                    </h6>
-                    <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                    </div>
-                    <div className="product__price">$ 59.0</div>
-                  </div>
-                </div>
-              </div>
-               <div className="col-lg-4 col-md-6">
-                <div className="product__item">
-                  <div
-                    className="product__item__pic set-bg"
-                    style={{ backgroundImage: `url(${imageUrl})` }}
-                  >
-                    <div className="label new">New</div>
-                    <ul className="product__hover">
-                      <li>
-                        <a href={image} className="image-popup">
-                          <span className="arrow_expand"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_heart_alt"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_bag_alt"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h6>
-                      <a href="#">Furry hooded parka</a>
-                    </h6>
-                    <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                    </div>
-                    <div className="product__price">$ 59.0</div>
-                  </div>
-                </div>
-              </div>
-               <div className="col-lg-4 col-md-6">
-                <div className="product__item">
-                  <div
-                    className="product__item__pic set-bg"
-                    style={{ backgroundImage: `url(${imageUrl})` }}
-                  >
-                    <div className="label new">New</div>
-                    <ul className="product__hover">
-                      <li>
-                        <a href={image} className="image-popup">
-                          <span className="arrow_expand"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_heart_alt"></span>
-                        </a>
-                      </li>
-                      <li>
-                        <a href="#">
-                          <span className="icon_bag_alt"></span>
-                        </a>
-                      </li>
-                    </ul>
-                  </div>
-                  <div className="product__item__text">
-                    <h6>
-                      <a href="#">Furry hooded parka</a>
-                    </h6>
-                    <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                    </div>
-                    <div className="product__price">$ 59.0</div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
             <div className="col-lg-12 text-center">
               <div className="pagination__option">
