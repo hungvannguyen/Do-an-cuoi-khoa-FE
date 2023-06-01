@@ -8,6 +8,7 @@ import Login from "../login_resgis/Login";
 import Regis from "../login_resgis/Regis";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
+import Load from "../../components/Loading/Loading";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { Routes, Route } from "react-router-dom";
 
@@ -15,6 +16,7 @@ function App() {
   return (
     <div>
       <Header />
+      <Load />
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/products" element={<Products />} />
