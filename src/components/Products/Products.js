@@ -27,65 +27,6 @@ function Products() {
     navigate(`/product/detail/${id}`);
   };
 
-  const formatPrice = (price, salePrice, isSale) => {
-    if (
-      Array.isArray(price) &&
-      Array.isArray(salePrice) &&
-      Array.isArray(isSale) &&
-      price.length === salePrice.length &&
-      price.length === isSale.length
-    ) {
-      const formattedPrices = [];
-
-      for (let i = 0; i < price.length; i++) {
-        const currentPrice = price[i];
-        const currentSalePrice = salePrice[i];
-        const currentIsSale = isSale[i];
-
-        if (
-          typeof currentPrice !== "undefined" &&
-          currentPrice !== null &&
-          typeof currentPrice.toLocaleString === "function"
-        ) {
-          const formattedPrice = currentPrice.toLocaleString("vi-VN");
-
-          if (currentIsSale === 1) {
-            const formattedSalePrice = currentSalePrice.toLocaleString("vi-VN");
-            const originalPrice = `<span>${formattedPrice} đ</span>`;
-            formattedPrices.push(` ${formattedSalePrice} đ ${originalPrice} `);
-          } else {
-            formattedPrices.push(`${formattedPrice} đ`);
-          }
-        } else {
-          formattedPrices.push("");
-        }
-      }
-
-      return formattedPrices;
-    } else {
-      return [];
-    }
-  };
-
-  const isSale = products.map((product) => product.is_sale);
-  const price = products.map((product) => product.price);
-  const salePrice = products.map((product) =>
-    product.is_sale === 1 ? product.sale_price : null
-  );
-
-  const formattedPrices = formatPrice(price, salePrice, isSale);
-
-  const priceContainers = document.querySelectorAll(".product__price");
-  priceContainers.forEach((container, index) => {
-    if (formattedPrices[index]) {
-      if (isSale[index] === 1) {
-        container.innerHTML = formattedPrices[index];
-      } else {
-        container.textContent = formattedPrices[index];
-      }
-    }
-  });
-
   const handleCollapseToggle = () => {
     setCollapseOpen(!CollapseOpen);
   };
@@ -95,7 +36,9 @@ function Products() {
     // values[1] represents the maximum price
     console.log("Selected price range:", values);
   };
-
+  const formatNumber = (number) => {
+    return number.toLocaleString("vi-VN");
+  };
   return (
     <section className="shop spad">
       <div className="container">
@@ -267,7 +210,14 @@ function Products() {
                       <i className="fa fa-star"></i>
                     </div> */}
                       <div className="product__price">
-                        {formatPrice(product.price)} đ <span> 59.0 đ</span>
+                        {product.is_sale ? (
+                          <>
+                            {formatNumber(product.price)} đ{" "}
+                            <span>{formatNumber(product.sale_price)} đ</span>
+                          </>
+                        ) : (
+                          `${formatNumber(product.price)} đ`
+                        )}
                       </div>
                     </div>
                   </div>

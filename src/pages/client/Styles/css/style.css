@@ -2215,6 +2215,7 @@ ol {
 	padding: 14px 30px 12px;
 	background: #f5f5f5;
 	text-decoration: none;
+	cursor: pointer;
 }
 
 .cart__btn span i  {

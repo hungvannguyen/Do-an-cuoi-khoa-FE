@@ -70,7 +70,7 @@ function ProductDetail() {
   };
 
   const handleAddToCart = (id) => {
-    console.log(id);
+
     axios
       .post(
         `/cart/add`,

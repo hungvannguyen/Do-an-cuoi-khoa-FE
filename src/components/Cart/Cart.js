@@ -10,8 +10,8 @@ function Cart() {
   const imageUrl = image;
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
-  const [totalPrice, setTotalPrice] = useState(0);
 
+  const [totalPrice, setTotalPrice] = useState(0);
 
   useEffect(() => {
     axios
@@ -26,12 +26,56 @@ function Cart() {
         setLoading(false);
         console.log(response.data);
       })
+
       .catch((error) => {
         setLoading(false);
         console.log(error);
       });
   }, []);
-  console.log(cart.length);
+
+  const handleDecreaseQuantity = (prd_id, prevQuantity) => {
+    const quantity = prevQuantity - 1;
+    axios
+      .put(
+        "/cart/update",
+        { prd_id: prd_id, quantity: quantity },
+        {
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        window.location.reload();
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
+
+  const handleIncreaseQuantity = (prd_id, prevQuantity) => {
+    const quantity = prevQuantity + 1;
+    axios
+      .put(
+        "/cart/update",
+        { prd_id: prd_id, quantity: quantity },
+        {
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        }
+      )
+      .then((response) => {
+        setLoading(false);
+        window.location.reload();
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
 
   const handleDeleteCartItem = (prd_id) => {
     axios
@@ -41,7 +85,6 @@ function Cart() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setLoading(false);
         window.location.reload();
       })
@@ -59,7 +102,6 @@ function Cart() {
         },
       })
       .then((response) => {
-        console.log(response.data);
         setLoading(false);
         window.location.reload();
       })
@@ -69,64 +111,6 @@ function Cart() {
       });
   };
 
-  const formatPrice = (price, salePrice, isSale) => {
-    if (
-      Array.isArray(price) &&
-      Array.isArray(salePrice) &&
-      Array.isArray(isSale) &&
-      price.length === salePrice.length &&
-      price.length === isSale.length
-    ) {
-      const formattedPrices = [];
-
-      for (let i = 0; i < price.length; i++) {
-        const currentPrice = price[i];
-        const currentSalePrice = salePrice[i];
-        const currentIsSale = isSale[i];
-
-        if (
-          typeof currentPrice !== "undefined" &&
-          currentPrice !== null &&
-          typeof currentPrice.toLocaleString === "function"
-        ) {
-          const formattedPrice = currentPrice.toLocaleString("vi-VN");
-
-          if (currentIsSale === 1) {
-            const formattedSalePrice = currentSalePrice.toLocaleString("vi-VN");
-            const originalPrice = `<span>${formattedPrice} đ</span>`;
-            formattedPrices.push(` ${formattedSalePrice} đ ${originalPrice} `);
-          } else {
-            formattedPrices.push(`${formattedPrice} đ`);
-          }
-        } else {
-          formattedPrices.push("");
-        }
-      }
-
-      return formattedPrices;
-    } else {
-      return [];
-    }
-  };
-
-  const isSale = cart.map((product) => product.is_sale);
-  const price = cart.map((product) => product.price);
-  const salePrice = cart.map((product) =>
-    product.is_sale === 1 ? product.sale_price : null
-  );
-
-  const formattedPrices = formatPrice(price, salePrice, isSale);
-
-  const priceContainers = document.querySelectorAll(".cart__price");
-  priceContainers.forEach((container, index) => {
-    if (formattedPrices[index]) {
-      if (isSale[index] === 1) {
-        container.innerHTML = formattedPrices[index];
-      } else {
-        container.textContent = formattedPrices[index];
-      }
-    }
-  });
   const formatNumber = (number) => {
     return number.toLocaleString("vi-VN");
   };
@@ -136,7 +120,7 @@ function Cart() {
       <Loading isLoading={loading} />
       {!loading && (
         <>
-          {cart.length != 0 ? (
+          {cart.length !== 0 ? (
             <section className="shop-cart spad">
               <div className="container">
                 <div className="row">
@@ -162,19 +146,41 @@ function Cart() {
                                     <h6>{item.name}</h6>
                                   </div>
                                 </td>
-                                <td className="cart__price"></td>
+                                <td className="cart__price">
+                                  {item.is_sale ? (
+                                    <>
+                                      {formatNumber(item.price)} đ{" "}
+                                      <span>
+                                        {formatNumber(item.sale_price)} đ
+                                      </span>
+                                    </>
+                                  ) : (
+                                    `${formatNumber(item.price)} đ`
+                                  )}
+                                </td>
                                 <td className="cart__quantity">
                                   <div className="pro-qty">
                                     <span
                                       className="dec qtybtn"
-                                      // onClick={handleDecreaseQuantity}
+                                      onClick={() =>
+                                        handleDecreaseQuantity(
+                                          item.prd_id,
+                                          item.quantity
+                                        )
+                                      }
                                     >
                                       -
                                     </span>
                                     <input type="text" value={item.quantity} />
+
                                     <span
                                       className="inc qtybtn"
-                                      // onClick={handleIncreaseQuantity}
+                                      onClick={() =>
+                                        handleIncreaseQuantity(
+                                          item.prd_id,
+                                          item.quantity
+                                        )
+                                      }
                                     >
                                       +
                                     </span>
