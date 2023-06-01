@@ -2204,7 +2204,7 @@ ol {
 	text-align: right;
 }
 
-.cart__btn a {
+.cart__btn span {
 	font-size: 14px;
 	color: #111111;
 	font-weight: 600;
@@ -2215,7 +2215,7 @@ ol {
 	text-decoration: none;
 }
 
-.cart__btn a span {
+.cart__btn span i  {
 	color: #ca1515;
 	font-size: 14px;
 	margin-right: 5px;

@@ -10,7 +10,6 @@ import "./pages/client/Styles/css/font-awesome.min.css";
 // React-router-dom imports
 import { BrowserRouter as Router } from "react-router-dom";
 
-
 axios.defaults.baseURL = API_BASE_URL;
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
