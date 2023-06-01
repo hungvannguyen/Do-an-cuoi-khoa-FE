@@ -9,10 +9,20 @@ import Regis from "../login_resgis/Regis";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Load from "../../components/Loading/Loading";
+import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 
 function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const navigate = useNavigate();
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      navigate("/");
+    }
+  }, []);
   return (
     <div>
       <Header />
@@ -24,7 +34,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={isLoggedIn ? <HomePage /> : <Login />} />
         <Route path="/regis" element={<Regis />} />
       </Routes>
       <Footer />

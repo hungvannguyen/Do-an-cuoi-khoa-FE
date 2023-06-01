@@ -1,11 +1,19 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate, useHistory } from "react-router-dom";
 import axios from "axios";
 function Login() {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
   const handleLogin = () => {
     setUsername(username);
     setPassword(password);
@@ -17,13 +25,19 @@ function Login() {
       })
       .then((response) => {
         sessionStorage.setItem("token", response.data.token);
-        console.log(sessionStorage.getItem("token") )
+        console.log(sessionStorage.getItem("token"));
+        setIsLoggedIn(true);
         navigate("/");
       })
       .catch((error) => {
         console.log(error);
         console.log("Đăng nhập thất bại");
       });
+  };
+  const redirectToHome = () => {
+    if (isLoggedIn) {
+      navigate("/home");
+    }
   };
   return (
     <section className="vh-100">
