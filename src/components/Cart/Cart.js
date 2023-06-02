@@ -7,12 +7,21 @@ import axios from "axios";
 
 function Cart() {
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const imageUrl = image;
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
 
   const [totalPrice, setTotalPrice] = useState(0);
-
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      setIsLoggedIn(true);
+      navigate("/cart");
+    } else {
+      navigate("/login");
+    }
+  }, [navigate]);
   useEffect(() => {
     axios
       .get("/cart/all", {

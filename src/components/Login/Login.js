@@ -10,10 +10,12 @@ function Login() {
     const token = sessionStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+      navigate("/");
     } else {
       navigate("/login");
     }
   }, [navigate]);
+
   const handleLogin = () => {
     setUsername(username);
     setPassword(password);
@@ -26,8 +28,14 @@ function Login() {
       .then((response) => {
         sessionStorage.setItem("token", response.data.token);
         console.log(sessionStorage.getItem("token"));
+        console.log("role_id" + response.data.role_id);
+        if (response.data.role_id == 1 && response.data.role_id == 10) {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
         setIsLoggedIn(true);
-        navigate("/");
+        // navigate("/");
       })
       .catch((error) => {
         console.log(error);

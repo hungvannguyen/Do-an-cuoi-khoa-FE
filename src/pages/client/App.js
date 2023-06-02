@@ -15,14 +15,8 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const navigate = useNavigate();
-  useEffect(() => {
-    const token = sessionStorage.getItem("token");
-    if (token) {
-      setIsLoggedIn(true);
-      navigate("/");
-    }
-  }, []);
+ 
+
   return (
     <div>
       <Header />

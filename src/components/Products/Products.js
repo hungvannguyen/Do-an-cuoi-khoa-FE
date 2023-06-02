@@ -10,18 +10,75 @@ function Products() {
   const imageUrl = image;
   const [CollapseOpen, setCollapseOpen] = useState(true);
   const [products, setProducts] = useState([]);
+  const [pages, setPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState();
+  const [totalPages, setTotalPages] = useState();
 
   useEffect(() => {
     axios
-      .get("/product/all/active")
+      .get(`/product/all/active/${pages}`)
       .then((response) => {
-        setProducts(response.data);
+        setProducts(response.data.data);
+        setCurrentPage(response.data.current_page);
+        setTotalPages(response.data.total_page);
+        console.log("P" + response.data.current_page);
         console.log(response.data);
+        console.log(typeof response.data);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [pages]);
+
+  const handlePageChange = (page) => {
+    console.log(page);
+    setCurrentPage(page);
+    setPages(page);
+  };
+  const renderPagination = () => {
+    const displayedPages = 3;
+    const startPage = Math.max(currentPage - 1, 1);
+    const endPage = Math.min(startPage + displayedPages - 1, totalPages);
+
+    return Array.from({ length: endPage - startPage + 1 }, (_, index) => {
+      const page = startPage + index;
+
+      return (
+        <a
+          key={page}
+          href="#"
+          onClick={() => handlePageChange(page)}
+          className={currentPage === page ? "active" : ""}
+        >
+          {page}
+        </a>
+      );
+    });
+  };
+
+  // const handlePreviousPage = () => {
+  //   if (currentPage > 1) {
+  //     setCurrentPage(currentPage - 1);
+  //     setPages(currentPage - 1);
+  //   }
+  // };
+
+  // const handleNextPage = () => {
+  //   if (currentPage < totalPages) {
+  //     setCurrentPage(currentPage + 1);
+  //     setPages(currentPage + 1);
+  //   }
+  // };
+
+  const handleFirstPage = () => {
+    setCurrentPage(1);
+    setPages(1);
+  };
+
+  const handleLastPage = () => {
+    setCurrentPage(totalPages);
+    setPages(totalPages);
+  };
 
   const handleProductClick = (id) => {
     navigate(`/product/detail/${id}`);
@@ -202,18 +259,12 @@ function Products() {
                           {product.name}
                         </Link>
                       </h6>
-                      {/* <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                    </div> */}
+
                       <div className="product__price">
                         {product.is_sale ? (
                           <>
-                            {formatNumber(product.price)} đ{" "}
-                            <span>{formatNumber(product.sale_price)} đ</span>
+                            {formatNumber(product.sale_price)} đ{" "}
+                            <span>{formatNumber(product.price)} đ</span>
                           </>
                         ) : (
                           `${formatNumber(product.price)} đ`
@@ -226,12 +277,15 @@ function Products() {
             </div>
             <div className="col-lg-12 text-center">
               <div className="pagination__option">
-                <a href="#">1</a>
-                <a href="#">2</a>
-                <a href="#">3</a>
-                <a href="#">
-                  <i className="fa fa-angle-right"></i>
-                </a>
+                <button onClick={handleFirstPage}>
+                  <i class="fa-solid fa-angles-left"></i>
+                </button>
+                {/* <button onClick={handlePreviousPage}>&lt;</button> */}
+                {renderPagination()}
+                {/* <button onClick={handleNextPage}>&gt;</button> */}
+                <button onClick={handleLastPage}>
+                  <i class="fa-solid fa-angles-right"></i>
+                </button>
               </div>
             </div>
           </div>
