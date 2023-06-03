@@ -4,18 +4,50 @@ import "../Styles/css/magnific-popup.css";
 import "../Styles/css/slicknav.min.css";
 import "../Styles/css/style.css";
 import Search from "../../../components/Search/Search";
-import { Link } from "react-router-dom";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function Header() {
   const navigate = useNavigate();
+  const [categories, setCategories] = useState([]);
+  const [countCart, setCountCart] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [active, setActive] = useState(0);
   let hasSessionData = sessionStorage.getItem("token") !== null;
+  useEffect(() => {
+    axios
+      .get("/category/all")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (sessionStorage.getItem("token")) {
+      axios
+        .get("/cart/count", {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+          },
+        })
+        .then((response) => {
+          setCountCart(response.data);
+          console.log("Cart" + response.data);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  }, [navigate]);
+
   console.log(hasSessionData);
   const handleLogout = () => {
     sessionStorage.removeItem("token");
+    setCountCart(0);
     hasSessionData = false;
     navigate("/");
   };
@@ -102,18 +134,13 @@ function Header() {
                       Gundam
                     </Link>
                     <ul className="dropdown">
-                      <li>
-                        <Link to="./product-details.html">HG</Link>
-                      </li>
-                      <li>
-                        <Link to="./shop-cart.html">Shop Cart</Link>
-                      </li>
-                      <li>
-                        <Link to="./checkout.html">Checkout</Link>
-                      </li>
-                      <li>
-                        <Link to="./blog-details.html">Blog Details</Link>
-                      </li>
+                      {categories.map((category) => (
+                        <li>
+                          <Link to="./product-details.html">
+                            {category.cat_name}
+                          </Link>
+                        </li>
+                      ))}
                     </ul>
                   </li>
                   <li className={active === 5 ? "active" : ""}>
@@ -205,7 +232,7 @@ function Header() {
                   <li>
                     <Link to="/cart">
                       <span className="fa-solid fa-cart-shopping"></span>
-                      <div className="tip">2</div>
+                      <div className="tip">{countCart}</div>
                     </Link>
                   </li>
                   <li></li>

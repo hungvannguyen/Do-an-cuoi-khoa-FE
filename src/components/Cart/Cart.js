@@ -11,8 +11,8 @@ function Cart() {
   const imageUrl = image;
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
-
   const [totalPrice, setTotalPrice] = useState(0);
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
@@ -35,8 +35,11 @@ function Cart() {
         setLoading(false);
         console.log(response.data);
       })
-
       .catch((error) => {
+        if (error.response.status === 409) {
+          setLoading(true);
+          window.location.reload();
+        }
         setLoading(false);
         console.log(error);
       });
@@ -113,6 +116,23 @@ function Cart() {
       .then((response) => {
         setLoading(false);
         window.location.reload();
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  };
+
+  const handleCheckout = () => {
+    axios
+      .get("/checkout/check/cart", {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+      })
+      .then((response) => {
+        setLoading(false);
+        navigate("/checkout");
       })
       .catch((error) => {
         setLoading(false);
@@ -254,9 +274,9 @@ function Cart() {
                           Total <span>{formatNumber(totalPrice)} đ</span>
                         </li>
                       </ul>
-                      <Link to="/checkout" className="primary-btn">
+                      <span className="primary-btn" onClick={handleCheckout}>
                         Proceed to checkout
-                      </Link>
+                      </span>
                     </div>
                   </div>
                 </div>

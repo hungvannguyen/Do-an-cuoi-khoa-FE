@@ -5,8 +5,6 @@ import image from "../../assest/image/image.png";
 function Categories() {
 
 
-
-
   const imageUrl = image;
   return (
     <section className="categories">
