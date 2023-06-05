@@ -114,21 +114,8 @@ function Header() {
                       Trang chủ
                     </Link>
                   </li>
-                  <li className={active === 1 ? "active" : ""}>
-                    <Link to="#" onClick={() => handleMenuClick(1)}>
-                      Women
-                    </Link>
-                  </li>
-                  <li className={active === 2 ? "active" : ""}>
-                    <Link to="#" onClick={() => handleMenuClick(2)}>
-                      Men’s
-                    </Link>
-                  </li>
-                  <li className={active === 3 ? "active" : ""}>
-                    <Link to="./shop.html" onClick={() => handleMenuClick(3)}>
-                      Shop
-                    </Link>
-                  </li>
+                 
+                  
                   <li className={active === 4 ? "active" : ""}>
                     <Link to="/products" onClick={() => handleMenuClick(4)}>
                       Gundam

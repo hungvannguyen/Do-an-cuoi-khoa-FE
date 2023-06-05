@@ -6,8 +6,10 @@ import Checkout from "./ShoppingCart/Checkout";
 import Profile from "../../components/Profile/Profile";
 import Login from "../login_resgis/Login";
 import Regis from "../login_resgis/Regis";
+import Success from "./Success/Success";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
+
 import Load from "../../components/Loading/Loading";
 import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
@@ -15,7 +17,6 @@ import { Routes, Route, useNavigate } from "react-router-dom";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
- 
 
   return (
     <div>
@@ -30,6 +31,7 @@ function App() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/login" element={isLoggedIn ? <HomePage /> : <Login />} />
         <Route path="/regis" element={<Regis />} />
+        <Route path="/success" element={<Success />} />
       </Routes>
       <Footer />
     </div>

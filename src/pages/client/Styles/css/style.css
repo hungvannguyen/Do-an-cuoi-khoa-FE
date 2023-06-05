@@ -1598,6 +1598,7 @@ ol {
 	-o-transition: all, 0.3s;
 	transition: all, 0.3s;
 	margin-right: 6px;
+	text-decoration: none;
 }
 
 .pagination__option button {

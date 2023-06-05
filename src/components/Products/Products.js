@@ -87,6 +87,9 @@ function Products() {
   };
 
   const handleLastPage = () => {
+    if (currentPage === totalPages) {
+      return;
+    }
     setLoading(true);
     setCurrentPage(totalPages);
     setPages(totalPages);
