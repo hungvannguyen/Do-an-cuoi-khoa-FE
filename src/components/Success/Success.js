@@ -23,16 +23,15 @@ function Success() {
           <div className="col-lg-6 offset-lg-3 col-12">
             <div className="success-inner">
               <h1>
-                <i className="fa fa-envelope"></i>
-                <span>Your Mail Sent Successfully!</span>
+                <i class="fa-solid fa-truck-fast"></i>
+                <span>Đặt hàng thành công!</span>
               </h1>
               <p>
-                Aenean eget sollicitudin lorem, et pretium felis. Nullam euismod
-                diam libero, sed dapibus leo laoreet ut. Suspendisse potenti.
-                Phasellus urna lacus
+                Cảm ơn bạn đã đặt hàng tại <b>Shop</b>. Chúng tôi sẽ giao hàng
+                đến cho bạn trong thời gian sớm nhất.
               </p>
               <a href="#" className="btn btn-primary btn-lg">
-                Go Home
+                Về trang chủ
               </a>
               <div className="timer">
                 <p>Redirecting in {time} seconds</p>

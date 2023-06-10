@@ -44,15 +44,6 @@ function Checkout() {
   const [selectedWardIdError, setSelectedWardIdError] = useState("");
   const [selectedPaymentIdError, setSelectedPaymentIdError] = useState("");
 
-  // console.log(userInfo);
-  // console.log(name);
-  // console.log(phone);
-  // console.log(email);
-  // console.log(addressDetail);
-  // console.log(selectedCityId);
-  // console.log(selectedDistrictId);
-  // console.log(selectedWardId);
-
   useEffect(() => {
     axios
       .get("/checkout/user_info", {
@@ -74,6 +65,21 @@ function Checkout() {
         }
         setLoading(false);
         console.log(res.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("/address/city/all", {
+        headers: {
+          Authorization: "Bearer " + token,
+        },
+      })
+      .then((res) => {
+        setCity(res.data);
       })
       .catch((error) => {
         console.log(error);
@@ -123,21 +129,6 @@ function Checkout() {
         setCheckoutProduct(res.data.products);
         setTotal(res.data.total);
         console.log(res.data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, []);
-
-  useEffect(() => {
-    const cityList = axios
-      .get("/address/city/all", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then((res) => {
-        setCity(res.data);
       })
       .catch((error) => {
         console.log(error);

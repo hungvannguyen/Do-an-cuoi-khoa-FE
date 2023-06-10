@@ -12,6 +12,7 @@ function Products() {
   const [loading, setLoading] = useState(true);
   const [CollapseOpen, setCollapseOpen] = useState(true);
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [pages, setPages] = useState(1);
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
@@ -37,7 +38,16 @@ function Products() {
     [pages],
     [currentPage]
   );
-
+  useEffect(() => {
+    axios
+      .get("/category/all")
+      .then((response) => {
+        setCategories(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   const handlePageChange = (page) => {
     console.log(page);
     setLoading(true);
@@ -62,20 +72,6 @@ function Products() {
       );
     });
   };
-
-  // const handlePreviousPage = () => {
-  //   if (currentPage > 1) {
-  //     setCurrentPage(currentPage - 1);
-  //     setPages(currentPage - 1);
-  //   }
-  // };
-
-  // const handleNextPage = () => {
-  //   if (currentPage < totalPages) {
-  //     setCurrentPage(currentPage + 1);
-  //     setPages(currentPage + 1);
-  //   }
-  // };
 
   const handleFirstPage = () => {
     if (currentPage === 1) {
@@ -138,7 +134,7 @@ function Products() {
                                 data-target="#collapseOne "
                                 onClick={handleCollapseToggle}
                               >
-                                Women
+                                Gundam
                               </a>
                             </div>
                             <div
@@ -150,24 +146,11 @@ function Products() {
                             >
                               <div className="card-body">
                                 <ul>
-                                  <li>
-                                    <a href="#">Coats</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Jackets</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Dresses</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Shirts</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">T-shirts</a>
-                                  </li>
-                                  <li>
-                                    <a href="#">Jeans</a>
-                                  </li>
+                                  {categories.map((category) => (
+                                    <li>
+                                      <Link to="#">{category.cat_name}</Link>
+                                    </li>
+                                  ))}
                                 </ul>
                               </div>
                             </div>

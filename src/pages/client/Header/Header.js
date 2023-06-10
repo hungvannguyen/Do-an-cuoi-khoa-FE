@@ -4,12 +4,15 @@ import "../Styles/css/magnific-popup.css";
 import "../Styles/css/slicknav.min.css";
 import "../Styles/css/style.css";
 import Search from "../../../components/Search/Search";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
 
 function Header() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const message = searchParams.get("message");
   const [categories, setCategories] = useState([]);
   const [countCart, setCountCart] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -45,6 +48,9 @@ function Header() {
   }, [navigate]);
 
   console.log(hasSessionData);
+
+
+  
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     setCountCart(0);
@@ -114,8 +120,7 @@ function Header() {
                       Trang chủ
                     </Link>
                   </li>
-                 
-                  
+
                   <li className={active === 4 ? "active" : ""}>
                     <Link to="/products" onClick={() => handleMenuClick(4)}>
                       Gundam

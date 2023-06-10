@@ -7,7 +7,7 @@ import axios from "axios";
 
 function Cart() {
   const navigate = useNavigate();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const imageUrl = image;
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
@@ -16,12 +16,11 @@ function Cart() {
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
-      setIsLoggedIn(true);
       navigate("/cart");
     } else {
       navigate("/login");
     }
-  }, [navigate]);
+  }, []);
   useEffect(() => {
     axios
       .get("/cart/all", {
@@ -178,10 +177,8 @@ function Cart() {
                                 <td className="cart__price">
                                   {item.is_sale ? (
                                     <>
-                                      {formatNumber(item.price)} đ{" "}
-                                      <span>
-                                        {formatNumber(item.sale_price)} đ
-                                      </span>
+                                      {formatNumber(item.sale_price)} đ
+                                      <span>{formatNumber(item.price)} đ </span>
                                     </>
                                   ) : (
                                     `${formatNumber(item.price)} đ`

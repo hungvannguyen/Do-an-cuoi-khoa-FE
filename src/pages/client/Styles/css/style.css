@@ -1388,6 +1388,7 @@ ol {
 	font-size: 14px;
 	color: #666666;
 	line-height: 30px;
+	text-decoration: none;
 }
 
 .categories__accordion .card-heading a:after,

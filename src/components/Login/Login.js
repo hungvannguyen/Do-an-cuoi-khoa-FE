@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useHistory } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 function Login() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+      console.log(token);
       navigate("/");
-    } else {
-      navigate("/login");
     }
   }, [navigate]);
 
@@ -34,23 +36,41 @@ function Login() {
           const url = `http://localhost:5000/login?token=${token}`;
           window.location.href = url;
         } else {
-          navigate("/");
+          toast.success("Đăng nhập thành công", {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          const redirectInterval = setInterval(() => {
+            clearInterval(redirectInterval);
+            navigate("/");
+          }, 2000);
         }
-        setIsLoggedIn(true);
-        // navigate("/");
       })
       .catch((error) => {
         console.log(error);
         console.log("Đăng nhập thất bại");
+        toast.error(error.response.data.detail, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       });
   };
-  const redirectToHome = () => {
-    if (isLoggedIn) {
-      navigate("/home");
-    }
-  };
+
   return (
     <section className="vh-100">
+      <ToastContainer />
       <div className="container-fluid h-custom">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-md-9 col-lg-6 col-xl-5">
