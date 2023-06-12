@@ -7,6 +7,7 @@ function Navbar() {
     setActive(index);
   };
   return (
+    
     <div className="col-lg-2" style={{ marginTop: 30 }}>
       <div className="list-group">
         <Link
