@@ -1,4 +1,5 @@
 import image from "../../assest/image/image.png";
+import { useEffect, useState } from "react";
 
 function TrendSection() {
   const imageUrl = image;

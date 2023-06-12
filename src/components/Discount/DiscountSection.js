@@ -1,5 +1,5 @@
-import { Countdown } from 'react-countdown';
-
+import { Countdown } from "react-countdown";
+import { Link } from "react-router-dom";
 function DiscountSection() {
   return (
     <section className="discount">
@@ -15,7 +15,9 @@ function DiscountSection() {
               <div className="discount__text__title">
                 <span>Discount</span>
                 <h2>Summer 2019</h2>
-                <h5><span>Sale</span> 50%</h5>
+                <h5>
+                  <span>Sale</span> 50%
+                </h5>
               </div>
               <div className="discount__countdown" id="countdown-time">
                 <div className="countdown__item">
@@ -35,7 +37,7 @@ function DiscountSection() {
                   <p>Sec</p>
                 </div>
               </div>
-              <a href="#">Shop now</a>
+              <Link to="/products?status=sale">Shop now</Link>
             </div>
           </div>
         </div>

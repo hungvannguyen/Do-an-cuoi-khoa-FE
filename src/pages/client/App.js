@@ -11,9 +11,10 @@ import Success from "./Success/Success";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Load from "../../components/Loading/Loading";
+import NotFound from "../../components/404 page/404Page";
 import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,6 +46,7 @@ function App() {
         <Route path="/address" element={<Address />} />
         <Route path="/regis" element={<Regis />} />
         <Route path="/success" element={<Success />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
     </div>

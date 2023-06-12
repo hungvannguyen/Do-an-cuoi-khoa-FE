@@ -34,7 +34,7 @@
 html,
 body {
 	height: 100%;
-	font-family: "Montserrat", sans-serif;
+	font-family: 'Roboto', sans-serif;
 	-webkit-font-smoothing: antialiased;
 }
 
@@ -47,7 +47,7 @@ h6 {
 	margin: 0;
 	color: #111111;
 	font-weight: 400;
-	font-family: "Montserrat", sans-serif;
+	font-family: 'Roboto', sans-serif;
 }
 
 h1 {
@@ -141,6 +141,27 @@ ol {
 .spad {
 	padding-top: 100px;
 	padding-bottom: 100px;
+}
+
+.watch_more {
+	font-size: 14px;
+	color: #111111;
+	text-transform: uppercase;
+	font-weight: 700;
+	position: relative;
+	padding: 0 0 3px;
+	display: inline-block;
+	text-decoration: none;
+}
+
+.watch_more:after {
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	height: 2px;
+	width: 100%;
+	background: #ca1515;
+	content: "";
 }
 
 .text-white h1,
@@ -537,6 +558,7 @@ ol {
 	position: relative;
 	padding: 0 0 3px;
 	display: inline-block;
+	text-decoration: none;
 }
 
 .banner__text a:after {
@@ -666,6 +688,7 @@ ol {
 	position: relative;
 	padding: 0 0 3px;
 	display: inline-block;
+	text-decoration: none;
 }
 
 .discount__text a:after {
@@ -900,6 +923,7 @@ ol {
 	font-size: 14px;
 	color: #666666;
 	line-height: 30px;
+	text-decoration: none;
 }
 
 .footer__newslatter {

@@ -3,16 +3,20 @@ import image from "../../assest/image/image.png";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+
 function ProductSection() {
   const imageUrl = image;
   const [newProduct, setNewProduct] = useState([]);
-
+  const [pages, setPages] = useState(1);
+  const [currentPage, setCurrentPage] = useState();
+  const [totalPages, setTotalPages] = useState();
   useEffect(() => {
     axios
-      .get("/product/new")
+      .get(`/product/new/${pages}`)
       .then((response) => {
-        setNewProduct(response.data);
-        console.log(response.data);
+        setNewProduct(response.data.data);
+        setCurrentPage(response.data.current_page);
+        setTotalPages(response.data.total_page);
       })
       .catch((error) => {
         console.log(error);
@@ -28,7 +32,7 @@ function ProductSection() {
         <div className="row">
           <div className="col-lg-4 col-md-4">
             <div className="section-title">
-              <h4>New product</h4>
+              <h4>Sản phẩm mới</h4>
             </div>
           </div>
         </div>
@@ -40,27 +44,7 @@ function ProductSection() {
                   className="product__item__pic set-bg"
                   style={{ backgroundImage: `url(${imageUrl})` }}
                 >
-                  <div className="label new">New</div>
-                  <ul className="product__hover">
-                    <li>
-                      <a
-                        href="img/product/product-1.jpg"
-                        className="image-popup"
-                      >
-                        <span className="arrow_expand"></span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <span className="icon_heart_alt"></span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="#">
-                        <span className="icon_bag_alt"></span>
-                      </a>
-                    </li>
-                  </ul>
+                  <div className="label new">Mới</div>
                 </div>
                 <div className="product__item__text">
                   <h6>
@@ -85,6 +69,11 @@ function ProductSection() {
               </div>
             </div>
           ))}
+        </div>
+        <div style={{ textAlign: "center" }}>
+          <Link className="watch_more" to="/products?status=new" style={{ margin: "0 auto" }}>
+            Xem thêm
+          </Link>
         </div>
       </div>
     </section>

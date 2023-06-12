@@ -1,13 +1,17 @@
 import image from "../../assest/image/image.png";
 import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 
 function Products() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const param = searchParams.get("status");
+
   const imageUrl = image;
   const [loading, setLoading] = useState(true);
   const [CollapseOpen, setCollapseOpen] = useState(true);
@@ -16,19 +20,26 @@ function Products() {
   const [pages, setPages] = useState(1);
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
+  let apiEndpoint = "";
+  if (param === "sale") {
+    apiEndpoint = `/product/sale/${pages}`;
+  } else if (param === "new") {
+    apiEndpoint = `/product/new/${pages}`;
+  } else {
+    apiEndpoint = `/product/all/active/${pages}`;
+  }
 
   useEffect(
     () => {
       axios
-        .get(`/product/all/active/${pages}`)
+        .get(apiEndpoint)
         .then((response) => {
           setLoading(false);
           setProducts(response.data.data);
+          console.log("Data");
+          console.log(response.data);
           setCurrentPage(response.data.current_page);
           setTotalPages(response.data.total_page);
-          console.log("P" + response.data.current_page);
-          console.log(response.data);
-          console.log(typeof response.data);
         })
         .catch((error) => {
           setLoading(false);
@@ -38,6 +49,7 @@ function Products() {
     [pages],
     [currentPage]
   );
+
   useEffect(() => {
     axios
       .get("/category/all")
@@ -105,8 +117,12 @@ function Products() {
     console.log("Selected price range:", values);
   };
   const formatNumber = (number) => {
-    return number.toLocaleString("vi-VN");
+    if (number) {
+      return number.toLocaleString("vi-VN");
+    }
+    return "";
   };
+
   return (
     <div>
       <Loading isLoading={loading} />
@@ -252,16 +268,8 @@ function Products() {
                                 product.is_sale ? " sale" : ""
                               }`}
                             >
-                              {product.is_sale ? " Sale" : ""}
+                              {product.is_sale ? "Giảm giá" : ""}
                             </div>
-
-                            <ul className="product__hover">
-                              <li>
-                                <a href="#">
-                                  <span className="fa-solid fa-cart-shopping"></span>
-                                </a>
-                              </li>
-                            </ul>
                           </div>
                           <div className="product__item__text">
                             <h6>

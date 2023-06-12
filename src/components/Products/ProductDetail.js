@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function ProductDetail() {
   const navigate = useNavigate();
   const imageUrl = image;
@@ -70,7 +73,6 @@ function ProductDetail() {
   };
 
   const handleAddToCart = (id) => {
-
     axios
       .post(
         `/cart/add`,
@@ -87,11 +89,24 @@ function ProductDetail() {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.status === 400) {
+          toast.error(error.response.data.detail, {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
       });
   };
 
   return (
     <div>
+      <ToastContainer />
       <Breadcrumb setBreadcrumb={ProductDetail.name} />
       <section className="product-details spad">
         <div className="container">
@@ -134,14 +149,7 @@ function ProductDetail() {
                   {ProductDetail.name}
                   <span>Brand: SKMEIMore Men Watches from SKMEI</span>
                 </h3>
-                <div className="rating">
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star"></i>
-                  <i className="fa fa-star"></i>
-                  <span>( 138 reviews )</span>
-                </div>
+                
                 <div className="product__details__price"></div>
                 <p>
                   Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret
