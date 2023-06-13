@@ -11,7 +11,7 @@ function Products() {
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const param = searchParams.get("status");
-
+  const cat_id = searchParams.get("cat_id");
   const imageUrl = image;
   const [loading, setLoading] = useState(true);
   const [CollapseOpen, setCollapseOpen] = useState(true);
@@ -20,35 +20,38 @@ function Products() {
   const [pages, setPages] = useState(1);
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
+
+  // console.log("Param: " + param);
+  // console.log("Cat_id: " + cat_id);
+
+  // apiEndpoint
   let apiEndpoint = "";
   if (param === "sale") {
     apiEndpoint = `/product/sale/${pages}`;
   } else if (param === "new") {
     apiEndpoint = `/product/new/${pages}`;
+  } else if (param === "catFilter") {
+    apiEndpoint = `/product/category/${cat_id}/page/${pages}`;
   } else {
     apiEndpoint = `/product/all/active/${pages}`;
   }
 
-  useEffect(
-    () => {
-      axios
-        .get(apiEndpoint)
-        .then((response) => {
-          setLoading(false);
-          setProducts(response.data.data);
-          console.log("Data");
-          console.log(response.data);
-          setCurrentPage(response.data.current_page);
-          setTotalPages(response.data.total_page);
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
-    },
-    [pages],
-    [currentPage]
-  );
+  useEffect(() => {
+    axios
+      .get(apiEndpoint)
+      .then((response) => {
+        setLoading(false);
+        setProducts(response.data.data);
+        console.log("Data");
+        console.log(response.data);
+        setCurrentPage(response.data.current_page);
+        setTotalPages(response.data.total_page);
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
+  }, [apiEndpoint, pages, currentPage]);
 
   useEffect(() => {
     axios

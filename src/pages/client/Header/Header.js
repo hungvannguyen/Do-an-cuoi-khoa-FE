@@ -49,8 +49,6 @@ function Header() {
 
   console.log(hasSessionData);
 
-
-  
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     setCountCart(0);
@@ -128,7 +126,9 @@ function Header() {
                     <ul className="dropdown">
                       {categories.map((category) => (
                         <li>
-                          <Link to="./product-details.html">
+                          <Link
+                            to={`/products?status=catFilter&cat_id=${category.id}`}
+                          >
                             {category.cat_name}
                           </Link>
                         </li>
@@ -172,7 +172,10 @@ function Header() {
                   //     </Link>
                   //   </li>
                   // </ul>
-                  <div class="dropdown header__right__widget">
+                  <div
+                    class="dropdown header__right__widget"
+                    style={{ marginRight: 10 }}
+                  >
                     <a
                       className="dropdown-toggle fa-solid fa-user"
                       href="#"
