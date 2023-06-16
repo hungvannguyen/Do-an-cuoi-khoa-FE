@@ -37,7 +37,7 @@ function ProductSection() {
           </div>
         </div>
         <div className="row property__gallery">
-          {newProduct.map((product) => (
+          {newProduct.slice(0, 4).map((product) => (
             <div className="col-lg-3 col-md-4 col-sm-6 mix ">
               <div className="product__item">
                 <div
@@ -53,13 +53,15 @@ function ProductSection() {
                     </Link>
                   </h6>
                   <br />
-                  <div className="product__price">
+                  <div
+                    className={`product__price${
+                      product.is_sale ? " sale" : ""
+                    }`}
+                  >
                     {product.is_sale ? (
                       <>
-                        {formatNumber(
-                          product.price * (1 - product.sale_percent / 100)
-                        )}
-                        đ<span>{formatNumber(product.price)} đ</span>
+                        {formatNumber(product.sale_price)}đ
+                        <span>{formatNumber(product.price)} đ</span>
                       </>
                     ) : (
                       `${formatNumber(product.price)} đ`
@@ -71,7 +73,11 @@ function ProductSection() {
           ))}
         </div>
         <div style={{ textAlign: "center" }}>
-          <Link className="watch_more" to="/products?status=new" style={{ margin: "0 auto" }}>
+          <Link
+            className="watch_more"
+            to="/products?status=new"
+            style={{ margin: "0 auto" }}
+          >
             Xem thêm
           </Link>
         </div>

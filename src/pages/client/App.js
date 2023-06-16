@@ -7,11 +7,14 @@ import Profile from "./Profile/Profile";
 import Address from "./Profile/Address";
 import Login from "../login_resgis/Login";
 import Regis from "../login_resgis/Regis";
+import ResetPassword from "../login_resgis/ResetPassword";
 import Success from "./Success/Success";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Load from "../../components/Loading/Loading";
 import NotFound from "../../components/404 page/404Page";
+import Confirm from "../../components/EmailConfirmation/Confirm";
+import Verified from "../../components/EmailConfirmation/Verified";
 import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
@@ -45,6 +48,9 @@ function App() {
         <Route path="/login" element={isLoggedIn ? <HomePage /> : <Login />} />
         <Route path="/address" element={<Address />} />
         <Route path="/regis" element={<Regis />} />
+        <Route path="/reset" element={<ResetPassword />} />
+        <Route path="/confirm" element={<Confirm />} />
+        <Route path="/email/confirm" element={<Verified />} />
         <Route path="/success" element={<Success />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

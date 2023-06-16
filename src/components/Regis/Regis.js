@@ -69,12 +69,23 @@ function Regis() {
           progress: undefined,
           theme: "colored",
         });
+        setLoading(true);
         setUsername("");
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        setLoading(false);
-        navigate("/login");
+
+        axios
+          .post("/mail/auto_mail", {
+            mail_to: email,
+          })
+          .then((response) => {
+            navigate("/confirm");
+            console.log("Gửi mail thành công");
+          })
+          .catch((error) => {
+            console.log("Gửi mail thất bại");
+          });
       })
       .catch((error) => {
         if (error.response.status === 400) {

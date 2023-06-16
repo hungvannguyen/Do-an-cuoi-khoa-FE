@@ -148,13 +148,14 @@ function Products() {
                                 CollapseOpen ? "active" : ""
                               }`}
                             >
-                              <a
+                              <Link
+                                to="/products"
                                 data-toggle="collapse"
                                 data-target="#collapseOne "
                                 onClick={handleCollapseToggle}
                               >
                                 Gundam
-                              </a>
+                              </Link>
                             </div>
                             <div
                               id="collapseOne"
@@ -167,7 +168,11 @@ function Products() {
                                 <ul>
                                   {categories.map((category) => (
                                     <li>
-                                      <Link to="#">{category.cat_name}</Link>
+                                      <Link
+                                        to={`/products?status=catFilter&cat_id=${category.id}`}
+                                      >
+                                        {category.cat_name}
+                                      </Link>
                                     </li>
                                   ))}
                                 </ul>
@@ -252,64 +257,70 @@ function Products() {
                     </div>
                   </div>
                 </div>
-                <div className="col-lg-9 col-md-9">
-                  <div className="row">
-                    {products.map((product) => (
-                      <div className="col-lg-4 col-md-6" key={product.id}>
-                        <div
-                          className={`product__item${
-                            product.is_sale ? " sale" : ""
-                          }`}
-                        >
+                {products.length > 0 ? (
+                  <div className="col-lg-9 col-md-9">
+                    <div className="row">
+                      {products.map((product) => (
+                        <div className="col-lg-4 col-md-6" key={product.id}>
                           <div
-                            className="product__item__pic set-bg"
-                            style={{ backgroundImage: `url(${imageUrl})` }}
-                            onClick={() => handleProductClick(product.id)}
+                            className={`product__item${
+                              product.is_sale ? " sale" : ""
+                            }`}
                           >
                             <div
-                              className={`label${
-                                product.is_sale ? " sale" : ""
-                              }`}
+                              className="product__item__pic set-bg"
+                              style={{ backgroundImage: `url(${imageUrl})` }}
+                              onClick={() => handleProductClick(product.id)}
                             >
-                              {product.is_sale ? "Giảm giá" : ""}
+                              <div
+                                className={`label${
+                                  product.is_sale ? " sale" : ""
+                                }`}
+                              >
+                                {product.is_sale ? "Giảm giá" : ""}
+                              </div>
                             </div>
-                          </div>
-                          <div className="product__item__text">
-                            <h6>
-                              <Link to={`/product/detail/${product.id}`}>
-                                {product.name}
-                              </Link>
-                            </h6>
+                            <div className="product__item__text">
+                              <h6>
+                                <Link to={`/product/detail/${product.id}`}>
+                                  {product.name}
+                                </Link>
+                              </h6>
 
-                            <div className="product__price">
-                              {product.is_sale ? (
-                                <>
-                                  {formatNumber(product.sale_price)} đ{" "}
-                                  <span>{formatNumber(product.price)} đ</span>
-                                </>
-                              ) : (
-                                `${formatNumber(product.price)} đ`
-                              )}
+                              <div className="product__price">
+                                {product.is_sale ? (
+                                  <>
+                                    {formatNumber(product.sale_price)} đ{" "}
+                                    <span>{formatNumber(product.price)} đ</span>
+                                  </>
+                                ) : (
+                                  `${formatNumber(product.price)} đ`
+                                )}
+                              </div>
                             </div>
                           </div>
                         </div>
+                      ))}
+                    </div>
+                    <div className="col-lg-12 text-center">
+                      <div className="pagination__option">
+                        <button onClick={handleFirstPage}>
+                          <i class="fa-solid fa-angles-left"></i>
+                        </button>
+                        {/* <button onClick={handlePreviousPage}>&lt;</button> */}
+                        {renderPagination()}
+                        {/* <button onClick={handleNextPage}>&gt;</button> */}
+                        <button onClick={handleLastPage}>
+                          <i class="fa-solid fa-angles-right"></i>
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                  <div className="col-lg-12 text-center">
-                    <div className="pagination__option">
-                      <button onClick={handleFirstPage}>
-                        <i class="fa-solid fa-angles-left"></i>
-                      </button>
-                      {/* <button onClick={handlePreviousPage}>&lt;</button> */}
-                      {renderPagination()}
-                      {/* <button onClick={handleNextPage}>&gt;</button> */}
-                      <button onClick={handleLastPage}>
-                        <i class="fa-solid fa-angles-right"></i>
-                      </button>
                     </div>
                   </div>
-                </div>
+                ) : (
+                  <div className="col-lg-9 col-md-9 text-center">
+                    <p>Không có sản phẩm</p>
+                  </div>
+                )}
               </div>
             </div>
           </section>

@@ -1333,6 +1333,11 @@ ol {
 	font-weight: 600;
 }
 
+.product__item .product__item__text .product__price.sale {
+	color: #ca1515;
+	margin-left: 4px;
+}
+
 .product__item__text .product__price span {
 	font-size: 14px;
 	color: #b1b0b0;

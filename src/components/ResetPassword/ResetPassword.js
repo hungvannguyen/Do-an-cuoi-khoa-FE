@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, useHistory } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -115,9 +115,9 @@ function Login() {
               <div className="d-flex justify-content-between align-items-center">
                 {/* Checkbox */}
                 <div className="form-check mb-0"></div>
-                <Link to="/reset" className="text-body">
-                  Quên mật khẩu?
-                </Link>
+                <a href="#!" className="text-body">
+                  Forgot password?
+                </a>
               </div>
 
               <div className="text-center text-lg-start mt-4 pt-2">
