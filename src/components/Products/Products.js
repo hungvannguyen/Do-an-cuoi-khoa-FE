@@ -21,19 +21,27 @@ function Products() {
   const [currentPage, setCurrentPage] = useState();
   const [totalPages, setTotalPages] = useState();
 
-  // console.log("Param: " + param);
-  // console.log("Cat_id: " + cat_id);
+  //  Filter
 
+  const [selectedOption, setSelectedOption] = useState(null);
+  const [sort, setSort] = useState(0);
+  const [minPrice, setMinPrice] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [priceRange, setPriceRange] = useState([100000, 10000000]);
+  const base = 0;
+  const increase = 1;
+  const decrease = 2;
+  const rangePrice = 3;
   // apiEndpoint
   let apiEndpoint = "";
   if (param === "sale") {
-    apiEndpoint = `/product/sale/${pages}`;
+    apiEndpoint = `/product/sale/?page=${pages}`;
   } else if (param === "new") {
-    apiEndpoint = `/product/new/${pages}`;
+    apiEndpoint = `/product/new/?page=${pages}`;
   } else if (param === "catFilter") {
-    apiEndpoint = `/product/category/${cat_id}/page/${pages}`;
+    apiEndpoint = `/product/category/${cat_id}`;
   } else {
-    apiEndpoint = `/product/all/active/${pages}`;
+    apiEndpoint = `/product/all/active?page=${pages}&sort=${sort}&min_price=${minPrice}&max_price=${maxPrice}`;
   }
 
   useEffect(() => {
@@ -42,8 +50,7 @@ function Products() {
       .then((response) => {
         setLoading(false);
         setProducts(response.data.data);
-        console.log("Data");
-        console.log(response.data);
+        setPages(response.data.current_page);
         setCurrentPage(response.data.current_page);
         setTotalPages(response.data.total_page);
       })
@@ -51,7 +58,7 @@ function Products() {
         setLoading(false);
         console.log(error);
       });
-  }, [apiEndpoint, pages, currentPage]);
+  }, [apiEndpoint, pages, currentPage, sort]);
 
   useEffect(() => {
     axios
@@ -63,18 +70,29 @@ function Products() {
         console.log(error);
       });
   }, []);
+
   const handlePageChange = (page) => {
-    console.log(page);
     setLoading(true);
-    setCurrentPage(page);
     setPages(page);
+    setCurrentPage(page);
   };
+
   const renderPagination = () => {
     const displayedPages = 3;
     const startPage = Math.max(currentPage - 1, 1);
     const endPage = Math.min(startPage + displayedPages - 1, totalPages);
+
     return Array.from({ length: endPage - startPage + 1 }, (_, index) => {
       const page = startPage + index;
+
+      if (currentPage === page) {
+        return (
+          <a key={page} className="active disabled">
+            {page}
+          </a>
+        );
+      }
+
       return (
         <a
           key={page}
@@ -113,11 +131,32 @@ function Products() {
   const handleCollapseToggle = () => {
     setCollapseOpen(!CollapseOpen);
   };
-  const handlePriceChange = (values) => {
-    // Handle the price change here
-    // values[0] represents the minimum price
-    // values[1] represents the maximum price
-    console.log("Selected price range:", values);
+
+  const handleOptionChange = (option) => {
+    if (selectedOption === option) {
+      setSelectedOption(null);
+      setSort(base);
+    } else {
+      setSelectedOption(option);
+
+      switch (option) {
+        case "increase":
+          setSort(increase);
+          break;
+        case "decrease":
+          setSort(decrease);
+          break;
+        default:
+          break;
+      }
+    }
+  };
+
+  const handlePriceChange = (newRange) => {
+    setSort(rangePrice);
+    setPriceRange(newRange);
+    setMinPrice(newRange[0]);
+    setMaxPrice(newRange[1]);
   };
   const formatNumber = (number) => {
     if (number) {
@@ -138,7 +177,7 @@ function Products() {
                   <div className="shop__sidebar">
                     <div className="sidebar__categories">
                       <div className="section-title">
-                        <h4>Categories</h4>
+                        <h4>Danh mục</h4>
                       </div>
                       <div className="categories__accordion">
                         <div className="accordion" id="accordionExample">
@@ -184,73 +223,60 @@ function Products() {
                     </div>
 
                     <div className="sidebar__filter">
-                      <div className="section-title">
-                        <h4>Shop by price</h4>
-                      </div>
                       <div className="filter-range-wrap">
                         <Slider
-                          min={33}
-                          max={99}
-                          defaultValue={[33, 99]}
+                          min={100000}
+                          max={10000000}
+                          defaultValue={priceRange}
                           onChange={handlePriceChange}
                           range
-                          style={{ width: "50%" }}
+                          style={{ width: "60%" }}
                         />
                         <div className="range-slider">
                           <div className="price-input">
-                            <p>Price:</p>
-                            <input type="text" id="minamount" />
-                            <input type="text" id="maxamount" />
+                            <label htmlFor="minamount">Price:</label>
+                            <div className="price-input-fields ">
+                              <input
+                                type="text"
+                                id="minamount"
+                                value={formatNumber(priceRange[0])}
+                                readOnly
+                                className="price-input-field"
+                              />
+
+                              <input
+                                type="text"
+                                id="maxamount"
+                                value={formatNumber(priceRange[1])}
+                                readOnly
+                                className="price-input-field"
+                              />
+                            </div>
                           </div>
                         </div>
                       </div>
-
-                      <a href="#">Filter</a>
                     </div>
 
                     <div className="sidebar__sizes">
-                      <div className="section-title">
-                        <h4>Shop by size</h4>
-                      </div>
                       <div className="size__list">
                         <label htmlFor="xxs">
-                          xxs
-                          <input type="checkbox" id="xxs" />
+                          Giá tăng dần
+                          <input
+                            type="checkbox"
+                            id="xxs"
+                            checked={selectedOption === "increase"}
+                            onChange={() => handleOptionChange("increase")}
+                          />
                           <span className="checkmark"></span>
                         </label>
                         <label htmlFor="xs">
-                          xs
-                          <input type="checkbox" id="xs" />
-                          <span className="checkmark"></span>
-                        </label>
-                        <label htmlFor="xss">
-                          xs-s
-                          <input type="checkbox" id="xss" />
-                          <span className="checkmark"></span>
-                        </label>
-                        <label htmlFor="s">
-                          s
-                          <input type="checkbox" id="s" />
-                          <span className="checkmark"></span>
-                        </label>
-                        <label htmlFor="m">
-                          m
-                          <input type="checkbox" id="m" />
-                          <span className="checkmark"></span>
-                        </label>
-                        <label htmlFor="ml">
-                          m-l
-                          <input type="checkbox" id="ml" />
-                          <span className="checkmark"></span>
-                        </label>
-                        <label htmlFor="l">
-                          l
-                          <input type="checkbox" id="l" />
-                          <span className="checkmark"></span>
-                        </label>
-                        <label htmlFor="xl">
-                          xl
-                          <input type="checkbox" id="xl" />
+                          Giá giảm dần
+                          <input
+                            type="checkbox"
+                            id="xs"
+                            checked={selectedOption === "decrease"}
+                            onChange={() => handleOptionChange("decrease")}
+                          />
                           <span className="checkmark"></span>
                         </label>
                       </div>
@@ -307,9 +333,7 @@ function Products() {
                         <button onClick={handleFirstPage}>
                           <i class="fa-solid fa-angles-left"></i>
                         </button>
-                        {/* <button onClick={handlePreviousPage}>&lt;</button> */}
                         {renderPagination()}
-                        {/* <button onClick={handleNextPage}>&gt;</button> */}
                         <button onClick={handleLastPage}>
                           <i class="fa-solid fa-angles-right"></i>
                         </button>

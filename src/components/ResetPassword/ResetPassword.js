@@ -13,14 +13,61 @@ function Login() {
   const [inputPassword, setInputPassword] = useState(false);
   const [submittedEmail, setSubmittedEmail] = useState(false);
   const [submitButtonType, setSubmitButtonType] = useState("email");
-
+  const [canResendCode, setCanResendCode] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(60);
+  const [isCountingDown, setIsCountingDown] = useState(false);
+  const [timer, setTimer] = useState(null);
   const handleEmailSubmit = (e) => {
     e.preventDefault();
-    setSubmittedEmail(true);
-    setInputEmail(true);
-    setInputCode(true);
-    setSubmitButtonType("code");
+
+    axios
+      .post("/mail/send_confirm_code/", {
+        account: email,
+      })
+      .then((response) => {
+        console.log(response);
+        setSubmittedEmail(true);
+        setInputEmail(true);
+        setInputCode(true);
+        setCanResendCode(true);
+        setIsCountingDown(true);
+        setCanResendCode(false);
+        setSubmitButtonType("code");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.detail, {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
   };
+
+  useEffect(() => {
+    let countdownTimer = null;
+
+    if (isCountingDown && remainingTime > 0) {
+      countdownTimer = setInterval(() => {
+        setRemainingTime((prevTime) => prevTime - 1);
+      }, 1000);
+    }
+
+    if (remainingTime === 0) {
+      setIsCountingDown(false);
+      setCanResendCode(true);
+      clearInterval(countdownTimer);
+    }
+
+    return () => {
+      clearInterval(countdownTimer);
+    };
+  }, [isCountingDown, remainingTime]);
 
   const handleCodeSubmit = (e) => {
     e.preventDefault();
@@ -36,6 +83,7 @@ function Login() {
   };
   return (
     <section className="vh-100">
+      <ToastContainer />
       <div className="container-fluid h-custom">
         <div className="row d-flex justify-content-center align-items-center h-100">
           <div className="col-md-9 col-lg-6 col-xl-5">
@@ -50,7 +98,7 @@ function Login() {
               {/* Email input */}
               <div className="form-outline mb-4">
                 <label className="form-label" htmlFor="form3Example3">
-                  Nhập email
+                  Nhập Tài khoản
                 </label>
                 <input
                   value={email}
@@ -70,7 +118,7 @@ function Login() {
                         Nhập mã
                       </label>
                       <input
-                        type="password"
+                        type="text"
                         id="form3Example4"
                         className="form-control form-control-lg"
                         placeholder="Enter password"
@@ -106,10 +154,10 @@ function Login() {
                   </div>
                 </>
               )}
-              <div className="text-center text-lg-start mt-4 pt-2">
+              <div className="text-center text-lg-start mt-4 pt-2 d-flex">
                 <button
                   type="button"
-                  className="btn btn-primary btn-lg"
+                  className="btn btn-primary btn-lg me-2"
                   style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
                   onClick={
                     submitButtonType === "email"
@@ -121,6 +169,23 @@ function Login() {
                 >
                   Xác nhận
                 </button>
+                {canResendCode && (
+                  <button
+                    type="button"
+                    className="btn btn-primary btn-lg me-3"
+                    style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
+                    disabled={!canResendCode}
+                    onClick={() => {
+                      setIsCountingDown(true);
+                      setCanResendCode(false);
+                    }}
+                  >
+                    Gửi lại mã
+                  </button>
+                )}
+                {!canResendCode && inputEmail && (
+                  <span>Chờ {remainingTime} giây trước khi gửi lại mã</span>
+                )}
               </div>
             </form>
           </div>

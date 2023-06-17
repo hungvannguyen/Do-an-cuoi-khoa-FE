@@ -7,16 +7,13 @@ import axios from "axios";
 function ProductSection() {
   const imageUrl = image;
   const [newProduct, setNewProduct] = useState([]);
-  const [pages, setPages] = useState(1);
-  const [currentPage, setCurrentPage] = useState();
-  const [totalPages, setTotalPages] = useState();
+
   useEffect(() => {
     axios
-      .get(`/product/new/${pages}`)
+      .get(`/product/new/`)
       .then((response) => {
         setNewProduct(response.data.data);
-        setCurrentPage(response.data.current_page);
-        setTotalPages(response.data.total_page);
+    
       })
       .catch((error) => {
         console.log(error);

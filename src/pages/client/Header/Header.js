@@ -53,7 +53,6 @@ function Header() {
     sessionStorage.removeItem("token");
     setCountCart(0);
     hasSessionData = false;
-    window.location.reload();
     navigate("/");
   };
 

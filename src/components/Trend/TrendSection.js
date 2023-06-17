@@ -10,7 +10,7 @@ function TrendSection() {
   const [pages, setPages] = useState(1);
   useEffect(() => {
     axios
-      .get(`/product/sale/${pages}`)
+      .get(`/product/sale/?page=${pages}`)
       .then((response) => {
         setSaleProducts(response.data.data);
       })
@@ -21,7 +21,7 @@ function TrendSection() {
 
   useEffect(() => {
     axios
-      .get(`/product/best-sale/${pages}`)
+      .get(`/product/best-sale/?page=${pages}`)
       .then((response) => {
         setBestSaleProducts(response.data.data);
       })
