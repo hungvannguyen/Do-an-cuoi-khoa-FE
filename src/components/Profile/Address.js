@@ -133,12 +133,6 @@ function Address() {
     setSelectedWardId(selectedWardId);
   };
 
-  const handleAddressChange = (event) => {
-    const address = event.target.value;
-    setAddress(address);
-    console.log(address);
-  };
-
   const handleUpdateAddress = () => {
     if (!address) {
       setAddressError("Vui lòng nhập địa chỉ");
@@ -231,8 +225,8 @@ function Address() {
                         }`}
                         id="validationServer03"
                         aria-describedby="validationServer03Feedback"
-                        value={address.detail || "Chưa có thông tin"}
-                        onChange={handleAddressChange}
+                        value={address.detail}
+                        onChange={(e) => setAddress(e.target.value)}
                       />
 
                       {addressError && (

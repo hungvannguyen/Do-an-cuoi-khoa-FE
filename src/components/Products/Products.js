@@ -39,7 +39,7 @@ function Products() {
   } else if (param === "new") {
     apiEndpoint = `/product/new/?page=${pages}`;
   } else if (param === "catFilter") {
-    apiEndpoint = `/product/category/${cat_id}`;
+    apiEndpoint = `/product/category/${cat_id}?page=${pages}&sort=${sort}&min_price=${minPrice}&max_price=${maxPrice}`;
   } else {
     apiEndpoint = `/product/all/active?page=${pages}&sort=${sort}&min_price=${minPrice}&max_price=${maxPrice}`;
   }

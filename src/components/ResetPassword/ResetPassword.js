@@ -7,6 +7,8 @@ function Login() {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordRepeat, setPasswordRepeat] = useState("");
   const [resetCode, setResetCode] = useState("");
   const [inputEmail, setInputEmail] = useState(false);
   const [inputCode, setInputCode] = useState(false);
@@ -15,11 +17,21 @@ function Login() {
   const [submitButtonType, setSubmitButtonType] = useState("email");
   const [canResendCode, setCanResendCode] = useState(false);
   const [remainingTime, setRemainingTime] = useState(60);
+  const [isResendingCode, setIsResendingCode] = useState(false);
   const [isCountingDown, setIsCountingDown] = useState(false);
   const [timer, setTimer] = useState(null);
-  const handleEmailSubmit = (e) => {
-    e.preventDefault();
 
+  const handleSubmit = () => {
+    if (inputEmail) {
+      handleCodeSubmit();
+    } else if (inputPassword) {
+      handlePasswordSubmit();
+    } else {
+      handleEmailSubmit();
+    }
+  };
+
+  const handleEmailSubmit = () => {
     axios
       .post("/mail/send_confirm_code/", {
         account: email,
@@ -49,18 +61,29 @@ function Login() {
       });
   };
 
-  useEffect(() => {
-    let countdownTimer = null;
+  const handleResendCode = () => {
+    setIsCountingDown(true);
+    setCanResendCode(false);
+    setIsResendingCode(false);
+    setRemainingTime(60);
+    handleEmailSubmit();
+    console.log("Resend code");
+  };
 
+  let countdownTimer = null;
+  useEffect(() => {
     if (isCountingDown && remainingTime > 0) {
       countdownTimer = setInterval(() => {
         setRemainingTime((prevTime) => prevTime - 1);
+        console.log("Remaining time:", remainingTime);
       }, 1000);
     }
 
     if (remainingTime === 0) {
       setIsCountingDown(false);
       setCanResendCode(true);
+      setIsResendingCode(false);
+      console.log("Countdown finished");
       clearInterval(countdownTimer);
     }
 
@@ -69,18 +92,69 @@ function Login() {
     };
   }, [isCountingDown, remainingTime]);
 
-  const handleCodeSubmit = (e) => {
-    e.preventDefault();
-    setInputCode(false);
-    setInputPassword(true);
-    setSubmitButtonType("password");
+  const handleCodeSubmit = () => {
+    axios
+      .post("/user/confirm_code", {
+        account: email,
+        code: resetCode,
+      })
+      .then((response) => {
+        setInputEmail(false);
+        clearInterval(countdownTimer);
+        setInputEmail(false);
+        setInputCode(false);
+        setInputPassword(true);
+        setSubmitButtonType("password");
+      })
+      .catch((error) => {
+        toast.error(error.response.data.detail, {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
   };
 
-  const handlePasswordSubmit = (e) => {
-    e.preventDefault();
-    // Submit password to server
-    console.log("Submitted password:", resetCode);
+  const handlePasswordSubmit = () => {
+    axios
+      .put(`/user/password/reset/${email}`, {
+        password: password,
+        password_repeat: passwordRepeat,
+      })
+      .then((response) => {
+        console.log(response);
+        toast.success("Đổi mật khẩu thành công", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.log(error);
+        toast.error(error.response.data.detail, {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
   };
+
   return (
     <section className="vh-100">
       <ToastContainer />
@@ -139,6 +213,7 @@ function Login() {
                       id="form3Example4"
                       className="form-control form-control-lg"
                       placeholder="Enter password"
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
                   <div className="form-outline mb-3">
@@ -150,6 +225,7 @@ function Login() {
                       id="form3Example4"
                       className="form-control form-control-lg"
                       placeholder="Enter password"
+                      onChange={(e) => setPasswordRepeat(e.target.value)}
                     />
                   </div>
                 </>
@@ -157,34 +233,33 @@ function Login() {
               <div className="text-center text-lg-start mt-4 pt-2 d-flex">
                 <button
                   type="button"
-                  className="btn btn-primary btn-lg me-2"
+                  className="btn btn-primary btn-lg"
                   style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
-                  onClick={
-                    submitButtonType === "email"
-                      ? handleEmailSubmit
-                      : submitButtonType === "code"
-                      ? handleCodeSubmit
-                      : handlePasswordSubmit
-                  }
+                  onClick={handleSubmit}
                 >
-                  Xác nhận
+                  {inputEmail ? "Xác nhận mã" : "Gửi Email"}
                 </button>
                 {canResendCode && (
                   <button
                     type="button"
-                    className="btn btn-primary btn-lg me-3"
+                    className="btn btn-primary btn-lg ms-3"
                     style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
                     disabled={!canResendCode}
-                    onClick={() => {
-                      setIsCountingDown(true);
-                      setCanResendCode(false);
-                    }}
+                    onClick={handleResendCode}
                   >
                     Gửi lại mã
                   </button>
                 )}
-                {!canResendCode && inputEmail && (
-                  <span>Chờ {remainingTime} giây trước khi gửi lại mã</span>
+                {!canResendCode && !isResendingCode && inputEmail && (
+                  <span
+                    style={{
+                      paddingLeft: "2.5rem",
+                      paddingRight: "2.5rem",
+                      paddingTop: "0.7rem",
+                    }}
+                  >
+                    Chờ {remainingTime} giây trước khi gửi lại mã
+                  </span>
                 )}
               </div>
             </form>
