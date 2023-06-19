@@ -100,6 +100,10 @@ a:focus {
 	outline: none;
 }
 
+a {
+	text-decoration: none;
+}
+
 ul,
 ol {
 	padding: 0;
@@ -653,7 +657,7 @@ ol {
 }
 
 .trend__item__text .product__price {
-	color: #111111;
+	color: #ca1515;
 	font-weight: 600;
 }
 
@@ -1465,7 +1469,7 @@ ol {
 	font-size: 18px;
 }
 
-.sidebar__filter a {
+.sidebar__filter span {
 	font-size: 14px;
 	color: #0d0d0d;
 	text-transform: uppercase;
@@ -1474,10 +1478,11 @@ ol {
 	display: inline-block;
 	padding: 5px 16px 5px 24px;
 	border: 2px solid #ff0000;
-	position: absolute;
-	right: 0;
-	bottom: -5px;
+	margin-top: 10px;
 	border-radius: 2px;
+	text-decoration: none;
+	margin-left: 65px;
+	cursor: pointer;
 }
 
 .filter-range-wrap .range-slider .price-input {

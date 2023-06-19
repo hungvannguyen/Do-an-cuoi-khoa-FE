@@ -12,6 +12,8 @@ function TrendSection() {
     axios
       .get(`/product/sale/?page=${pages}`)
       .then((response) => {
+        console.log("Sale");
+        console.log(response.data.data);
         setSaleProducts(response.data.data);
       })
       .catch((error) => {
@@ -53,7 +55,14 @@ function TrendSection() {
                     <h6>{saleProduct.name}</h6>
 
                     <div className="product__price">
-                      {formatNumber(saleProduct.price)} đ
+                      {saleProduct.is_sale ? (
+                        <>
+                          {formatNumber(saleProduct.sale_price)} đ{" "}
+                          <span>{formatNumber(saleProduct.price)} đ</span>
+                        </>
+                      ) : (
+                        `${formatNumber(saleProduct.price)} đ`
+                      )}
                     </div>
                   </div>
                 </div>

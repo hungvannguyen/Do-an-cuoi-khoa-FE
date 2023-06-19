@@ -1,3 +1,4 @@
+import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
 import { useNavigate, useHistory } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -5,6 +6,7 @@ import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 function Login() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,11 +34,13 @@ function Login() {
   };
 
   const handleEmailSubmit = () => {
+    setLoading(true);
     axios
       .post("/mail/send_confirm_code/", {
         account: email,
       })
       .then((response) => {
+        setLoading(false);
         console.log(response);
         setSubmittedEmail(true);
         setInputEmail(true);
@@ -47,6 +51,7 @@ function Login() {
         setSubmitButtonType("code");
       })
       .catch((error) => {
+        setLoading(false);
         console.log(error);
         toast.error(error.response.data.detail, {
           position: "bottom-right",
@@ -105,6 +110,16 @@ function Login() {
         setInputCode(false);
         setInputPassword(true);
         setSubmitButtonType("password");
+        toast.success("Xác nhận mã thành công", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       })
       .catch((error) => {
         toast.error(error.response.data.detail, {
@@ -156,117 +171,133 @@ function Login() {
   };
 
   return (
-    <section className="vh-100">
-      <ToastContainer />
-      <div className="container-fluid h-custom">
-        <div className="row d-flex justify-content-center align-items-center h-100">
-          <div className="col-md-9 col-lg-6 col-xl-5">
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-              className="img-fluid"
-              alt="Sample image"
-            />
-          </div>
-          <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-            <form>
-              {/* Email input */}
-              <div className="form-outline mb-4">
-                <label className="form-label" htmlFor="form3Example3">
-                  Nhập Tài khoản
-                </label>
-                <input
-                  value={email}
-                  type="email"
-                  id="form3Example3"
-                  className="form-control form-control-lg"
-                  placeholder="Enter a valid email address"
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-
-              {inputEmail && (
-                <>
-                  {inputCode && (
-                    <div className="form-outline mb-3">
-                      <label className="form-label" htmlFor="form3Example4">
-                        Nhập mã
+    <div>
+      <Loading isLoading={loading} />
+      {!loading && (
+        <>
+          <section className="vh-100">
+            <ToastContainer />
+            <div className="container-fluid h-custom">
+              <div className="row d-flex justify-content-center align-items-center h-100">
+                <div className="col-md-9 col-lg-6 col-xl-5">
+                  <img
+                    src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
+                    className="img-fluid"
+                    alt="Sample image"
+                  />
+                </div>
+                <div className="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
+                  <form>
+                    {/* Email input */}
+                    <div className="form-outline mb-4">
+                      <label className="form-label" htmlFor="form3Example3">
+                        Nhập Tài khoản
                       </label>
                       <input
-                        type="text"
-                        id="form3Example4"
+                        value={email}
+                        type="email"
+                        id="form3Example3"
                         className="form-control form-control-lg"
-                        placeholder="Enter password"
-                        onChange={(e) => setResetCode(e.target.value)}
+                        placeholder="Enter a valid email address"
+                        onChange={(e) => setEmail(e.target.value)}
                       />
                     </div>
-                  )}
-                </>
-              )}
-              {inputPassword && (
-                <>
-                  <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="form3Example4">
-                      Mật khẩu mới
-                    </label>
-                    <input
-                      type="password"
-                      id="form3Example4"
-                      className="form-control form-control-lg"
-                      placeholder="Enter password"
-                      onChange={(e) => setPassword(e.target.value)}
-                    />
-                  </div>
-                  <div className="form-outline mb-3">
-                    <label className="form-label" htmlFor="form3Example4">
-                      Nhâp lại mật khẩu mới
-                    </label>
-                    <input
-                      type="password"
-                      id="form3Example4"
-                      className="form-control form-control-lg"
-                      placeholder="Enter password"
-                      onChange={(e) => setPasswordRepeat(e.target.value)}
-                    />
-                  </div>
-                </>
-              )}
-              <div className="text-center text-lg-start mt-4 pt-2 d-flex">
-                <button
-                  type="button"
-                  className="btn btn-primary btn-lg"
-                  style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
-                  onClick={handleSubmit}
-                >
-                  {inputEmail ? "Xác nhận mã" : "Gửi Email"}
-                </button>
-                {canResendCode && (
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-lg ms-3"
-                    style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem" }}
-                    disabled={!canResendCode}
-                    onClick={handleResendCode}
-                  >
-                    Gửi lại mã
-                  </button>
-                )}
-                {!canResendCode && !isResendingCode && inputEmail && (
-                  <span
-                    style={{
-                      paddingLeft: "2.5rem",
-                      paddingRight: "2.5rem",
-                      paddingTop: "0.7rem",
-                    }}
-                  >
-                    Chờ {remainingTime} giây trước khi gửi lại mã
-                  </span>
-                )}
+
+                    {inputEmail && (
+                      <>
+                        {inputCode && (
+                          <div className="form-outline mb-3">
+                            <label
+                              className="form-label"
+                              htmlFor="form3Example4"
+                            >
+                              Nhập mã
+                            </label>
+                            <input
+                              type="text"
+                              id="form3Example4"
+                              className="form-control form-control-lg"
+                              placeholder="Enter password"
+                              onChange={(e) => setResetCode(e.target.value)}
+                            />
+                          </div>
+                        )}
+                      </>
+                    )}
+                    {inputPassword && (
+                      <>
+                        <div className="form-outline mb-3">
+                          <label className="form-label" htmlFor="form3Example4">
+                            Mật khẩu mới
+                          </label>
+                          <input
+                            type="password"
+                            id="form3Example4"
+                            className="form-control form-control-lg"
+                            placeholder="Enter password"
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                        </div>
+                        <div className="form-outline mb-3">
+                          <label className="form-label" htmlFor="form3Example4">
+                            Nhâp lại mật khẩu mới
+                          </label>
+                          <input
+                            type="password"
+                            id="form3Example4"
+                            className="form-control form-control-lg"
+                            placeholder="Enter password"
+                            onChange={(e) => setPasswordRepeat(e.target.value)}
+                          />
+                        </div>
+                      </>
+                    )}
+                    <div className="text-center text-lg-start mt-4 pt-2 d-flex">
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-lg"
+                        style={{
+                          paddingLeft: "2.5rem",
+                          paddingRight: "2.5rem",
+                        }}
+                        onClick={handleSubmit}
+                      >
+                        {inputEmail ? "Xác nhận mã" : "Gửi Email"}
+                      </button>
+                      {canResendCode && (
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-lg ms-3"
+                          style={{
+                            paddingLeft: "2.5rem",
+                            paddingRight: "2.5rem",
+                          }}
+                          disabled={!canResendCode}
+                          onClick={handleResendCode}
+                        >
+                          Gửi lại mã
+                        </button>
+                      )}
+                      {!canResendCode && !isResendingCode && inputEmail && (
+                        <span
+                          style={{
+                            paddingLeft: "2.5rem",
+                            paddingRight: "2.5rem",
+                            paddingTop: "0.7rem",
+                          }}
+                        >
+                          Chờ {remainingTime} giây trước khi gửi lại mã
+                        </span>
+                      )}
+                    </div>
+                  </form>
+                </div>
               </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </section>
+            </div>
+          </section>
+        </>
+      )}
+    </div>
   );
 }
 

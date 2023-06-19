@@ -51,20 +51,17 @@ function Checkout() {
           Authorization: "Bearer " + token,
         },
       })
-      .then((res) => {
-        setUserInfo(res.data);
-        if (res.data.city_id) {
-          setSelectedCityId(res.data.city_id);
-          setSelectedDistrictId(res.data.district_id);
-          setSelectedWardId(res.data.ward_id);
-          setName(res.data.name);
-          setPhone(res.data.phone_number);
-          setEmail(res.data.email);
-          setAddressDetail(res.data.detail);
-          setLoading(false);
-        }
+      .then((response) => {
+        setUserInfo(response.data);
+        setSelectedCityId(response.data.city_id);
+        setSelectedDistrictId(response.data.district_id);
+        setSelectedWardId(response.data.ward_id);
+        setName(response.data.name);
+        setPhone(response.data.phone_number);
+        setEmail(response.data.email);
+        setAddressDetail(response.data.detail);
         setLoading(false);
-        console.log(res.data);
+        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);

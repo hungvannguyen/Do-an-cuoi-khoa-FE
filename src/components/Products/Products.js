@@ -3,8 +3,6 @@ import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
-import Slider from "rc-slider";
-import "rc-slider/assets/index.css";
 
 function Products() {
   const navigate = useNavigate();
@@ -27,7 +25,6 @@ function Products() {
   const [sort, setSort] = useState(0);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [priceRange, setPriceRange] = useState([100000, 10000000]);
   const base = 0;
   const increase = 1;
   const decrease = 2;
@@ -57,6 +54,9 @@ function Products() {
       .catch((error) => {
         setLoading(false);
         console.log(error);
+        if (error.response.status === 404) {
+          setProducts([]);
+        }
       });
   }, [apiEndpoint, pages, currentPage, sort]);
 
@@ -132,6 +132,12 @@ function Products() {
     setCollapseOpen(!CollapseOpen);
   };
 
+  const handlePriceRange = () => {
+    setMinPrice(minPrice);
+    setMaxPrice(maxPrice);
+    setSort(rangePrice);
+  };
+
   const handleOptionChange = (option) => {
     if (selectedOption === option) {
       setSelectedOption(null);
@@ -152,12 +158,6 @@ function Products() {
     }
   };
 
-  const handlePriceChange = (newRange) => {
-    setSort(rangePrice);
-    setPriceRange(newRange);
-    setMinPrice(newRange[0]);
-    setMaxPrice(newRange[1]);
-  };
   const formatNumber = (number) => {
     if (number) {
       return number.toLocaleString("vi-VN");
@@ -223,38 +223,34 @@ function Products() {
                     </div>
 
                     <div className="sidebar__filter">
+                      <div className="section-title">
+                        <h4>Lọc theo giá</h4>
+                      </div>
                       <div className="filter-range-wrap">
-                        <Slider
-                          min={100000}
-                          max={10000000}
-                          defaultValue={priceRange}
-                          onChange={handlePriceChange}
-                          range
-                          style={{ width: "60%" }}
-                        />
                         <div className="range-slider">
                           <div className="price-input">
                             <label htmlFor="minamount">Price:</label>
-                            <div className="price-input-fields ">
+                            <div className="price-input">
                               <input
                                 type="text"
                                 id="minamount"
-                                value={formatNumber(priceRange[0])}
-                                readOnly
+                                value={minPrice}
                                 className="price-input-field"
+                                onChange={(e) => setMinPrice(e.target.value)}
                               />
-
                               <input
                                 type="text"
                                 id="maxamount"
-                                value={formatNumber(priceRange[1])}
-                                readOnly
+                                value={maxPrice}
                                 className="price-input-field"
+                                onChange={(e) => setMaxPrice(e.target.value)}
                               />
                             </div>
                           </div>
                         </div>
                       </div>
+
+                      <span onClick={handlePriceRange}>Filter</span>
                     </div>
 
                     <div className="sidebar__sizes">
