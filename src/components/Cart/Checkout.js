@@ -44,6 +44,10 @@ function Checkout() {
   const [selectedWardIdError, setSelectedWardIdError] = useState("");
   const [selectedPaymentIdError, setSelectedPaymentIdError] = useState("");
 
+  const [cityName, setCityName] = useState("");
+  const [districtName, setDistrictName] = useState("");
+  const [wardName, setWardName] = useState("");
+
   const [shippingFee, setShippingFee] = useState(30000);
 
   useEffect(() => {
@@ -81,8 +85,8 @@ function Checkout() {
           Authorization: "Bearer " + token,
         },
       })
-      .then((res) => {
-        setCity(res.data);
+      .then((response) => {
+        setCity(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -106,6 +110,7 @@ function Checkout() {
       })
       .then((res) => {
         setDistrict(res.data);
+
         console.log(res.data);
       })
       .catch((error) => {
@@ -124,6 +129,7 @@ function Checkout() {
       })
       .then((res) => {
         setWard(res.data);
+
         console.log(res.data);
       })
       .catch((error) => {
@@ -186,21 +192,41 @@ function Checkout() {
   };
 
   // Place order validate
+  useEffect(() => {
+    const selectedCity = city.find((item) => item.id === selectedCityId);
+    if (selectedCity) {
+      setCityName(selectedCity.name);
+    }
+  }, [selectedCityId, city]);
 
-  const address =
-    addressDetail +
-    ", " +
-    selectedWardId +
-    ", " +
-    selectedDistrictId +
-    ", " +
-    selectedCityId;
+  useEffect(() => {
+    const selectedDistrict = district.find(
+      (item) => item.id === selectedDistrictId
+    );
+    if (selectedDistrict) {
+      setDistrictName(selectedDistrict.name);
+    }
+  }, [selectedDistrictId, district]);
+
+  useEffect(() => {
+    const selectedWard = ward.find((item) => item.id === selectedWardId);
+    if (selectedWard) {
+      setWardName(selectedWard.name);
+    }
+  }, [selectedWardId, ward]);
+
   const handlePlaceOrder = (e) => {
     e.preventDefault();
 
-    console.log(selectedCityId);
-    console.log(selectedDistrictId);
-    console.log(selectedWardId);
+    console.log("Address");
+    console.log(cityName);
+    console.log(districtName);
+    console.log(wardName);
+
+    const address =
+      addressDetail + ", " + cityName + ", " + districtName + ", " + wardName;
+    console.log(address);
+    console.log(selectedPaymentId);
     if (!name) {
       setNameError("Vui lòng nhập tên người nhận");
     } else {
@@ -247,35 +273,35 @@ function Checkout() {
       setSelectedPaymentIdError("");
     }
     setLoading(true);
-    // axios
-    //   .post(
-    //     "/order/add",
-    //     {
-    //       payment_type_id: selectedPaymentId,
-    //       name: name,
-    //       email: email,
-    //       phone_number: phone,
-    //       address: address,
-    //       city_id: selectedCityId,
-    //       district_id: selectedDistrictId,
-    //       ward_id: selectedWardId,
-    //       detail: addressDetail,
-    //       status: 0,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: "Bearer " + token,
-    //       },
-    //     }
-    //   )
-    //   .then((res) => {
-    //     console.log(res.data);
-    //     navigate("/success");
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     console.log(error);
-    //   });
+    axios
+      .post(
+        "/order/add",
+        {
+          payment_type_id: selectedPaymentId,
+          name: name,
+          email: email,
+          phone_number: phone,
+          address: address,
+          city_id: selectedCityId,
+          district_id: selectedDistrictId,
+          ward_id: selectedWardId,
+          detail: addressDetail,
+          status: 0,
+        },
+        {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        navigate("/success");
+      })
+      .catch((error) => {
+        setLoading(false);
+        console.log(error);
+      });
   };
 
   return (
@@ -383,9 +409,9 @@ function Checkout() {
                               Thành phố <span>*</span>
                             </p>
                             <select
-                              onChange={(e) =>
-                                setSelectedCityId(e.target.value)
-                              }
+                              onChange={(e) => {
+                                setSelectedCityId(e.target.value);
+                              }}
                             >
                               <option value="">-- Chọn thành phố --</option>
                               {city.map((item) => (
