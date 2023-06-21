@@ -1,6 +1,29 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 function OrderTracking() {
+  const token = sessionStorage.getItem("token");
+  const [order, setOrder] = useState([]);
+
+  // useEffect(() => {
+  //   axios
+  //     .get("/order/all", {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //     })
+  //     .then((response) => {
+  //       setOrder(response.data);
+  //       console.log("Order");
+  //       console.log(response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log(error);
+  //     });
+  // }, []);
+
   return (
-    <div className="container">
+    <div className="container mt-5">
       <article className="card">
         <header className="card-header"> My Orders / Tracking </header>
         <div className="card-body">

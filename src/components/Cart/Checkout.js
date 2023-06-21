@@ -62,7 +62,8 @@ function Checkout() {
         setPhone(response.data.phone_number);
         setEmail(response.data.email);
         setAddressDetail(response.data.detail);
-        if (response.data.city_id === "1") {
+        if (response.data.city_id === 1) {
+          console.log("ok");
           setShippingFee("");
         }
         setLoading(false);
@@ -89,6 +90,14 @@ function Checkout() {
   }, []);
 
   useEffect(() => {
+    if (selectedCityId === 1 || selectedCityId === "1") {
+      setShippingFee("");
+    } else {
+      setShippingFee(30000);
+    }
+  }, [selectedCityId]);
+
+  useEffect(() => {
     axios
       .get(`/address/district/${selectedCityId}`, {
         headers: {
@@ -105,6 +114,8 @@ function Checkout() {
   }, [selectedCityId]);
 
   useEffect(() => {
+    console.log(selectedDistrictId);
+
     axios
       .get(`/address/ward/${selectedCityId}/${selectedDistrictId}`, {
         headers: {
@@ -148,52 +159,6 @@ function Checkout() {
       });
   }, []);
 
-  const handleCityChange = async (event) => {
-    const selectedCityId = event.target.value;
-    if (selectedCityId === "1") {
-      setShippingFee("");
-    } else {
-      setShippingFee(30000);
-    }
-    setSelectedCityId(selectedCityId);
-    try {
-      const response = await axios.get(`/address/district/${selectedCityId}`, {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      });
-      console.log(response.data);
-      setDistrict(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleDistrictChange = async (event) => {
-    const selectedDistrictId = event.target.value;
-    setSelectedDistrictId(selectedDistrictId);
-
-    try {
-      const response = await axios.get(
-        `/address/ward/${selectedCityId}/${selectedDistrictId}`,
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      );
-      console.log(response.data);
-      setWard(response.data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleWardChange = (event) => {
-    const selectedWardId = event.target.value;
-    setSelectedWardId(selectedWardId);
-  };
-
   const handlePaymentChange = (id) => {
     setSelectedPaymentId(id);
   };
@@ -232,6 +197,10 @@ function Checkout() {
     selectedCityId;
   const handlePlaceOrder = (e) => {
     e.preventDefault();
+
+    console.log(selectedCityId);
+    console.log(selectedDistrictId);
+    console.log(selectedWardId);
     if (!name) {
       setNameError("Vui lòng nhập tên người nhận");
     } else {
@@ -278,35 +247,35 @@ function Checkout() {
       setSelectedPaymentIdError("");
     }
     setLoading(true);
-    axios
-      .post(
-        "/order/add",
-        {
-          payment_type_id: selectedPaymentId,
-          name: name,
-          email: email,
-          phone_number: phone,
-          address: address,
-          city_id: selectedCityId,
-          district_id: selectedDistrictId,
-          ward_id: selectedWardId,
-          detail: addressDetail,
-          status: 0,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-        }
-      )
-      .then((res) => {
-        console.log(res.data);
-        navigate("/success");
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
+    // axios
+    //   .post(
+    //     "/order/add",
+    //     {
+    //       payment_type_id: selectedPaymentId,
+    //       name: name,
+    //       email: email,
+    //       phone_number: phone,
+    //       address: address,
+    //       city_id: selectedCityId,
+    //       district_id: selectedDistrictId,
+    //       ward_id: selectedWardId,
+    //       detail: addressDetail,
+    //       status: 0,
+    //     },
+    //     {
+    //       headers: {
+    //         Authorization: "Bearer " + token,
+    //       },
+    //     }
+    //   )
+    //   .then((res) => {
+    //     console.log(res.data);
+    //     navigate("/success");
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     console.log(error);
+    //   });
   };
 
   return (
@@ -413,7 +382,11 @@ function Checkout() {
                             <p>
                               Thành phố <span>*</span>
                             </p>
-                            <select onChange={handleCityChange}>
+                            <select
+                              onChange={(e) =>
+                                setSelectedCityId(e.target.value)
+                              }
+                            >
                               <option value="">-- Chọn thành phố --</option>
                               {city.map((item) => (
                                 <option
@@ -439,7 +412,11 @@ function Checkout() {
                             <p>
                               Quận/Huyện <span>*</span>
                             </p>
-                            <select onChange={handleDistrictChange}>
+                            <select
+                              onChange={(e) =>
+                                setSelectedDistrictId(e.target.value)
+                              }
+                            >
                               <option value="">-- Chọn quận/huyện --</option>
                               {district.map((item) => (
                                 <option
@@ -466,7 +443,11 @@ function Checkout() {
                             <p>
                               Phường/Xã <span>*</span>
                             </p>
-                            <select onChange={handleWardChange}>
+                            <select
+                              onChange={(e) =>
+                                setSelectedWardId(e.target.value)
+                              }
+                            >
                               <option value="">-- Chọn phường/xã --</option>
                               {ward.map((item) => (
                                 <option
