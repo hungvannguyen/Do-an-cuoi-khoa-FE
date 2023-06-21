@@ -157,10 +157,10 @@ function Cart() {
                       <table>
                         <thead>
                           <tr>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
+                            <th>Sản phẩm</th>
+                            <th>Giá</th>
+                            <th>Số lượng</th>
+                            <th>Tổng tiền</th>
                             <th></th>
                           </tr>
                         </thead>
@@ -247,7 +247,7 @@ function Cart() {
                 </div>
                 <div className="row">
                   <div className="col-lg-6">
-                    <div className="discount__content">
+                    {/* <div className="discount__content">
                       <h6>Discount codes</h6>
                       <form action="#">
                         <input
@@ -258,21 +258,22 @@ function Cart() {
                           Apply
                         </button>
                       </form>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="col-lg-4 offset-lg-2">
                     <div className="cart__total__procced">
-                      <h6>Cart total</h6>
+                      <h6>Tổng giỏ hàng</h6>
                       <ul>
                         {/* <li>
                   Subtotal <span>$ 750.0</span>
                 </li> */}
                         <li>
-                          Total <span>{formatNumber(totalPrice)} đ</span>
+                          Tổng Thanh toán
+                          <span>{formatNumber(totalPrice)} đ</span>
                         </li>
                       </ul>
                       <span className="primary-btn" onClick={handleCheckout}>
-                        Proceed to checkout
+                        Tiến hành đặt hàng
                       </span>
                     </div>
                   </div>

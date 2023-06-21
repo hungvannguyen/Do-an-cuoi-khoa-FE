@@ -229,7 +229,7 @@ function Products() {
                       <div className="filter-range-wrap">
                         <div className="range-slider">
                           <div className="price-input">
-                            <label htmlFor="minamount">Price:</label>
+                            <label htmlFor="minamount">Giá:</label>
                             <div className="price-input">
                               <input
                                 type="text"
@@ -250,7 +250,7 @@ function Products() {
                         </div>
                       </div>
 
-                      <span onClick={handlePriceRange}>Filter</span>
+                      <span onClick={handlePriceRange}>Lọc</span>
                     </div>
 
                     <div className="sidebar__sizes">

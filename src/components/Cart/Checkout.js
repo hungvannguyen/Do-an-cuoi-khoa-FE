@@ -44,6 +44,8 @@ function Checkout() {
   const [selectedWardIdError, setSelectedWardIdError] = useState("");
   const [selectedPaymentIdError, setSelectedPaymentIdError] = useState("");
 
+  const [shippingFee, setShippingFee] = useState(30000);
+
   useEffect(() => {
     axios
       .get("/checkout/user_info", {
@@ -60,6 +62,9 @@ function Checkout() {
         setPhone(response.data.phone_number);
         setEmail(response.data.email);
         setAddressDetail(response.data.detail);
+        if (response.data.city_id === "1") {
+          setShippingFee("");
+        }
         setLoading(false);
         console.log(response.data);
       })
@@ -122,10 +127,10 @@ function Checkout() {
           Authorization: "Bearer " + token,
         },
       })
-      .then((res) => {
-        setCheckoutProduct(res.data.products);
-        setTotal(res.data.total);
-        console.log(res.data);
+      .then((response) => {
+        setCheckoutProduct(response.data.products);
+        setTotal(response.data.total);
+        console.log(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -135,8 +140,8 @@ function Checkout() {
   useEffect(() => {
     axios
       .get("/payment/type/all")
-      .then((res) => {
-        setPayment(res.data);
+      .then((response) => {
+        setPayment(response.data);
       })
       .catch((error) => {
         console.log(error);
@@ -145,6 +150,11 @@ function Checkout() {
 
   const handleCityChange = async (event) => {
     const selectedCityId = event.target.value;
+    if (selectedCityId === "1") {
+      setShippingFee("");
+    } else {
+      setShippingFee(30000);
+    }
     setSelectedCityId(selectedCityId);
     try {
       const response = await axios.get(`/address/district/${selectedCityId}`, {
@@ -224,6 +234,8 @@ function Checkout() {
     e.preventDefault();
     if (!name) {
       setNameError("Vui lòng nhập tên người nhận");
+    } else {
+      setNameError("");
     }
 
     if (!phone) {
@@ -232,42 +244,48 @@ function Checkout() {
       setPhoneError("Số điện thoại phải có 10 kí tự");
     } else if (!/^\d+$/.test(phone)) {
       setPhoneError("Số điện thoại không hợp lệ");
-    }
-
-    if (!email) {
-      setEmailError("Vui lòng nhập email");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setEmailError("Email không hợp lệ");
+    } else {
+      setPhoneError("");
     }
 
     if (!addressDetail) {
       setAddressDetailError("Vui lòng nhập địa chỉ");
+    } else {
+      setAddressDetailError("");
     }
 
     if (!selectedCityId) {
       setSelectedCityIdError("Vui lòng chọn thành phố");
+    } else {
+      setSelectedCityIdError("");
     }
 
     if (!selectedDistrictId) {
       setSelectedDistrictIdError("Vui lòng chọn quận/huyện");
+    } else {
+      setSelectedDistrictIdError("");
     }
 
     if (!selectedWardId) {
       setSelectedWardIdError("Vui lòng chọn phường/xã");
+    } else {
+      setSelectedWardIdError("");
     }
 
     if (!selectedPaymentId) {
       setSelectedPaymentIdError("Vui lòng chọn phương thức thanh toán");
+    } else {
+      setSelectedPaymentIdError("");
     }
-
+    setLoading(true);
     axios
       .post(
         "/order/add",
         {
           payment_type_id: selectedPaymentId,
           name: name,
-          phone_number: phone,
           email: email,
+          phone_number: phone,
           address: address,
           city_id: selectedCityId,
           district_id: selectedDistrictId,
@@ -286,6 +304,7 @@ function Checkout() {
         navigate("/success");
       })
       .catch((error) => {
+        setLoading(false);
         console.log(error);
       });
   };
@@ -363,17 +382,7 @@ function Checkout() {
                           <p>
                             Email <span>*</span>
                           </p>
-                          <input
-                            type="text"
-                            value={email}
-                            onChange={handleEmailChange}
-                          />
-
-                          {emailError && (
-                            <div className="alert alert-danger" role="alert">
-                              {emailError}
-                            </div>
-                          )}
+                          <input type="text" value={email} readOnly />
                         </div>
 
                         <div className="row">
@@ -498,10 +507,20 @@ function Checkout() {
                       <div className="checkout__order__total">
                         <ul>
                           <li>
-                            Subtotal <span>$ 750.0</span>
+                            Phí vận chuyển:
+                            {shippingFee !== "" ? (
+                              <span>{formatNumber(shippingFee)} đ</span>
+                            ) : (
+                              <span>Miễn phí</span>
+                            )}
                           </li>
                           <li>
-                            Total <span>{formatNumber(total)} đ </span>
+                            Total{" "}
+                            {shippingFee !== "" ? (
+                              <span>{formatNumber(shippingFee + total)}đ</span>
+                            ) : (
+                              <span> {formatNumber(total)} đ</span>
+                            )}
                           </li>
                         </ul>
                       </div>
@@ -525,7 +544,7 @@ function Checkout() {
                         </div>
                       )}
                       <button className="site-btn" onClick={handlePlaceOrder}>
-                        Place order
+                        Đặt hàng
                       </button>
                     </div>
                   </div>

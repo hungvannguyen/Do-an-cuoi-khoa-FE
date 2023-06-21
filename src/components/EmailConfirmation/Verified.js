@@ -7,6 +7,7 @@ function Verified() {
   const searchParams = new URLSearchParams(location.search);
   const email = searchParams.get("email");
   const [error, setError] = useState(false);
+
   useEffect(() => {
     axios
       .get(`/user/confirm/${email}`)

@@ -15,6 +15,7 @@ import Load from "../../components/Loading/Loading";
 import NotFound from "../../components/404 page/404Page";
 import Confirm from "../../components/EmailConfirmation/Confirm";
 import Verified from "../../components/EmailConfirmation/Verified";
+import OrderTracking from "./Order/OrderTracking";
 import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
@@ -45,6 +46,7 @@ function App() {
         <Route path="/cart" element={<Cart />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/order/tracking" element={<OrderTracking />} />
         <Route path="/login" element={isLoggedIn ? <HomePage /> : <Login />} />
         <Route path="/address" element={<Address />} />
         <Route path="/regis" element={<Regis />} />

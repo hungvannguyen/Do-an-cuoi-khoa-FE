@@ -76,7 +76,7 @@ function Regis() {
         setConfirmPassword("");
 
         axios
-          .post("/mail/auto_mail", {
+          .post("/mail/confirm_email", {
             mail_to: email,
           })
           .then((response) => {
@@ -84,6 +84,18 @@ function Regis() {
             console.log("Gửi mail thành công");
           })
           .catch((error) => {
+            setLoading(false);
+            toast.error("Gửi mail thất bại", {
+              position: "bottom-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+
             console.log("Gửi mail thất bại");
           });
       })
