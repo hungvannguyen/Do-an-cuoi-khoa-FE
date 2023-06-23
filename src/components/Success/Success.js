@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 function Success() {
   const navigate = useNavigate();
   const [time, setTime] = useState(3);
@@ -30,9 +30,9 @@ function Success() {
                 Cảm ơn bạn đã đặt hàng tại <b>Shop</b>. Chúng tôi sẽ giao hàng
                 đến cho bạn trong thời gian sớm nhất.
               </p>
-              <a href="#" className="btn btn-primary btn-lg">
+              <Link to="/" className="btn btn-primary btn-lg">
                 Về trang chủ
-              </a>
+              </Link>
               <div className="timer">
                 <p>Redirecting in {time} seconds</p>
               </div>
