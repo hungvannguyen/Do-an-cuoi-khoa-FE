@@ -5,6 +5,8 @@ import axios from "axios";
 
 function TrendSection() {
   const imageUrl = image;
+  const [imageProductSale, setImageProductSale] = useState([]);
+  const [imageProductBestSale, setImageProductBestSale] = useState([]);
   const [saleProducts, setSaleProducts] = useState([]);
   const [bestSaleProducts, setBestSaleProducts] = useState([]);
   const [pages, setPages] = useState(1);
@@ -12,9 +14,29 @@ function TrendSection() {
     axios
       .get(`/product/sale/?page=${pages}`)
       .then((response) => {
-        console.log("Sale");
-        console.log(response.data.data);
         setSaleProducts(response.data.data);
+        const imageName = response.data.data.map((product) => {
+          return product.img_url;
+        });
+        Promise.all(
+          imageName.map((imageName) => {
+            return axios
+              .get(`/file/img/${imageName}`, { responseType: "blob" })
+              .then((response) => URL.createObjectURL(response.data))
+              .catch((error) => {
+                console.log(error);
+                return null;
+              });
+          })
+        )
+          .then((imageUrls) => {
+            const filteredImageUrls = imageUrls.filter((url) => url !== null);
+            setImageProductSale(filteredImageUrls);
+            console.log(filteredImageUrls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -26,6 +48,28 @@ function TrendSection() {
       .get(`/product/best-sale/?page=${pages}`)
       .then((response) => {
         setBestSaleProducts(response.data.data);
+        const imageName = response.data.data.map((product) => {
+          return product.img_url;
+        });
+        Promise.all(
+          imageName.map((imageName) => {
+            return axios
+              .get(`/file/img/${imageName}`, { responseType: "blob" })
+              .then((response) => URL.createObjectURL(response.data))
+              .catch((error) => {
+                console.log(error);
+                return null;
+              });
+          })
+        )
+          .then((imageUrls) => {
+            const filteredImageUrls = imageUrls.filter((url) => url !== null);
+            setImageProductBestSale(filteredImageUrls);
+            console.log(filteredImageUrls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -46,11 +90,17 @@ function TrendSection() {
               <div className="section-title">
                 <h4>Siêu giảm giá</h4>
               </div>
-              {saleProducts.slice(0, 3).map((saleProduct) => (
+              {saleProducts.slice(0, 3).map((saleProduct, index) => (
                 <div className="trend__item">
-                  <div className="trend__item__pic">
-                    <img src={imageUrl} alt="" style={{ width: 90 }} />
-                  </div>
+                  {index < imageProductSale.length && (
+                    <div className="trend__item__pic">
+                      <img
+                        src={imageProductSale}
+                        alt=""
+                        style={{ width: 90 }}
+                      />
+                    </div>
+                  )}
                   <div className="trend__item__text">
                     <h6>{saleProduct.name}</h6>
 
@@ -75,11 +125,17 @@ function TrendSection() {
               <div className="section-title">
                 <h4>Bán chạy</h4>
               </div>
-              {bestSaleProducts.slice(0, 3).map((bestSaleProduct) => (
+              {bestSaleProducts.slice(0, 3).map((bestSaleProduct, index) => (
                 <div className="trend__item">
-                  <div className="trend__item__pic">
-                    <img src={imageUrl} alt="" style={{ width: 90 }} />
-                  </div>
+                  {index < imageProductBestSale.length && (
+                    <div className="trend__item__pic">
+                      <img
+                        src={imageProductBestSale}
+                        alt=""
+                        style={{ width: 90 }}
+                      />
+                    </div>
+                  )}
                   <div className="trend__item__text">
                     <h6>Chain bucket bag</h6>
                     <div className="rating">

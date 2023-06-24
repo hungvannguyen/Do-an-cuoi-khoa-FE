@@ -9,6 +9,7 @@ function Cart() {
   const navigate = useNavigate();
   // const [isLoggedIn, setIsLoggedIn] = useState(false);
   const imageUrl = image;
+  const [imageProduct, setImageProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
@@ -21,6 +22,7 @@ function Cart() {
       navigate("/login");
     }
   }, []);
+
   useEffect(() => {
     axios
       .get("/cart/all", {
@@ -31,8 +33,28 @@ function Cart() {
       .then((response) => {
         setCart(response.data.products);
         setTotalPrice(response.data.total_price);
+        const imageName = response.data.products.map((product) => {
+          return product.img_url;
+        });
+        Promise.all(
+          imageName.map((imageName) => {
+            return axios
+              .get(`/file/img/${imageName}`, { responseType: "blob" })
+              .then((response) => URL.createObjectURL(response.data))
+              .catch((error) => {
+                console.log(error);
+                return null;
+              });
+          })
+        )
+          .then((imageUrls) => {
+            const filteredImageUrls = imageUrls.filter((url) => url !== null);
+            setImageProduct(filteredImageUrls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
         setLoading(false);
-        console.log(response.data);
       })
       .catch((error) => {
         if (error.response.status === 409) {
@@ -42,6 +64,8 @@ function Cart() {
         setLoading(false);
         console.log(error);
       });
+
+    console.log(imageProduct);
   }, []);
 
   const handleDecreaseQuantity = (prd_id, prevQuantity) => {
@@ -165,11 +189,17 @@ function Cart() {
                           </tr>
                         </thead>
                         <tbody>
-                          {cart.map((item) => (
+                          {cart.map((item, index) => (
                             <React.Fragment key={item.id}>
                               <tr>
                                 <td className="cart__product__item">
-                                  <img src={imageUrl} alt="" width="90" />
+                                  {index < imageProduct.length && (
+                                    <img
+                                      src={imageProduct[index]}
+                                      alt=""
+                                      width="90"
+                                    />
+                                  )}
                                   <div className="cart__product__item__title">
                                     <h6>{item.name}</h6>
                                   </div>

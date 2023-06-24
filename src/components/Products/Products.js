@@ -331,14 +331,16 @@ function Products() {
                               </div>
                             )}
                           </div>
-                          <div className="product__item__text">
+                          <div
+                            className="product__item__text"
+                            style={{ marginTop: -28 }}
+                          >
                             <h6>
                               <Link to={`/product/detail/${product.id}`}>
                                 {product.name}
                               </Link>
                             </h6>
-
-                            <div className="product__price">
+                            <div className="product__price mb-4">
                               {product.is_sale ? (
                                 <>
                                   {formatNumber(product.sale_price)} đ{" "}
