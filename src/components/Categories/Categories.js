@@ -3,7 +3,19 @@ import axios from "axios";
 import image from "../../assest/image/image.png";
 
 function Categories() {
+  const [imageProduct, setImageProduct] = useState([]);
 
+  axios
+    .get(`/file/img/${"Gundam_banner_3.png"}`, { responseType: "blob" })
+    .then((response) => {
+      setImageProduct((imageProduct) => [
+        ...imageProduct,
+        URL.createObjectURL(response.data),
+      ]);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 
   const imageUrl = image;
   return (
@@ -27,6 +39,7 @@ function Categories() {
             </div>
           </div>
           <div className="col-lg-6">
+            
             <div className="row">
               <div className="col-lg-6 col-md-6 col-sm-6 p-0">
                 <div

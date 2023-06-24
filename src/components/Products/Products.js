@@ -11,6 +11,7 @@ function Products() {
   const param = searchParams.get("status");
   const cat_id = searchParams.get("cat_id");
   const imageUrl = image;
+  const [imageProduct, setImageProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [CollapseOpen, setCollapseOpen] = useState(true);
   const [products, setProducts] = useState([]);
@@ -25,6 +26,7 @@ function Products() {
   const [sort, setSort] = useState(0);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
+
   const base = 0;
   const increase = 1;
   const decrease = 2;
@@ -50,6 +52,28 @@ function Products() {
         setPages(response.data.current_page);
         setCurrentPage(response.data.current_page);
         setTotalPages(response.data.total_page);
+        const imageName = response.data.data.map((product) => {
+          return product.img_url;
+        });
+        Promise.all(
+          imageName.map((imageName) => {
+            return axios
+              .get(`/file/img/${imageName}`, { responseType: "blob" })
+              .then((response) => URL.createObjectURL(response.data))
+              .catch((error) => {
+                console.log(error);
+                return null;
+              });
+          })
+        )
+          .then((imageUrls) => {
+            const filteredImageUrls = imageUrls.filter((url) => url !== null);
+            setImageProduct(filteredImageUrls);
+            console.log(filteredImageUrls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         setLoading(false);
@@ -282,43 +306,47 @@ function Products() {
                 {products.length > 0 ? (
                   <div className="col-lg-9 col-md-9">
                     <div className="row">
-                      {products.map((product) => (
+                      {products.map((product, index) => (
                         <div className="col-lg-4 col-md-6" key={product.id}>
                           <div
                             className={`product__item${
                               product.is_sale ? " sale" : ""
                             }`}
                           >
-                            <div
-                              className="product__item__pic set-bg"
-                              style={{ backgroundImage: `url(${imageUrl})` }}
-                              onClick={() => handleProductClick(product.id)}
-                            >
+                            {index < imageProduct.length && (
                               <div
-                                className={`label${
-                                  product.is_sale ? " sale" : ""
-                                }`}
+                                className="product__item__pic set-bg"
+                                style={{
+                                  backgroundImage: `url(${imageProduct[index]})`,
+                                }}
+                                onClick={() => handleProductClick(product.id)}
                               >
-                                {product.is_sale ? "Giảm giá" : ""}
+                                <div
+                                  className={`label${
+                                    product.is_sale ? " sale" : ""
+                                  }`}
+                                >
+                                  {product.is_sale ? "Giảm giá" : ""}
+                                </div>
                               </div>
-                            </div>
-                            <div className="product__item__text">
-                              <h6>
-                                <Link to={`/product/detail/${product.id}`}>
-                                  {product.name}
-                                </Link>
-                              </h6>
+                            )}
+                          </div>
+                          <div className="product__item__text">
+                            <h6>
+                              <Link to={`/product/detail/${product.id}`}>
+                                {product.name}
+                              </Link>
+                            </h6>
 
-                              <div className="product__price">
-                                {product.is_sale ? (
-                                  <>
-                                    {formatNumber(product.sale_price)} đ{" "}
-                                    <span>{formatNumber(product.price)} đ</span>
-                                  </>
-                                ) : (
-                                  `${formatNumber(product.price)} đ`
-                                )}
-                              </div>
+                            <div className="product__price">
+                              {product.is_sale ? (
+                                <>
+                                  {formatNumber(product.sale_price)} đ{" "}
+                                  <span>{formatNumber(product.price)} đ</span>
+                                </>
+                              ) : (
+                                `${formatNumber(product.price)} đ`
+                              )}
                             </div>
                           </div>
                         </div>

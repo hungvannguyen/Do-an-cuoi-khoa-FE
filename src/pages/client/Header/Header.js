@@ -18,6 +18,8 @@ function Header() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [active, setActive] = useState(0);
   let hasSessionData = sessionStorage.getItem("token") !== null;
+
+  
   useEffect(() => {
     axios
       .get("/category/all")

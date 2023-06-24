@@ -13,6 +13,7 @@ function ProductDetail() {
   const { id } = useParams();
 
   const [ProductDetail, setProductDetail] = useState({});
+  const [imageProduct, setImageProduct] = useState([]);
   const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
@@ -20,7 +21,17 @@ function ProductDetail() {
       .get(`/product/${id}`)
       .then((response) => {
         setProductDetail(response.data);
-        console.log(response.data);
+        axios
+          .get(`/file/img/${response.data.img_url}`, { responseType: "blob" })
+          .then((response) => {
+            setImageProduct((imageProduct) => [
+              ...imageProduct,
+              URL.createObjectURL(response.data),
+            ]);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -118,7 +129,7 @@ function ProductDetail() {
                     <img
                       data-hash="product-1"
                       className="product__big__img"
-                      src={imageUrl}
+                      src={imageProduct}
                       alt=""
                     />
                     <img
@@ -149,7 +160,7 @@ function ProductDetail() {
                   {ProductDetail.name}
                   <span>Brand: SKMEIMore Men Watches from SKMEI</span>
                 </h3>
-                
+
                 <div className="product__details__price"></div>
                 <p>
                   Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret
