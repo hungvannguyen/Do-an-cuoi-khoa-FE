@@ -44,19 +44,22 @@ function OrderTracking() {
               <div className="card-body row">
                 <div className="col">
                   <strong>Estimated Delivery time:</strong> <br />
-                  29 nov 2019
+                  {item.insert_at}
                 </div>
                 <div className="col">
                   <strong>Tên người nhận:</strong> <br />
                   {item.name}
                 </div>
                 <div className="col">
-                  <strong>Thông tin giao hàng:</strong> <br />
-                  {item.address}, | <i className="fa fa-phone"></i>{" "}
-                  {item.phone_number}
+                  <strong>Địa chỉ giao hàng:</strong> <br />
+                  {item.address}
                 </div>
                 <div className="col">
-                  <strong>Status:</strong> <br />
+                  <strong>Số điện thoại:</strong> <br />
+                  <i className="fa fa-phone"></i> {item.phone_number}
+                </div>
+                <div className="col">
+                  <strong>Trạng thái:</strong> <br />
                   {item.status === 0 && <span>Chờ xác nhận</span>}
                   {item.status === 1 && <span>Đã xác nhận</span>}
                   {item.status === 2 && <span>Đang vận chuyển</span>}
@@ -82,11 +85,9 @@ function OrderTracking() {
                     <figcaption className="info align-self-center ms-2">
                       <p className="title">{product.name}</p>
                       <span className="text-muted">
-                        {formatNumber(product.price)} đ {" "}
+                        {formatNumber(product.price)} đ{" "}
                       </span>
-                      <span className="text-muted">
-                       x {product.quantity} 
-                      </span>
+                      <span className="text-muted">x {product.quantity}</span>
                     </figcaption>
                   </figure>
                 </li>
