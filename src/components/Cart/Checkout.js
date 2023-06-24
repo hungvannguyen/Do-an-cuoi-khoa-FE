@@ -27,6 +27,10 @@ function Checkout() {
   // Payment
   const [payment, setPayment] = useState([]);
   const [selectedPaymentId, setSelectedPaymentId] = useState("");
+
+  // Note
+  const [note, setNote] = useState("");
+
   // Use info Validate
 
   const [name, setName] = useState("");
@@ -281,7 +285,7 @@ function Checkout() {
           name: name,
           email: email,
           phone_number: phone,
-          address: address,
+          note: note,
           city_id: selectedCityId,
           district_id: selectedDistrictId,
           ward_id: selectedWardId,
@@ -490,6 +494,17 @@ function Checkout() {
                                 {selectedWardIdError}
                               </div>
                             )}
+                          </div>
+                          <div className="checkout__form__input col-lg-12 col-md-12 col-sm-12">
+                            <p>
+                              Ghi chú <span></span>
+                            </p>
+                            <textarea
+                              placeholder="Ghi chú"
+                              value={note}
+                              cols="91"
+                              onChange={(e) => setNote(e.target.value)}
+                            ></textarea>
                           </div>
                         </div>
                       </div>
