@@ -2,6 +2,8 @@ import Loading from "../Loading/Loading";
 import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Checkout() {
   const token = sessionStorage.getItem("token");
@@ -133,7 +135,6 @@ function Checkout() {
       })
       .then((res) => {
         setWard(res.data);
-
         console.log(res.data);
       })
       .catch((error) => {
@@ -221,15 +222,6 @@ function Checkout() {
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
-
-    console.log("Address");
-    console.log(cityName);
-    console.log(districtName);
-    console.log(wardName);
-
-    const address =
-      addressDetail + ", " + cityName + ", " + districtName + ", " + wardName;
-    console.log(address);
     console.log(selectedPaymentId);
     if (!name) {
       setNameError("Vui lòng nhập tên người nhận");
@@ -276,7 +268,6 @@ function Checkout() {
     } else {
       setSelectedPaymentIdError("");
     }
-    setLoading(true);
     axios
       .post(
         "/order/add",
@@ -298,9 +289,26 @@ function Checkout() {
           },
         }
       )
-      .then((res) => {
-        console.log(res.data);
-        navigate("/success");
+      .then((response) => {
+        if (selectedPaymentId === 2) {
+          setLoading(true);
+          navigate("/success");
+        } else {
+          console.log(response.data);
+          toast.success(response.data.detail, {
+            position: "bottom-right",
+            autoClose: 2000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+          setInterval(() => {
+            window.location.href = response.data.vnpay_url;
+          }, 2000);
+        }
       })
       .catch((error) => {
         setLoading(false);
@@ -313,6 +321,7 @@ function Checkout() {
       <Loading isLoading={loading} />
       {!loading && (
         <>
+          <ToastContainer />
           <section className="checkout spad">
             <div className="container">
               <div className="row">

@@ -193,7 +193,7 @@ function ProductDetail() {
                     <span className="icon_bag_alt"></span> Add to cart
                   </div>
                 </div>
-                <div className="product__details__widget">
+                {/* <div className="product__details__widget">
                   <ul>
                     <li>
                       <span>Availability:</span>
@@ -210,7 +210,7 @@ function ProductDetail() {
                       <p>Free shipping</p>
                     </li>
                   </ul>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="col-lg-12">

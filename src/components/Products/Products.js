@@ -1,4 +1,3 @@
-import image from "../../assest/image/image.png";
 import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
@@ -10,7 +9,6 @@ function Products() {
   const searchParams = new URLSearchParams(location.search);
   const param = searchParams.get("status");
   const cat_id = searchParams.get("cat_id");
-  const imageUrl = image;
   const [imageProduct, setImageProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [CollapseOpen, setCollapseOpen] = useState(true);

@@ -15,6 +15,7 @@ import Load from "../../components/Loading/Loading";
 import NotFound from "../../components/404 page/404Page";
 import Confirm from "../../components/EmailConfirmation/Confirm";
 import Verified from "../../components/EmailConfirmation/Verified";
+import PaymentReturn from "../../components/PaymentReturn/PaymentReturn";
 import OrderTracking from "./Order/OrderTracking";
 import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
@@ -54,6 +55,7 @@ function App() {
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/email/confirm" element={<Verified />} />
         <Route path="/success" element={<Success />} />
+        <Route path="/payment_return" element={<PaymentReturn />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />
