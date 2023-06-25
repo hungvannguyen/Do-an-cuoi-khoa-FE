@@ -4,11 +4,16 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
 function Products() {
+  //  useNavigate
   const navigate = useNavigate();
+
+  // useLocation
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const param = searchParams.get("status");
   const cat_id = searchParams.get("cat_id");
+
+  // useState
   const [imageProduct, setImageProduct] = useState([]);
   const [loading, setLoading] = useState(true);
   const [CollapseOpen, setCollapseOpen] = useState(true);
@@ -25,6 +30,7 @@ function Products() {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
 
+  // Sort
   const base = 0;
   const increase = 1;
   const decrease = 2;
@@ -41,6 +47,7 @@ function Products() {
     apiEndpoint = `/product/all/active?page=${pages}&sort=${sort}&min_price=${minPrice}&max_price=${maxPrice}`;
   }
 
+  // Api call get products
   useEffect(() => {
     axios
       .get(apiEndpoint)
@@ -82,6 +89,7 @@ function Products() {
       });
   }, [apiEndpoint, pages, currentPage, sort]);
 
+  // Api call get categories
   useEffect(() => {
     axios
       .get("/category/all")
@@ -99,6 +107,7 @@ function Products() {
     setCurrentPage(page);
   };
 
+  //  Pagination render
   const renderPagination = () => {
     const displayedPages = 3;
     const startPage = Math.max(currentPage - 1, 1);
@@ -128,6 +137,7 @@ function Products() {
     });
   };
 
+  // Pagination handle click first page
   const handleFirstPage = () => {
     if (currentPage === 1) {
       return;
@@ -136,7 +146,7 @@ function Products() {
     setCurrentPage(1);
     setPages(1);
   };
-
+  //  Pagination handle click last page
   const handleLastPage = () => {
     if (currentPage === totalPages) {
       return;
@@ -145,21 +155,21 @@ function Products() {
     setCurrentPage(totalPages);
     setPages(totalPages);
   };
-
+  //   Handle click product detail
   const handleProductClick = (id) => {
     navigate(`/product/detail/${id}`);
   };
-
+  //  Handle click collapse toggle
   const handleCollapseToggle = () => {
     setCollapseOpen(!CollapseOpen);
   };
-
+  // Handle price range filter
   const handlePriceRange = () => {
     setMinPrice(minPrice);
     setMaxPrice(maxPrice);
     setSort(rangePrice);
   };
-
+  // Handle option change sort
   const handleOptionChange = (option) => {
     if (selectedOption === option) {
       setSelectedOption(null);
@@ -179,7 +189,7 @@ function Products() {
       }
     }
   };
-
+  // Format number price
   const formatNumber = (number) => {
     if (number) {
       return number.toLocaleString("vi-VN");

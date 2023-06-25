@@ -1,4 +1,3 @@
-import image from "../../assest/image/image.png";
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -8,14 +7,17 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function ProductDetail() {
+  // useNavigate
   const navigate = useNavigate();
-  const imageUrl = image;
+
   const { id } = useParams();
 
+  // useState for ProductDetail
   const [ProductDetail, setProductDetail] = useState({});
   const [imageProduct, setImageProduct] = useState([]);
   const [quantity, setQuantity] = useState(1);
 
+  // Call API to get ProductDetail
   useEffect(() => {
     axios
       .get(`/product/${id}`)
@@ -38,6 +40,8 @@ function ProductDetail() {
       });
   }, []);
   console.log(ProductDetail.price);
+
+  // Format price
 
   const formatPrice = (price, salePrice, isSale) => {
     if (
@@ -74,15 +78,19 @@ function ProductDetail() {
     }
   }
 
+  // Handle quantity increase
   const handleIncreaseQuantity = () => {
     setQuantity(quantity + 1);
   };
+
+  // Handle quantity decrease
   const handleDecreaseQuantity = () => {
     if (quantity > 1) {
       setQuantity(quantity - 1);
     }
   };
 
+  // Handle add to cart
   const handleAddToCart = (id) => {
     axios
       .post(

@@ -4,11 +4,15 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 function Login() {
+  // useNavigate
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // useState for Login
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  // Call API to get Login
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
@@ -18,6 +22,7 @@ function Login() {
     }
   }, [navigate]);
 
+  // Handle Login
   const handleLogin = () => {
     setUsername(username);
     setPassword(password);

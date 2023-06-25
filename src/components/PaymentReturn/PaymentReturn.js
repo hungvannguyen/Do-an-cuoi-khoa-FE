@@ -39,10 +39,10 @@ const PaymentReturn = () => {
 
   //   Looading
   const [loading, setLoading] = useState(true);
+  //   API endpoint
   const apiEndpoint = `/vnpay/return?vnp_Amount=${vnp_AmountEncoded}&vnp_BankCode=${vnp_BankCodeEncoded}&vnp_BankTranNo=${vnp_BankTranNoEncoded}&vnp_CardType=${vnp_CardTypeEncoded}&vnp_OrderInfo=${vnp_OrderInfoEncoded}&vnp_PayDate=${vnp_PayDateEncoded}&vnp_ResponseCode=${vnp_ResponseCodeEncoded}&vnp_TmnCode=${vnp_TmnCodeEncoded}&vnp_TransactionNo=${vnp_TransactionNoEncoded}&vnp_TransactionStatus=${vnp_TransactionStatusEncoded}&vnp_TxnRef=${vnp_TxnRefEncoded}&vnp_SecureHash=${vnp_SecureHashEncoded}`;
 
-  console.log(apiEndpoint);
-
+  // Api call to return
   useEffect(() => {
     axios
       .get(apiEndpoint)

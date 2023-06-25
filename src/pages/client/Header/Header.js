@@ -9,15 +9,21 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 function Header() {
+  // useNavigate
   const navigate = useNavigate();
+  // useLocation
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const message = searchParams.get("message");
+  // useState
   const [categories, setCategories] = useState([]);
   const [countCart, setCountCart] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [active, setActive] = useState(0);
+  // tokenCheck
   let hasSessionData = sessionStorage.getItem("token") !== null;
+
+  // call API get categories
 
   useEffect(() => {
     axios
@@ -29,7 +35,7 @@ function Header() {
         console.log(error);
       });
   }, []);
-
+  //  call API get count cart
   useEffect(() => {
     if (sessionStorage.getItem("token")) {
       axios
@@ -48,8 +54,7 @@ function Header() {
     }
   }, [navigate]);
 
-  console.log(hasSessionData);
-
+  // Handle logout
   const handleLogout = () => {
     sessionStorage.removeItem("token");
     setCountCart(0);
@@ -58,14 +63,16 @@ function Header() {
   };
 
   useEffect(() => {}, [hasSessionData]);
-
+  // Handle menu click
   const handleMenuClick = (index) => {
     setActive(index);
   };
+
+  // Handle search toggle
   const handleSearchToggle = () => {
     setIsSearchOpen(!isSearchOpen);
   };
-
+  // Handle search close
   const handleSearchClose = () => {
     setIsSearchOpen(false);
   };

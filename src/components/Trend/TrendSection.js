@@ -5,11 +5,14 @@ import axios from "axios";
 
 function TrendSection() {
   const imageUrl = image;
+  // useState for TrendSection
   const [imageProductSale, setImageProductSale] = useState([]);
   const [imageProductBestSale, setImageProductBestSale] = useState([]);
   const [saleProducts, setSaleProducts] = useState([]);
   const [bestSaleProducts, setBestSaleProducts] = useState([]);
   const [pages, setPages] = useState(1);
+
+  // Call API to get TrendSection
   useEffect(() => {
     axios
       .get(`/product/sale/?page=${pages}`)
@@ -43,6 +46,7 @@ function TrendSection() {
       });
   }, []);
 
+  // Call API to get TrendSection
   useEffect(() => {
     axios
       .get(`/product/best-sale/?page=${pages}`)
@@ -75,6 +79,8 @@ function TrendSection() {
         console.log(error);
       });
   }, []);
+
+  // Format number
   const formatNumber = (number) => {
     if (number) {
       return number.toLocaleString("vi-VN");

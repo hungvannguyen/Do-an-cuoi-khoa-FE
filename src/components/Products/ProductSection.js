@@ -1,14 +1,14 @@
-import image from "../../assest/image/image.png";
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
 function ProductSection() {
-  const imageUrl = image;
+  // useState for ProductSection
   const [newProduct, setNewProduct] = useState([]);
   const [imageProduct, setImageProduct] = useState([]);
 
+  // Call API to get ProductSection
   useEffect(() => {
     axios
       .get(`/product/new/`)
@@ -41,6 +41,8 @@ function ProductSection() {
         console.log(error);
       });
   }, []);
+
+  // Format number
   const formatNumber = (number) => {
     return number.toLocaleString("vi-VN");
   };

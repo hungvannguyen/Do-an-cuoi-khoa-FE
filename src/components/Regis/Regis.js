@@ -5,8 +5,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 function Regis() {
+  // useNavigate
   const navigate = useNavigate();
+  // Looading
   const [loading, setLoading] = useState(true);
+  // useState for Regis
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -14,31 +17,38 @@ function Regis() {
   const [usernameError, setUsernameError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+
   useEffect(() => {
     setLoading(false);
   }, []);
-
+  // Handle Regis 
   const handleRegistration = () => {
+
+    // Validate username
     if (username.length < 3 || username.length > 20) {
       setUsernameError(
         "Tên đăng nhập phải có ít nhất 3 kí tự và tối đa 20 kí tự"
       );
       return;
     }
+    // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError("Email không hợp lệ");
       return;
     }
+    // Validate password
     if (password.length < 6 || password.length > 30) {
       setPasswordError("Mật khẩu phải có ít nhất 6 kí tự và tối đa 30 kí tự");
       return;
     }
-
+    // Validate confirm password
     if (password !== confirmPassword) {
       setPasswordError("Mật khẩu không khớp");
       return;
     }
+    // Reset error
     if (usernameError) {
       setUsernameError("");
     }
@@ -51,6 +61,7 @@ function Regis() {
     if (passwordError) {
       setConfirmPassword("");
     }
+    // Call API to get Regis
     axios
       .post("/user/regis", {
         account: username,

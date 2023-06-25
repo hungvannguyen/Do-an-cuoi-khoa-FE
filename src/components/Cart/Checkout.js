@@ -6,8 +6,11 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Checkout() {
+  //  Token
   const token = sessionStorage.getItem("token");
+  // Loading
   const [loading, setLoading] = useState(true);
+  // useNavigate
   const navigate = useNavigate();
 
   // user info
@@ -49,13 +52,15 @@ function Checkout() {
   const [selectedDistrictIdError, setSelectedDistrictIdError] = useState("");
   const [selectedWardIdError, setSelectedWardIdError] = useState("");
   const [selectedPaymentIdError, setSelectedPaymentIdError] = useState("");
-
+  //  useStates for (city, district, ward)
   const [cityName, setCityName] = useState("");
   const [districtName, setDistrictName] = useState("");
   const [wardName, setWardName] = useState("");
 
+  // Shipping fee
   const [shippingFee, setShippingFee] = useState(30000);
 
+  // Call API get user info
   useEffect(() => {
     axios
       .get("/checkout/user_info", {
@@ -84,6 +89,7 @@ function Checkout() {
       });
   }, []);
 
+  // Call API get city
   useEffect(() => {
     axios
       .get("/address/city/all", {
@@ -99,6 +105,7 @@ function Checkout() {
       });
   }, []);
 
+  // Check shipping fee when city change
   useEffect(() => {
     if (selectedCityId === 1 || selectedCityId === "1") {
       setShippingFee("");
@@ -107,6 +114,7 @@ function Checkout() {
     }
   }, [selectedCityId]);
 
+  // Call API get district
   useEffect(() => {
     axios
       .get(`/address/district/${selectedCityId}`, {
@@ -124,9 +132,9 @@ function Checkout() {
       });
   }, [selectedCityId]);
 
-  useEffect(() => {
-    console.log(selectedDistrictId);
+  // Call API get ward
 
+  useEffect(() => {
     axios
       .get(`/address/ward/${selectedCityId}/${selectedDistrictId}`, {
         headers: {
@@ -142,6 +150,7 @@ function Checkout() {
       });
   }, [selectedDistrictId]);
 
+  // Call API get checkout product
   useEffect(() => {
     axios
       .get("/checkout/products", {
@@ -159,6 +168,7 @@ function Checkout() {
       });
   }, []);
 
+  // Call API get payment
   useEffect(() => {
     axios
       .get("/payment/type/all")
@@ -170,10 +180,11 @@ function Checkout() {
       });
   }, []);
 
+  // Payment change handle
   const handlePaymentChange = (id) => {
     setSelectedPaymentId(id);
   };
-
+  //  Format number
   const formatNumber = (number) => {
     return number.toLocaleString("vi-VN");
   };
@@ -204,6 +215,7 @@ function Checkout() {
     }
   }, [selectedCityId, city]);
 
+  // Place order validate
   useEffect(() => {
     const selectedDistrict = district.find(
       (item) => item.id === selectedDistrictId
@@ -212,18 +224,21 @@ function Checkout() {
       setDistrictName(selectedDistrict.name);
     }
   }, [selectedDistrictId, district]);
-
+  // Place order validate
   useEffect(() => {
     const selectedWard = ward.find((item) => item.id === selectedWardId);
     if (selectedWard) {
       setWardName(selectedWard.name);
     }
   }, [selectedWardId, ward]);
-
+  //  Place order
   const handlePlaceOrder = (e) => {
     e.preventDefault();
+
+    // Validate form before submit
     let hasError = false;
 
+    // Validate name
     if (!name) {
       setNameError("Vui lòng nhập tên người nhận");
       hasError = true;
@@ -231,6 +246,7 @@ function Checkout() {
       setNameError("");
     }
 
+    // Validate phone
     if (!phone) {
       setPhoneError("Vui lòng nhập số điện thoại");
       hasError = true;
@@ -244,6 +260,7 @@ function Checkout() {
       setPhoneError("");
     }
 
+    // Validate address detail
     if (!addressDetail) {
       setAddressDetailError("Vui lòng nhập địa chỉ");
       hasError = true;
@@ -251,6 +268,7 @@ function Checkout() {
       setAddressDetailError("");
     }
 
+    // Validate slelected city
     if (!selectedCityId) {
       setSelectedCityIdError("Vui lòng chọn thành phố");
       hasError = true;
@@ -258,6 +276,7 @@ function Checkout() {
       setSelectedCityIdError("");
     }
 
+    // Validate slelected district
     if (!selectedDistrictId) {
       setSelectedDistrictIdError("Vui lòng chọn quận/huyện");
       hasError = true;
@@ -265,6 +284,7 @@ function Checkout() {
       setSelectedDistrictIdError("");
     }
 
+    // Validate slelected ward
     if (!selectedWardId) {
       setSelectedWardIdError("Vui lòng chọn phường/xã");
       hasError = true;
@@ -272,12 +292,15 @@ function Checkout() {
       setSelectedWardIdError("");
     }
 
+    // Validate slelected payment
     if (!selectedPaymentId) {
       setSelectedPaymentIdError("Vui lòng chọn phương thức thanh toán");
       hasError = true;
     } else {
       setSelectedPaymentIdError("");
     }
+
+    // If no error, call API to place order
     if (hasError === false) {
       axios
         .post(

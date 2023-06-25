@@ -2,12 +2,15 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 function OrderTracking() {
+  // token
   const token = sessionStorage.getItem("token");
+  // useState
   const [page, setPage] = useState(1);
   const [order_status, setOrderStatus] = useState(0);
   const [product, setProduct] = useState([]);
   const [order, setOrder] = useState([]);
 
+  // Call API to get Order
   useEffect(() => {
     axios
       .get(`/order/all?page=${page}&order_status=${order_status}`, {
@@ -26,6 +29,7 @@ function OrderTracking() {
       });
   }, []);
 
+  // Format number
   const formatNumber = (number) => {
     if (number) {
       return number.toLocaleString("vi-VN");
