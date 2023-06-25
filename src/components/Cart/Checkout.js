@@ -222,98 +222,110 @@ function Checkout() {
 
   const handlePlaceOrder = (e) => {
     e.preventDefault();
-    console.log(selectedPaymentId);
+    let hasError = false;
+
     if (!name) {
       setNameError("Vui lòng nhập tên người nhận");
+      hasError = true;
     } else {
       setNameError("");
     }
 
     if (!phone) {
       setPhoneError("Vui lòng nhập số điện thoại");
+      hasError = true;
     } else if (phone.length !== 10) {
       setPhoneError("Số điện thoại phải có 10 kí tự");
+      hasError = true;
     } else if (!/^\d+$/.test(phone)) {
       setPhoneError("Số điện thoại không hợp lệ");
+      hasError = true;
     } else {
       setPhoneError("");
     }
 
     if (!addressDetail) {
       setAddressDetailError("Vui lòng nhập địa chỉ");
+      hasError = true;
     } else {
       setAddressDetailError("");
     }
 
     if (!selectedCityId) {
       setSelectedCityIdError("Vui lòng chọn thành phố");
+      hasError = true;
     } else {
       setSelectedCityIdError("");
     }
 
     if (!selectedDistrictId) {
       setSelectedDistrictIdError("Vui lòng chọn quận/huyện");
+      hasError = true;
     } else {
       setSelectedDistrictIdError("");
     }
 
     if (!selectedWardId) {
       setSelectedWardIdError("Vui lòng chọn phường/xã");
+      hasError = true;
     } else {
       setSelectedWardIdError("");
     }
 
     if (!selectedPaymentId) {
       setSelectedPaymentIdError("Vui lòng chọn phương thức thanh toán");
+      hasError = true;
     } else {
       setSelectedPaymentIdError("");
     }
-    axios
-      .post(
-        "/order/add",
-        {
-          payment_type_id: selectedPaymentId,
-          name: name,
-          email: email,
-          phone_number: phone,
-          note: note,
-          city_id: selectedCityId,
-          district_id: selectedDistrictId,
-          ward_id: selectedWardId,
-          detail: addressDetail,
-          status: 0,
-        },
-        {
-          headers: {
-            Authorization: "Bearer " + token,
+    if (hasError === false) {
+      axios
+        .post(
+          "/order/add",
+          {
+            payment_type_id: selectedPaymentId,
+            name: name,
+            email: email,
+            phone_number: phone,
+            note: note,
+            city_id: selectedCityId,
+            district_id: selectedDistrictId,
+            ward_id: selectedWardId,
+            detail: addressDetail,
+            status: 0,
           },
-        }
-      )
-      .then((response) => {
-        if (selectedPaymentId === 2) {
-          setLoading(true);
-          navigate("/success");
-        } else {
-          console.log(response.data);
-          toast.success(response.data.detail, {
-            position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: true,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-          });
-          setInterval(() => {
-            window.location.href = response.data.vnpay_url;
-          }, 2000);
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
-      });
+          {
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          }
+        )
+        .then((response) => {
+          if (selectedPaymentId === 2) {
+            setLoading(true);
+            navigate("/success");
+          } else {
+            console.log(response.data);
+            toast.success(response.data.detail, {
+              position: "bottom-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            setInterval(() => {
+              window.location.href = response.data.vnpay_url;
+            }, 2000);
+          }
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
+    }
   };
 
   return (

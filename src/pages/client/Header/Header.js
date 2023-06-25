@@ -19,7 +19,6 @@ function Header() {
   const [active, setActive] = useState(0);
   let hasSessionData = sessionStorage.getItem("token") !== null;
 
-  
   useEffect(() => {
     axios
       .get("/category/all")
@@ -57,6 +56,8 @@ function Header() {
     hasSessionData = false;
     navigate("/");
   };
+
+  useEffect(() => {}, [hasSessionData]);
 
   const handleMenuClick = (index) => {
     setActive(index);
