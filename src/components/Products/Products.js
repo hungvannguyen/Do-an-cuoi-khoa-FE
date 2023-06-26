@@ -57,6 +57,7 @@ function Products() {
         setPages(response.data.current_page);
         setCurrentPage(response.data.current_page);
         setTotalPages(response.data.total_page);
+        // console.log(response.data);
         const imageName = response.data.data.map((product) => {
           return product.img_url;
         });

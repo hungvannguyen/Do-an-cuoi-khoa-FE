@@ -9,6 +9,8 @@ function OrderTracking() {
   const [order_status, setOrderStatus] = useState(0);
   const [product, setProduct] = useState([]);
   const [order, setOrder] = useState([]);
+  const [imageProduct, setImageProduct] = useState([]);
+  let counter = 0;
 
   // Call API to get Order
   useEffect(() => {
@@ -23,6 +25,36 @@ function OrderTracking() {
         setProduct(response.data.data);
         console.log("Order");
         console.log(response.data.data);
+        // Call API to get Image Product
+        const imageName = response.data.data.map((item) => {
+          return item.products.map((product) => {
+            return product.img_url;
+          });
+        });
+        console.log("Image Name");
+        console.log(imageName);
+        Promise.all(
+          imageName.flatMap((imageNames) => {
+            return imageNames.map((imageName) => {
+              return axios
+                .get(`/file/img/${imageName}`, { responseType: "blob" })
+                .then((response) => URL.createObjectURL(response.data))
+                .catch((error) => {
+                  console.log(error);
+                  return null;
+                });
+            });
+          })
+        )
+          .then((imageUrls) => {
+            const filteredImageUrls = imageUrls.filter((url) => url !== null);
+            setImageProduct(filteredImageUrls);
+            console.log("Image Url");
+            console.log(filteredImageUrls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       })
       .catch((error) => {
         console.log(error);
@@ -41,13 +73,15 @@ function OrderTracking() {
     <div className="container mt-5">
       <article className="card">
         <header className="card-header"> My Orders / Tracking </header>
-        {order.map((item) => (
-          <div className="card-body">
-            <h6>Mã đơn hàng: {item.id}</h6>
+        {order.map((item, index) => (
+          <div className="card-body" key={index}>
+            <h6 className="mb-3">
+              <strong>Mã đơn hàng: {item.id}</strong>{" "}
+            </h6>
             <article className="card">
               <div className="card-body row">
                 <div className="col">
-                  <strong>Estimated Delivery time:</strong> <br />
+                  <strong>Ngày tạo:</strong> <br />
                   {item.insert_at}
                 </div>
                 <div className="col">
@@ -76,20 +110,26 @@ function OrderTracking() {
 
             <hr />
             <ul className="row" style={{ listStyle: "none" }}>
-              {item.products.map((product) => (
+              {item.products.map((product, innerIndex) => (
                 <li className="col-md-4">
                   <figure className="itemside mb-3 d-flex">
                     <div className="aside">
-                      <img
-                        src="https://i.imgur.com/iDwDQ4o.png"
-                        className="img-sm border"
-                        style={{ width: "100px" }}
-                      />
+                      {index < imageProduct.length && (
+                        <img
+                          key={innerIndex}
+                          src={
+                            (imageProduct[counter++])
+                          }
+                          className="img-sm border"
+                          style={{ width: "100px" }}
+                          alt={`Product Image ${innerIndex + 1}`}
+                        />
+                      )}
                     </div>
                     <figcaption className="info align-self-center ms-2">
                       <p className="title">{product.name}</p>
                       <span className="text-muted">
-                        {formatNumber(product.price)} đ{" "}
+                        {formatNumber(product.price)} đ
                       </span>
                       <span className="text-muted">x {product.quantity}</span>
                     </figcaption>
