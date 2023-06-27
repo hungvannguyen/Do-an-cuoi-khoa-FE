@@ -8,7 +8,7 @@ function OrderTracking() {
   // useState
   const [loading, setLoading] = useState(true);
   const [order_status, setOrderStatus] = useState(0);
-  const [product, setProduct] = useState([]);
+  // const [product, setProduct] = useState([]);
   const [order, setOrder] = useState([]);
   const [imageProduct, setImageProduct] = useState([]);
   const [page, setPage] = useState(1);
@@ -26,7 +26,6 @@ function OrderTracking() {
       })
       .then((response) => {
         setOrder(response.data.data);
-        setProduct(response.data.data);
         setPage(response.data.current_page);
         setCurrentPage(response.data.current_page);
         setTotalPage(response.data.total_page);
@@ -165,6 +164,32 @@ function OrderTracking() {
     setLoading(true);
   };
 
+  // Handle payment again
+  const handlePaymentAgain = (order_id, payment_id, amount) => {
+    axios
+      .post(
+        "/vnpay/create",
+
+        {
+          order_id: order_id,
+          payment_id: payment_id,
+          amount: amount,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        console.log(response.data);
+        window.location.href = response.data;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   // Format number
   const formatNumber = (number) => {
     if (number) {
@@ -271,10 +296,47 @@ function OrderTracking() {
                         ))}
                       </ul>
                       <hr />
-                      <a href="#" className="btn btn-warning" data-abc="true">
-                        {" "}
-                        <i className="fa fa-chevron-left"></i> Back to orders
-                      </a>
+                      <div className="row">
+                        <div className="col-md-3 col-lg-3">
+                          <strong>Phương thức thanh toán:</strong>{" "}
+                          {item.bankCode}
+                          <br />
+                          <strong>Tình trạng:</strong>{" "}
+                          {item.payment_status === 0
+                            ? "Đã thanh toán"
+                            : "Chưa thanh toán"}
+                          <br />
+                          <strong>Tổng tiền:</strong>{" "}
+                          {formatNumber(item.total_price)} đ
+                        </div>
+
+                        {item.status === 0 && (
+                          <div className="col-md-12 col-lg-12 d-flex justify-content-end ">
+                            {item.bankCode === "VNPAY" &&
+                              item.payment_status !== 0 && (
+                                <div className="col-md-2">
+                                  <a
+                                    className="btn btn-danger ms-5"
+                                    data-abc="true"
+                                    onClick={() =>
+                                      handlePaymentAgain(
+                                        item.id,
+                                        item.payment_id,
+                                        item.total_price
+                                      )
+                                    }
+                                  >
+                                    Thanh toán
+                                  </a>
+                                </div>
+                              )}
+
+                            <a className="btn btn-danger" data-abc="true">
+                              Hủy đơn
+                            </a>
+                          </div>
+                        )}
+                      </div>
                     </div>
                   ))}
 
