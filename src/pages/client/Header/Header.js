@@ -46,7 +46,6 @@ function Header() {
         })
         .then((response) => {
           setCountCart(response.data);
-          console.log("Cart" + response.data);
         })
         .catch((error) => {
           console.log(error);
