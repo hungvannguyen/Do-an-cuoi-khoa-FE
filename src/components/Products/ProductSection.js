@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -78,10 +77,10 @@ function ProductSection() {
                   <br />
                   <div
                     className={`product__price${
-                      product.is_sale ? " sale" : ""
+                      product.is_sale === 1 ? " sale" : ""
                     }`}
                   >
-                    {product.is_sale ? (
+                    {product.is_sale === 1 ? (
                       <>
                         {formatNumber(product.sale_price)}đ
                         <span>{formatNumber(product.price)} đ</span>

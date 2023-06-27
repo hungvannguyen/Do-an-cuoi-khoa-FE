@@ -235,6 +235,15 @@ function Checkout() {
   const handlePlaceOrder = (e) => {
     e.preventDefault();
 
+    console.log(name);
+    console.log(phone);
+    console.log(email);
+    console.log(addressDetail);
+    console.log(selectedCityId);
+    console.log(selectedDistrictId);
+    console.log(selectedWardId);
+    console.log(selectedPaymentId);
+    console.log(note);
     // Validate form before submit
     let hasError = false;
 
@@ -300,10 +309,9 @@ function Checkout() {
       setSelectedPaymentIdError("");
     }
 
-    // If no error, call API to place order
+   
     if (hasError === false) {
-      axios
-        .post(
+      axios .post(
           "/order/add",
           {
             payment_type_id: selectedPaymentId,

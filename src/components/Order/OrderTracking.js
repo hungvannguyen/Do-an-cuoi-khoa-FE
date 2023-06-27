@@ -7,7 +7,7 @@ function OrderTracking() {
   const token = sessionStorage.getItem("token");
   // useState
   const [loading, setLoading] = useState(true);
-  const [order_status, setOrderStatus] = useState(0);
+  const [order_status, setOrderStatus] = useState(-1);
   // const [product, setProduct] = useState([]);
   const [order, setOrder] = useState([]);
   const [imageProduct, setImageProduct] = useState([]);
@@ -82,7 +82,7 @@ function OrderTracking() {
   // Render the dropdown menu items
   const renderDropdownItems = () => {
     const statuses = [
-      { value: 0, label: "Tất cả" },
+      { value: -1, label: "Tất cả" },
       { value: 0, label: "Đơn chưa duyệt" },
       { value: 1, label: "Đã xác nhận" },
       { value: 2, label: "Đang vận chuyển" },
@@ -288,6 +288,7 @@ function OrderTracking() {
                                   {formatNumber(product.price)} đ
                                 </span>
                                 <span className="text-muted">
+                                  {" "}
                                   x {product.quantity}
                                 </span>
                               </figcaption>
@@ -312,7 +313,7 @@ function OrderTracking() {
 
                         {item.status === 0 && (
                           <div className="col-md-12 col-lg-12 d-flex justify-content-end ">
-                            {item.bankCode === "VNPAY" &&
+                            {item.bankCode !== "COD" &&
                               item.payment_status !== 0 && (
                                 <div className="col-md-2">
                                   <a

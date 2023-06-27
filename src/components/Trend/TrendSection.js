@@ -18,11 +18,13 @@ function TrendSection() {
       .get(`/product/sale/?page=${pages}`)
       .then((response) => {
         setSaleProducts(response.data.data);
-        const imageName = response.data.data.map((product) => {
+        console.log("Product");
+        console.log(response.data.data);
+        const imageSaleName = response.data.data.map((product) => {
           return product.img_url;
         });
         Promise.all(
-          imageName.map((imageName) => {
+          imageSaleName.map((imageName) => {
             return axios
               .get(`/file/img/${imageName}`, { responseType: "blob" })
               .then((response) => URL.createObjectURL(response.data))
@@ -51,7 +53,6 @@ function TrendSection() {
     axios
       .get(`/product/best-sale/?page=${pages}`)
       .then((response) => {
-        setBestSaleProducts(response.data.data);
         const imageName = response.data.data.map((product) => {
           return product.img_url;
         });
@@ -101,7 +102,7 @@ function TrendSection() {
                   {index < imageProductSale.length && (
                     <div className="trend__item__pic">
                       <img
-                        src={imageProductSale}
+                        src={imageProductSale[index]}
                         alt=""
                         style={{ width: 90 }}
                       />
@@ -111,7 +112,7 @@ function TrendSection() {
                     <h6>{saleProduct.name}</h6>
 
                     <div className="product__price">
-                      {saleProduct.is_sale ? (
+                      {saleProduct.is_sale === 1 ? (
                         <>
                           {formatNumber(saleProduct.sale_price)} đ{" "}
                           <span>{formatNumber(saleProduct.price)} đ</span>

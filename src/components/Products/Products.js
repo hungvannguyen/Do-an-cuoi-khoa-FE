@@ -319,7 +319,7 @@ function Products() {
                         <div className="col-lg-4 col-md-6" key={product.id}>
                           <div
                             className={`product__item${
-                              product.is_sale ? " sale" : ""
+                              product.is_sale === 1 ? " sale" : ""
                             }`}
                           >
                             {index < imageProduct.length && (
@@ -332,10 +332,10 @@ function Products() {
                               >
                                 <div
                                   className={`label${
-                                    product.is_sale ? " sale" : ""
+                                    product.is_sale === 1 ? " sale" : ""
                                   }`}
                                 >
-                                  {product.is_sale ? "Giảm giá" : ""}
+                                  {product.is_sale === 1 ? "Giảm giá" : ""}
                                 </div>
                               </div>
                             )}
@@ -350,7 +350,7 @@ function Products() {
                               </Link>
                             </h6>
                             <div className="product__price mb-4">
-                              {product.is_sale ? (
+                              {product.is_sale === 1 ? (
                                 <>
                                   {formatNumber(product.sale_price)} đ{" "}
                                   <span>{formatNumber(product.price)} đ</span>
