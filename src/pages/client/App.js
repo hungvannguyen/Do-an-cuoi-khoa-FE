@@ -9,6 +9,7 @@ import Login from "../login_resgis/Login";
 import Regis from "../login_resgis/Regis";
 import ResetPassword from "../login_resgis/ResetPassword";
 import Success from "./Success/Success";
+import PaymentSuccessPage from "./PaymentSuccess/PaymentSuccess";
 import Header from "./Header/Header";
 import Footer from "./Footer/Footer";
 import Load from "../../components/Loading/Loading";
@@ -55,6 +56,7 @@ function App() {
         <Route path="/confirm" element={<Confirm />} />
         <Route path="/email/confirm" element={<Verified />} />
         <Route path="/success" element={<Success />} />
+        <Route path="/payment_success" element={<PaymentSuccessPage />} />
         <Route path="/payment_return" element={<PaymentReturn />} />
         <Route path="*" element={<NotFound />} />
       </Routes>

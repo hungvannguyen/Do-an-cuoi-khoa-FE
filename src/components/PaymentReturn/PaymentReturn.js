@@ -48,7 +48,7 @@ const PaymentReturn = () => {
       .get(apiEndpoint)
       .then((response) => {
         console.log(response);
-        navigate("/success");
+        navigate("/payment_success");
       })
       .catch((error) => {
         console.log(error);

@@ -1,6 +1,7 @@
 import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
+// import Search from "../../../components/Search/Search";
 import axios from "axios";
 
 function Products() {
@@ -12,7 +13,7 @@ function Products() {
   const searchParams = new URLSearchParams(location.search);
   const param = searchParams.get("status");
   const cat_id = searchParams.get("cat_id");
-
+  const keyword = searchParams.get("keyword");
   // useState
   const [imageProduct, setImageProduct] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,6 +44,9 @@ function Products() {
     apiEndpoint = `/product/new/?page=${pages}`;
   } else if (param === "catFilter") {
     apiEndpoint = `/product/category/${cat_id}?page=${pages}&sort=${sort}&min_price=${minPrice}&max_price=${maxPrice}`;
+  } else if (param === "search") {
+    console.log("search");
+    apiEndpoint = `/product/search?keyword=${keyword}&page=${pages}&sort=${sort}&min_price=${minPrice}&max_price=${maxPrice}`;
   } else {
     apiEndpoint = `/product/all/active?page=${pages}&sort=${sort}&min_price=${minPrice}&max_price=${maxPrice}`;
   }
@@ -57,6 +61,7 @@ function Products() {
         setPages(response.data.current_page);
         setCurrentPage(response.data.current_page);
         setTotalPages(response.data.total_page);
+
         // console.log(response.data);
         const imageName = response.data.data.map((product) => {
           return product.img_url;
@@ -75,7 +80,6 @@ function Products() {
           .then((imageUrls) => {
             const filteredImageUrls = imageUrls.filter((url) => url !== null);
             setImageProduct(filteredImageUrls);
-            console.log(filteredImageUrls);
           })
           .catch((error) => {
             console.log(error);
