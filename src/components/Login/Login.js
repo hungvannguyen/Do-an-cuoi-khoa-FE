@@ -34,11 +34,10 @@ function Login() {
       })
       .then((response) => {
         sessionStorage.setItem("token", response.data.token);
-        console.log(sessionStorage.getItem("token"));
         if (response.data.role_id === 1 || response.data.role_id === 10) {
-          console.log("role_id" + response.data.role_id);
           const token = sessionStorage.getItem("token");
           const url = `http://localhost:5000/login?token=${token}&role_id=${response.data.role_id}`;
+          sessionStorage.removeItem("token");
           window.location.href = url;
         } else {
           toast.success("Đăng nhập thành công", {
