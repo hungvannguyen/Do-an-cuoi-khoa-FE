@@ -30,6 +30,8 @@ function Products() {
   const [sort, setSort] = useState(0);
   const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [formatMinPrice, setFormatMinPrice] = useState(0);
+  const [formatMaxPrice, setFormatMaxPrice] = useState(0);
 
   // Sort
   const base = 0;
@@ -202,6 +204,29 @@ function Products() {
     return "";
   };
 
+  const formatPrice = (price) => {
+    if (!price) return ""; // Handle empty input
+    const numericPrice = parseInt(price.replace(/[^\d]/g, ""), 10); // Remove non-digit characters
+    return numericPrice.toLocaleString("vi-VN");
+  };
+
+  const handleMinPriceChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = parseInt(inputValue.replace(/[^\d]/g, ""), 10);
+    const formattedValue = formatPrice(inputValue);
+    setMinPrice(numericValue);
+    setFormatMinPrice(formattedValue);
+    console.log(numericValue);
+  };
+
+  const handleMaxPriceChange = (e) => {
+    const inputValue = e.target.value;
+    const numericValue = parseInt(inputValue.replace(/[^\d]/g, ""), 10);
+    const formattedValue = formatPrice(inputValue);
+    setMaxPrice(numericValue);
+    setFormatMaxPrice(formattedValue);
+    console.log(numericValue);
+  };
   return (
     <div>
       <Loading isLoading={loading} />
@@ -267,20 +292,22 @@ function Products() {
                         <div className="range-slider">
                           <div className="price-input">
                             <label htmlFor="minamount">Giá:</label>
+
                             <div className="price-input">
                               <input
                                 type="text"
                                 id="minamount"
-                                value={minPrice}
+                                value={formatMinPrice}
                                 className="price-input-field"
-                                onChange={(e) => setMinPrice(e.target.value)}
+                                onChange={handleMinPriceChange}
                               />
+
                               <input
                                 type="text"
                                 id="maxamount"
-                                value={maxPrice}
+                                value={formatMaxPrice}
                                 className="price-input-field"
-                                onChange={(e) => setMaxPrice(e.target.value)}
+                                onChange={handleMaxPriceChange}
                               />
                             </div>
                           </div>
