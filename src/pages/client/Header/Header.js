@@ -20,6 +20,8 @@ function Header() {
   const [countCart, setCountCart] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [active, setActive] = useState(0);
+  const [searchKey, setSearchKey] = useState("");
+
   // tokenCheck
   let hasSessionData = sessionStorage.getItem("token") !== null;
 
@@ -75,6 +77,10 @@ function Header() {
   const handleSearchClose = () => {
     setIsSearchOpen(false);
   };
+  // Handle search
+  const handleSearch = (value) => {
+    setSearchKey(value);
+  };
   return (
     <div>
       <div className="offcanvas-menu-overlay "></div>
@@ -119,7 +125,7 @@ function Header() {
                 </Link>
               </div>
             </div>
-            <div className="col-xl-6 col-lg-6 d-flex justify-content-center">
+            <div className="col-xl-5 col-lg-5 d-flex justify-content-center">
               <nav className="header__menu">
                 <ul>
                   <li className={active === 0 ? "active" : ""}>
@@ -160,7 +166,7 @@ function Header() {
                 </ul>
               </nav>
             </div>
-            <div className="col-lg-3">
+            <div className="col-lg-4">
               <div className="header__right">
                 {hasSessionData ? (
                   // <ul className="header__right__widget">
@@ -227,10 +233,29 @@ function Header() {
                   style={{ marginLeft: 10 }}
                 >
                   <li>
-                    <span
-                      className="fa-solid fa-magnifying-glass"
-                      onClick={handleSearchToggle}
-                    ></span>
+                    <div class="input-group">
+                      <div class="form-outline">
+                        <input
+                          value={searchKey}
+                          type="search"
+                          id="form1"
+                          class="form-control"
+                          placeholder="Tìm kiếm sản phẩm"
+                          onChange={(e) => handleSearch(e.target.value)}
+                          onKeyPress={(e) => {
+                            if (e.key === "Enter") {
+                              e.preventDefault();
+                              navigate(
+                                `/products?status=search&keyword=${searchKey}`
+                              );
+                            }
+                          }}
+                        />
+                      </div>
+                      <button type="button" class="btn btn-secondary">
+                        <i class="fas fa-search"></i>
+                      </button>
+                    </div>
                   </li>
 
                   <li>

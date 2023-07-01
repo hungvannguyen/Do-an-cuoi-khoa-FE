@@ -12,7 +12,10 @@ function Search({ onClose }) {
 
   return (
     <div className="search-model">
-      <div className="h-100 d-flex align-items-center justify-content-center">
+      <div
+        className="h-100 d-flex align-items-center justify-content-center"
+        style={{ backgroundColor: "rgba(0, 0, 0, 0)" }}
+      >
         <div className="search-close-switch" onClick={onClose}>
           +
         </div>
