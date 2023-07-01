@@ -41,7 +41,6 @@ function Login() {
       })
       .then((response) => {
         setLoading(false);
-        console.log(response);
         setSubmittedEmail(true);
         setInputEmail(true);
         setInputCode(true);
@@ -52,7 +51,6 @@ function Login() {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
         toast.error(error.response.data.detail, {
           position: "bottom-right",
           autoClose: 2000,
@@ -175,8 +173,8 @@ function Login() {
       <Loading isLoading={loading} />
       {!loading && (
         <>
+          <ToastContainer />
           <section className="vh-100">
-            <ToastContainer />
             <div className="container-fluid h-custom">
               <div className="row d-flex justify-content-center align-items-center h-100">
                 <div className="col-md-9 col-lg-6 col-xl-5">
@@ -217,7 +215,7 @@ function Login() {
                               type="text"
                               id="form3Example4"
                               className="form-control form-control-lg"
-                              placeholder="Enter password"
+                              placeholder="Nhập mã"
                               onChange={(e) => setResetCode(e.target.value)}
                             />
                           </div>
@@ -262,7 +260,7 @@ function Login() {
                         }}
                         onClick={handleSubmit}
                       >
-                        {inputEmail ? "Xác nhận mã" : "Gửi Email"}
+                        {inputEmail ? "Xác nhận mã" : "Gửi"}
                       </button>
                       {canResendCode && (
                         <button
