@@ -40,7 +40,6 @@ function Login() {
         account: email,
       })
       .then((response) => {
-        setLoading(false);
         setSubmittedEmail(true);
         setInputEmail(true);
         setInputCode(true);
@@ -48,9 +47,9 @@ function Login() {
         setIsCountingDown(true);
         setCanResendCode(false);
         setSubmitButtonType("code");
+        setLoading(false);
       })
       .catch((error) => {
-        setLoading(false);
         toast.error(error.response.data.detail, {
           position: "bottom-right",
           autoClose: 2000,
@@ -61,6 +60,7 @@ function Login() {
           progress: undefined,
           theme: "colored",
         });
+        setLoading(false);
       });
   };
 
