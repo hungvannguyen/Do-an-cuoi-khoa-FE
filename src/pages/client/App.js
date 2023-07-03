@@ -21,6 +21,7 @@ import OrderTracking from "./Order/OrderTracking";
 import { useState, useEffect } from "react";
 import Breadcrumb from "../../components/Breadcrumb/Breadcrumb";
 import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import ChartTest from "../../components/Chart/Chart";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -59,6 +60,7 @@ function App() {
         <Route path="/payment_success" element={<PaymentSuccessPage />} />
         <Route path="/payment_return" element={<PaymentReturn />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="/chart" element={<ChartTest />} />
       </Routes>
       <Footer />
     </div>
