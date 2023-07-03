@@ -108,6 +108,19 @@ function ProductDetail() {
       })
       .catch((error) => {
         console.log(error);
+        if (error.response.status === 401) {
+          toast.error("Chưa đăng nhập", {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+          });
+        }
+
         if (error.response.status === 400) {
           toast.error(error.response.data.detail, {
             position: "bottom-right",
