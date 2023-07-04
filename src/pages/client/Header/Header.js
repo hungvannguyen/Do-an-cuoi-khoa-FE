@@ -184,26 +184,8 @@ function Header() {
               </nav>
             </div>
             <div className="col-lg-4">
-              <div className="header__right">
+              <div className="header__right ">
                 {hasSessionData ? (
-                  // <ul className="header__right__widget">
-                  //   <li>
-                  //     <span
-                  //       className="fa fa-power-off"
-                  //       onClick={handleLogout}
-                  //     ></span>
-                  //   </li>
-                  //   <li>
-                  //     <Link to="#">
-                  //       <span className="fa fa-truck"></span>
-                  //     </Link>
-                  //   </li>
-                  //   <li>
-                  //     <Link to="#">
-                  //       <span className="fa-solid fa-user"></span>
-                  //     </Link>
-                  //   </li>
-                  // </ul>
                   <div
                     class="dropdown header__right__widget"
                     style={{ marginRight: 10 }}
