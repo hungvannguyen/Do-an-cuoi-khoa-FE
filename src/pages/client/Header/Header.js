@@ -16,6 +16,7 @@ function Header() {
   const searchParams = new URLSearchParams(location.search);
   const message = searchParams.get("message");
   // useState
+  const [logo, setLogo] = useState([]);
   const [categories, setCategories] = useState([]);
   const [countCart, setCountCart] = useState(0);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -24,6 +25,18 @@ function Header() {
 
   // tokenCheck
   let hasSessionData = sessionStorage.getItem("token") !== null;
+
+  // call API get logo
+  useEffect(() => {
+    axios
+      .get("/file/img/DHS_Logo_main_1.png", { responseType: "blob" })
+      .then((response) => {
+        setLogo((logo) => [...logo, URL.createObjectURL(response.data)]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
 
   // call API get categories
 
@@ -120,8 +133,12 @@ function Header() {
           <div className="row">
             <div className="col-xl-3 col-lg-3">
               <div className="header__logo">
-                <Link to="./index.html">
-                  <img src="img/logo.png" alt="" />
+                <Link to="/">
+                  <img
+                    src={logo}
+                    alt="Logo"
+                    style={{ width: 120, height: 31 }}
+                  />
                 </Link>
               </div>
             </div>
