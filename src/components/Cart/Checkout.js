@@ -41,7 +41,9 @@ function Checkout() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
-  const [addressDetail, setAddressDetail] = useState("");
+  let addressQuantity = 0;
+  const [address, setAddress] = useState([]);
+  const [addressDetail, setAddressDetail] = useState([]);
 
   // Set error
   const [nameError, setNameError] = useState("");
@@ -70,9 +72,9 @@ function Checkout() {
       })
       .then((response) => {
         setUserInfo(response.data);
-        setSelectedCityId(response.data.city_id);
-        setSelectedDistrictId(response.data.district_id);
-        setSelectedWardId(response.data.ward_id);
+        // setSelectedCityId(response.data.city_id);
+        // setSelectedDistrictId(response.data.district_id);
+        // setSelectedWardId(response.data.ward_id);
         setName(response.data.name);
         setPhone(response.data.phone_number);
         setEmail(response.data.email);
@@ -83,6 +85,38 @@ function Checkout() {
         }
         setLoading(false);
         console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("/address", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setAddress(response.data.data);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("/address/detail", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setAddressDetail(response.data.data);
+        addressQuantity = response.data.quantity;
       })
       .catch((error) => {
         console.log(error);
@@ -309,9 +343,9 @@ function Checkout() {
       setSelectedPaymentIdError("");
     }
 
-   
     if (hasError === false) {
-      axios .post(
+      axios
+        .post(
           "/order/add",
           {
             payment_type_id: selectedPaymentId,
@@ -369,17 +403,14 @@ function Checkout() {
             <div className="container">
               <div className="row">
                 <div className="col-lg-12">
-                  <h6 className="coupon__link">
-                    <span className="icon_tag_alt"></span>{" "}
-                    <a href="#">Have a coupon?</a> Click here to enter your
-                    code.
-                  </h6>
+                  <h6 className="coupon__link"></h6>
                 </div>
               </div>
               <form action="#" className="checkout__form">
                 <div className="row">
                   <div className="col-lg-8">
                     <h5>Billing detail</h5>
+
                     <div className="row">
                       <div
                         className={`col-lg-6 col-md-6 col-sm-6 ${
@@ -435,8 +466,13 @@ function Checkout() {
                           </p>
                           <input type="text" value={email} readOnly />
                         </div>
+                        {addressQuantity !== 0 ? (
+                          <button> ok</button>
+                        ) : (
+                          <button> no</button>
+                        )}
 
-                        <div className="row">
+                        {/* <div className="row">
                           <div
                             className={`checkout__form__input col-lg-6 col-md-6 col-sm-6 ${
                               addressDetailError ? "is-invalid" : ""
@@ -547,18 +583,7 @@ function Checkout() {
                               </div>
                             )}
                           </div>
-                          <div className="checkout__form__input col-lg-12 col-md-12 col-sm-12">
-                            <p>
-                              Ghi chú <span></span>
-                            </p>
-                            <textarea
-                              placeholder="Ghi chú"
-                              value={note}
-                              cols="91"
-                              onChange={(e) => setNote(e.target.value)}
-                            ></textarea>
-                          </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>
@@ -577,6 +602,17 @@ function Checkout() {
                             </li>
                           ))}
                         </ul>
+                      </div>
+                      <div className="checkout__form__input col-lg-12 col-md-12 col-sm-12">
+                        <p>
+                          Ghi chú <span></span>
+                        </p>
+                        <textarea
+                          placeholder="Ghi chú"
+                          value={note}
+                          cols="91"
+                          onChange={(e) => setNote(e.target.value)}
+                        ></textarea>
                       </div>
                       <div className="checkout__order__total">
                         <ul>
