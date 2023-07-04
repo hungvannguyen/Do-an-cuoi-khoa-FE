@@ -206,6 +206,7 @@ function Address() {
       <div className="container">
         <div className="row">
           <Navbar />
+
           <div className="col-lg-8" style={{ marginTop: 30 }}>
             <div className="card mb-4">
               <div className="card-body">
@@ -354,13 +355,63 @@ function Address() {
                           {wardError}
                         </div>
                       )}
-                      <button
-                        className="btn btn-primary"
-                        style={{ marginLeft: 30, marginTop: 20 }}
-                        onClick={handleUpdateAddress}
-                      >
-                        Cập nhật
-                      </button>
+                      <div className="d-flex">
+                        <button
+                          className="btn btn-primary"
+                          style={{ marginLeft: 30, marginTop: 20 }}
+                          onClick={handleUpdateAddress}
+                        >
+                          Cập nhật
+                        </button>
+
+                        <button
+                          type="button"
+                          class="btn btn-primary"
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModal"
+                          style={{ marginLeft: 30, marginTop: 20 }}
+                        >
+                          {" "}
+                          Cập nhật
+                        </button>
+
+                        <div
+                          class="modal fade"
+                          id="exampleModal"
+                          tabindex="-1"
+                          aria-labelledby="exampleModalLabel"
+                          aria-hidden="true"
+                        >
+                          <div class="modal-dialog">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">
+                                  Modal title
+                                </h5>
+                                <button
+                                  type="button"
+                                  class="btn-close"
+                                  data-bs-dismiss="modal"
+                                  aria-label="Close"
+                                ></button>
+                              </div>
+                              <div class="modal-body">...</div>
+                              <div class="modal-footer">
+                                <button
+                                  type="button"
+                                  class="btn btn-secondary"
+                                  data-bs-dismiss="modal"
+                                >
+                                  Close
+                                </button>
+                                <button type="button" class="btn btn-primary">
+                                  Save changes
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>

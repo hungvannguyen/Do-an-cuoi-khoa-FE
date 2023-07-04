@@ -5,6 +5,7 @@ function Footer() {
   return (
     <>
       <ChatBot />
+
       <footer className="footer">
         <div className="container">
           <div className="row">
