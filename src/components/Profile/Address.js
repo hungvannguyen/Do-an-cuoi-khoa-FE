@@ -7,6 +7,8 @@ import "react-toastify/dist/ReactToastify.css";
 function Address() {
   const [loading, setLoading] = useState(true);
   const token = sessionStorage.getItem("token");
+  const [name, setName] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [address, setAddress] = useState([]);
   const [addressDetail, setAddressDetail] = useState([]);
   let count = 1;
@@ -24,6 +26,8 @@ function Address() {
   const [selectedWardId, setSelectedWardId] = useState("");
 
   // Address error
+  const [nameError, setNameError] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState("");
   const [addressError, setAddressError] = useState("");
   const [cityError, setCityError] = useState("");
   const [districtError, setDistrictError] = useState("");
@@ -38,6 +42,13 @@ function Address() {
       })
       .then((response) => {
         setAddress(response.data.data);
+        setAddressError("");
+        setNameError("");
+        setPhoneNumberError("");
+        setCityError("");
+        setDistrictError("");
+        setWardError("");
+
         setLoading(false);
       })
       .catch((error) => {
@@ -107,10 +118,6 @@ function Address() {
       });
   }, [selectedDistrictId]);
 
-  const handleDetailChange = (detail) => {
-    setDetail(detail);
-  };
-
   const handleCityChange = async (event) => {
     const selectedCityId = event.target.value;
     setSelectedCityId(selectedCityId);
@@ -150,6 +157,16 @@ function Address() {
   const handleWardChange = (event) => {
     const selectedWardId = event.target.value;
     setSelectedWardId(selectedWardId);
+  };
+
+  const handleNameChange = (name) => {
+    setName(name);
+  };
+  const handlePhoneNumberChange = (phoneNumber) => {
+    setPhoneNumber(phoneNumber);
+  };
+  const handleDetailChange = (detail) => {
+    setDetail(detail);
   };
 
   // Delete Address
@@ -192,35 +209,60 @@ function Address() {
 
   // Add Address
   const handleAddAddress = (id) => {
+    let hasError = false;
+    if (!name) {
+      setNameError("Vui lòng nhập tên người nhận");
+      hasError = true;
+    } else {
+      setNameError("");
+    }
+    if (!phoneNumber) {
+      setPhoneNumberError("Vui lòng nhập số điện thoại");
+      hasError = true;
+    } else {
+      setPhoneNumberError("");
+    }
+    if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+      setPhoneNumberError("Số điện thoại không hợp lệ");
+      hasError = true;
+    } else {
+      setPhoneNumberError("");
+    }
+
     if (!detail) {
       setAddressError("Vui lòng nhập địa chỉ");
+      hasError = true;
+    } else {
+      setAddressError("");
     }
 
     if (!selectedCityId) {
       setCityError("Vui lòng chọn tỉnh/thành phố");
+      hasError = true;
+    } else {
+      setCityError("");
     }
 
     if (!selectedDistrictId) {
       setDistrictError("Vui lòng chọn quận/huyện");
+      hasError = true;
+    } else {
+      setDistrictError("");
     }
 
     if (!selectedWardId) {
       setWardError("Vui lòng chọn phường/xã");
+      hasError = true;
+    } else {
+      setWardError("");
     }
-    if (
-      !addressError &&
-      !cityError &&
-      !districtError &&
-      !wardError &&
-      address &&
-      selectedCityId &&
-      selectedDistrictId &&
-      selectedWardId
-    ) {
+    if (hasError === false) {
       axios
         .post(
           "/address/create",
           {
+            name: name,
+            phone_number: phoneNumber,
             city_id: selectedCityId,
             district_id: selectedDistrictId,
             ward_id: selectedWardId,
@@ -243,7 +285,9 @@ function Address() {
             progress: undefined,
             theme: "colored",
           });
+
           setTimeout(() => {
+            setLoading(true);
             window.location.reload();
           }, 2000);
         })
@@ -264,35 +308,60 @@ function Address() {
 
   // Update Address
   const handleUpdateAddress = (id) => {
+    let hasError = false;
+    if (!name) {
+      setNameError("Vui lòng nhập tên người nhận");
+      hasError = true;
+    } else {
+      setNameError("");
+    }
+    if (!phoneNumber) {
+      setPhoneNumberError("Vui lòng nhập số điện thoại");
+      hasError = true;
+    } else {
+      setPhoneNumberError("");
+    }
+    if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+      setPhoneNumberError("Số điện thoại không hợp lệ");
+      hasError = true;
+    } else {
+      setPhoneNumberError("");
+    }
+
     if (!detail) {
       setAddressError("Vui lòng nhập địa chỉ");
+      hasError = true;
+    } else {
+      setAddressError("");
     }
 
     if (!selectedCityId) {
       setCityError("Vui lòng chọn tỉnh/thành phố");
+      hasError = true;
+    } else {
+      setCityError("");
     }
 
     if (!selectedDistrictId) {
       setDistrictError("Vui lòng chọn quận/huyện");
+      hasError = true;
+    } else {
+      setDistrictError("");
     }
 
     if (!selectedWardId) {
       setWardError("Vui lòng chọn phường/xã");
+      hasError = true;
+    } else {
+      setWardError("");
     }
-    if (
-      !addressError &&
-      !cityError &&
-      !districtError &&
-      !wardError &&
-      address &&
-      selectedCityId &&
-      selectedDistrictId &&
-      selectedWardId
-    ) {
+    if (hasError === false) {
       axios
         .post(
           `/address/update?address_id=${id}`,
           {
+            name: name,
+            phone_number: phoneNumber,
             city_id: selectedCityId,
             district_id: selectedDistrictId,
             ward_id: selectedWardId,
@@ -405,7 +474,7 @@ function Address() {
                         <div class="modal-content">
                           <div class="modal-header">
                             <h5 class="modal-title" id="exampleModalLabel">
-                              Modal title
+                              Thêm địa chỉ mới
                             </h5>
                             <button
                               type="button"
@@ -414,7 +483,66 @@ function Address() {
                               aria-label="Close"
                             ></button>
                           </div>
+
                           <div class="modal-body">
+                            <div className="row">
+                              <div className="col-lg-6">
+                                <label
+                                  htmlFor="validationServer03"
+                                  className="form-label"
+                                >
+                                  Tên người nhận
+                                </label>
+                                <input
+                                  type="text"
+                                  className={`form-control ${
+                                    nameError ? "is-invalid" : ""
+                                  }`}
+                                  id="validationServer03"
+                                  aria-describedby="validationServer03Feedback"
+                                  onChange={(e) =>
+                                    handleNameChange(e.target.value)
+                                  }
+                                />
+
+                                {nameError && (
+                                  <div
+                                    id="validationServer03Feedback"
+                                    className="invalid-feedback"
+                                  >
+                                    {nameError}
+                                  </div>
+                                )}
+                              </div>
+                              <div className="col-lg-6">
+                                <label
+                                  htmlFor="validationServer03"
+                                  className="form-label"
+                                >
+                                  Số điện thoại
+                                </label>
+                                <input
+                                  type="text"
+                                  className={`form-control ${
+                                    phoneNumberError ? "is-invalid" : ""
+                                  }`}
+                                  id="validationServer03"
+                                  aria-describedby="validationServer03Feedback"
+                                  onChange={(e) =>
+                                    handlePhoneNumberChange(e.target.value)
+                                  }
+                                />
+
+                                {phoneNumberError && (
+                                  <div
+                                    id="validationServer03Feedback"
+                                    className="invalid-feedback"
+                                  >
+                                    {phoneNumberError}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
                             <label
                               htmlFor="validationServer03"
                               className="form-label"
@@ -596,16 +724,30 @@ function Address() {
                       </div>
                     </div>
 
+                    {/* Display infor */}
                     {address.map((address) => (
-                      <div class="row mb-4 ms-5 mt-5">
+                      <div
+                        class="row mb-4 ms-5 mt-5 pb-3"
+                        style={{ borderBottom: "1px solid black", width: 680 }}
+                      >
                         <div class="col-lg-6">
                           <label>
-                            <strong>Địa chỉ {count++}</strong>{" "}
+                            <strong>Địa chỉ {count++}</strong>
+                            {" - "}
+                            {address.is_default === 1 ? (
+                              <span style={{ color: "red" }}>
+                                Địa chỉ nhận hàng
+                              </span>
+                            ) : null}
                           </label>
                           {addressDetail.map((addressDetail) => {
                             if (address.id === addressDetail.id) {
                               return (
                                 <div>
+                                  <div>
+                                    {addressDetail.name} |{" "}
+                                    {addressDetail.phone_number}
+                                  </div>
                                   {addressDetail.detail} -{" "}
                                   {addressDetail.city_id} -{" "}
                                   {addressDetail.district_id} -{" "}
@@ -618,6 +760,7 @@ function Address() {
                           })}
                           {address.is_default === 99 ? (
                             <span
+                              className="btn btn-warning"
                               style={{
                                 color: "red",
                                 cursor: "pointer",
@@ -670,12 +813,14 @@ function Address() {
                                   {addressDetail.map((addressDetail) => {
                                     if (address.id === addressDetail.id) {
                                       return (
-                                        <div>
-                                          {addressDetail.detail} -{" "}
-                                          {addressDetail.city_id} -{" "}
-                                          {addressDetail.district_id} -{" "}
-                                          {addressDetail.ward_id}
-                                        </div>
+                                        <>
+                                          <div>
+                                            {addressDetail.detail} -{" "}
+                                            {addressDetail.city_id} -{" "}
+                                            {addressDetail.district_id} -{" "}
+                                            {addressDetail.ward_id}
+                                          </div>
+                                        </>
                                       );
                                     } else {
                                       return null;
@@ -729,7 +874,7 @@ function Address() {
                                     class="modal-title"
                                     id="exampleModalLabel"
                                   >
-                                    Modal title
+                                    Cập nhật địa chỉ
                                   </h5>
                                   <button
                                     type="button"
@@ -738,7 +883,69 @@ function Address() {
                                     aria-label="Close"
                                   ></button>
                                 </div>
+
                                 <div class="modal-body">
+                                  <div className="row">
+                                    <div className="col-lg-6">
+                                      <label
+                                        htmlFor="validationServer03"
+                                        className="form-label"
+                                      >
+                                        Tên người nhận
+                                      </label>
+                                      <input
+                                        type="text"
+                                        className={`form-control ${
+                                          nameError ? "is-invalid" : ""
+                                        }`}
+                                        id="validationServer03"
+                                        aria-describedby="validationServer03Feedback"
+                                        value={address.name}
+                                        onChange={(e) =>
+                                          handleNameChange(e.target.value)
+                                        }
+                                      />
+
+                                      {nameError && (
+                                        <div
+                                          id="validationServer03Feedback"
+                                          className="invalid-feedback"
+                                        >
+                                          {nameError}
+                                        </div>
+                                      )}
+                                    </div>
+                                    <div className="col-lg-6">
+                                      <label
+                                        htmlFor="validationServer03"
+                                        className="form-label"
+                                      >
+                                        Số điện thoại
+                                      </label>
+                                      <input
+                                        type="text"
+                                        className={`form-control ${
+                                          phoneNumberError ? "is-invalid" : ""
+                                        }`}
+                                        id="validationServer03"
+                                        aria-describedby="validationServer03Feedback"
+                                        onChange={(e) =>
+                                          handlePhoneNumberChange(
+                                            e.target.value
+                                          )
+                                        }
+                                      />
+
+                                      {phoneNumberError && (
+                                        <div
+                                          id="validationServer03Feedback"
+                                          className="invalid-feedback"
+                                        >
+                                          {phoneNumberError}
+                                        </div>
+                                      )}
+                                    </div>
+                                  </div>
                                   <label
                                     htmlFor="validationServer03"
                                     className="form-label"

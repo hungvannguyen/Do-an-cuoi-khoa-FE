@@ -2426,6 +2426,7 @@ ol {
 	padding-left: 20px;
 	color: #666666;
 }
+
 .checkout__form .checkout__form__input textarea {
 	height: 50px;
 	width: 100%;
@@ -2436,6 +2437,7 @@ ol {
 	padding-left: 20px;
 	color: #666666;
 }
+
 .checkout__form__input select {
 	height: 50px;
 	width: 100%;
@@ -2604,7 +2606,7 @@ ol {
 	padding-bottom: 10px;
 }
 
-.checkout__order__widget label {
+.checkout__order__widget input label {
 	display: block;
 	padding-left: 25px;
 	font-size: 14px;
@@ -2613,18 +2615,19 @@ ol {
 	position: relative;
 	cursor: pointer;
 	margin-bottom: 14px;
+	padding-left: 10px;
 }
 
-.checkout__order__widget label input {
-	position: absolute;
-	visibility: hidden;
+.checkout__order__widget input label {
+
+	position: relative;
 }
 
 .checkout__order__widget label input:checked~.checkmark {
 	border-color: #ca1515;
 }
 
-.checkout__order__widget label input:checked~.checkmark:after {
+.checkout__order__widget input:checked~.checkmark:after label {
 	border-color: #ca1515;
 	opacity: 1;
 }
