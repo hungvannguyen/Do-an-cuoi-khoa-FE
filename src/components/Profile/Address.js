@@ -7,9 +7,10 @@ import "react-toastify/dist/ReactToastify.css";
 function Address() {
   const [loading, setLoading] = useState(true);
   const token = sessionStorage.getItem("token");
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [address, setAddress] = useState([]);
+
+  const [name, setName] = useState([]);
+  const [phoneNumber, setPhoneNumber] = useState([]);
+  const [address, setAddress] = useState({ name: "", phoneNumber: "" });
   const [addressDetail, setAddressDetail] = useState([]);
   let count = 1;
 
@@ -48,7 +49,6 @@ function Address() {
         setCityError("");
         setDistrictError("");
         setWardError("");
-
         setLoading(false);
       })
       .catch((error) => {
@@ -159,8 +159,12 @@ function Address() {
     setSelectedWardId(selectedWardId);
   };
 
-  const handleNameChange = (name) => {
-    setName(name);
+  const handleNameChange = (value, index) => {
+    setAddress((prevAddress) => {
+      const updatedAddress = [...prevAddress];
+      updatedAddress[index] = { ...updatedAddress[index], name: value };
+      return updatedAddress;
+    });
   };
   const handlePhoneNumberChange = (phoneNumber) => {
     setPhoneNumber(phoneNumber);
@@ -725,8 +729,9 @@ function Address() {
                     </div>
 
                     {/* Display infor */}
-                    {address.map((address) => (
+                    {address.map((address, index) => (
                       <div
+                        key={index}
                         class="row mb-4 ms-5 mt-5 pb-3"
                         style={{ borderBottom: "1px solid black", width: 680 }}
                       >
@@ -902,7 +907,10 @@ function Address() {
                                         aria-describedby="validationServer03Feedback"
                                         value={address.name}
                                         onChange={(e) =>
-                                          handleNameChange(e.target.value)
+                                          handleNameChange(
+                                            e.target.value,
+                                            index
+                                          )
                                         }
                                       />
 

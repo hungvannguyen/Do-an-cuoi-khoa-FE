@@ -488,15 +488,15 @@ function Checkout() {
 
                     {addressQuantity > 0 ? (
                       // Display address if user has address
-
                       <>
                         <h6>
-                          <strong>Thông tin giao hàng:</strong>{" "}
+                          <strong className="mb-2">Thông tin giao hàng:</strong>{" "}
                         </h6>
+                        <br></br>
                         {addressDetail.map((item) => {
                           if (item.is_default === 1) {
                             return (
-                              <div key={item.id} className="d-flex">
+                              <div key={item.id} className="d-flex mb-4">
                                 <div className="me-5">
                                   {item.name} | {item.phone_number}
                                 </div>
@@ -514,7 +514,7 @@ function Checkout() {
                           data-bs-toggle="modal"
                           data-bs-target="#exampleModal"
                         >
-                          Launch demo modal
+                          Thay đổi địa chỉ
                         </button>
                         <div
                           class="modal fade"
