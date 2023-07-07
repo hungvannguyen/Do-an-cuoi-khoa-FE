@@ -9,8 +9,15 @@ function Address() {
   const token = sessionStorage.getItem("token");
 
   const [name, setName] = useState([]);
-  const [phoneNumber, setPhoneNumber] = useState([]);
-  const [address, setAddress] = useState({ name: "", phoneNumber: "" });
+  const [phone_number, setPhoneNumber] = useState([]);
+  const [address, setAddress] = useState({
+    name: "",
+    phone_number: "",
+    detail: "",
+    city_id: "",
+    district_id: "",
+    ward_id: "",
+  });
   const [addressDetail, setAddressDetail] = useState([]);
   let count = 1;
 
@@ -163,14 +170,43 @@ function Address() {
     setAddress((prevAddress) => {
       const updatedAddress = [...prevAddress];
       updatedAddress[index] = { ...updatedAddress[index], name: value };
+      setName(value);
       return updatedAddress;
     });
   };
-  const handlePhoneNumberChange = (phoneNumber) => {
-    setPhoneNumber(phoneNumber);
+
+  const handlePhoneNumberChange = (value, index) => {
+    setAddress((prevAddress) => {
+      const updatedAddress = [...prevAddress];
+      updatedAddress[index] = { ...updatedAddress[index], phone_number: value };
+      setPhoneNumber(value);
+      return updatedAddress;
+    });
   };
-  const handleDetailChange = (detail) => {
-    setDetail(detail);
+
+  const handleDetailChange = (value, index) => {
+    setAddress((prevAddress) => {
+      const updatedAddress = [...prevAddress];
+      updatedAddress[index] = { ...updatedAddress[index], detail: value };
+      setDetail(value);
+      return updatedAddress;
+    });
+  };
+
+  const handleAddressOpen = (city_id, district_id, ward_id, index) => {
+    setSelectedCityId(city_id);
+    setSelectedDistrictId(district_id);
+    setSelectedWardId(ward_id);
+    // setAddress((prevAddress) => {
+    //   const updatedAddress = [...prevAddress];
+    //   updatedAddress[index] = {
+    //     ...updatedAddress[index],
+    //     city_id: city_id,
+    //     district_id: district_id,
+    //     ward_id: ward_id,
+    //   };
+    //   return updatedAddress;
+    // });
   };
 
   // Delete Address
@@ -220,13 +256,13 @@ function Address() {
     } else {
       setNameError("");
     }
-    if (!phoneNumber) {
+    if (!phone_number) {
       setPhoneNumberError("Vui lòng nhập số điện thoại");
       hasError = true;
     } else {
       setPhoneNumberError("");
     }
-    if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+    if (phone_number.length < 10 || phone_number.length > 11) {
       setPhoneNumberError("Số điện thoại không hợp lệ");
       hasError = true;
     } else {
@@ -266,7 +302,7 @@ function Address() {
           "/address/create",
           {
             name: name,
-            phone_number: phoneNumber,
+            phone_number: phone_number,
             city_id: selectedCityId,
             district_id: selectedDistrictId,
             ward_id: selectedWardId,
@@ -319,13 +355,13 @@ function Address() {
     } else {
       setNameError("");
     }
-    if (!phoneNumber) {
+    if (!phone_number) {
       setPhoneNumberError("Vui lòng nhập số điện thoại");
       hasError = true;
     } else {
       setPhoneNumberError("");
     }
-    if (phoneNumber.length < 10 || phoneNumber.length > 11) {
+    if (phone_number.length < 10 || phone_number.length > 11) {
       setPhoneNumberError("Số điện thoại không hợp lệ");
       hasError = true;
     } else {
@@ -365,7 +401,7 @@ function Address() {
           `/address/update?address_id=${id}`,
           {
             name: name,
-            phone_number: phoneNumber,
+            phone_number: phone_number,
             city_id: selectedCityId,
             district_id: selectedDistrictId,
             ward_id: selectedWardId,
@@ -860,6 +896,14 @@ function Address() {
                             class="btn btn-primary"
                             data-bs-toggle="modal"
                             data-bs-target={`#Modal${address.id}`}
+                            onClick={() =>
+                              handleAddressOpen(
+                                address.city_id,
+                                address.district_id,
+                                address.ward_id,
+                                index
+                              )
+                            }
                           >
                             {" "}
                             Cập nhật
@@ -937,9 +981,11 @@ function Address() {
                                         }`}
                                         id="validationServer03"
                                         aria-describedby="validationServer03Feedback"
+                                        value={address.phone_number}
                                         onChange={(e) =>
                                           handlePhoneNumberChange(
-                                            e.target.value
+                                            e.target.value,
+                                            index
                                           )
                                         }
                                       />
@@ -967,8 +1013,9 @@ function Address() {
                                     }`}
                                     id="validationServer03"
                                     aria-describedby="validationServer03Feedback"
+                                    value={address.detail}
                                     onChange={(e) =>
-                                      handleDetailChange(e.target.value)
+                                      handleDetailChange(e.target.value, index)
                                     }
                                   />
 
@@ -1010,7 +1057,7 @@ function Address() {
                                       <option
                                         value={city.id}
                                         key={city.id}
-                                        selected={city.id === selectedCityId}
+                                        selected={city.id === address.city_id}
                                       >
                                         {city.name}
                                       </option>
@@ -1056,7 +1103,7 @@ function Address() {
                                         value={district.id}
                                         key={district.id}
                                         selected={
-                                          district.id === selectedDistrictId
+                                          district.id === address.district_id
                                         }
                                       >
                                         {district.name}
@@ -1102,7 +1149,7 @@ function Address() {
                                       <option
                                         value={ward.id}
                                         key={ward.id}
-                                        selected={ward.id === selectedWardId}
+                                        selected={ward.id === address.ward_id}
                                       >
                                         {ward.name}
                                       </option>
