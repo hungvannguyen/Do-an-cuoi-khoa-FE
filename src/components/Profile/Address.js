@@ -128,13 +128,15 @@ function Address() {
   const handleCityChange = async (event) => {
     const selectedCityId = event.target.value;
     setSelectedCityId(selectedCityId);
+    setSelectedDistrictId("");
+    setSelectedWardId("");
     try {
       const response = await axios.get(`/address/district/${selectedCityId}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      console.log(response.data);
+
       setDistrict(response.data);
     } catch (error) {
       console.log(error);
@@ -193,20 +195,21 @@ function Address() {
     });
   };
 
-  const handleAddressOpen = (city_id, district_id, ward_id, index) => {
+  const handleAddressOpen = (
+    name,
+    phone_number,
+    detail,
+    city_id,
+    district_id,
+    ward_id,
+    index
+  ) => {
+    setName(name);
+    setPhoneNumber(phone_number);
+    setDetail(detail);
     setSelectedCityId(city_id);
     setSelectedDistrictId(district_id);
     setSelectedWardId(ward_id);
-    // setAddress((prevAddress) => {
-    //   const updatedAddress = [...prevAddress];
-    //   updatedAddress[index] = {
-    //     ...updatedAddress[index],
-    //     city_id: city_id,
-    //     district_id: district_id,
-    //     ward_id: ward_id,
-    //   };
-    //   return updatedAddress;
-    // });
   };
 
   // Delete Address
@@ -898,6 +901,9 @@ function Address() {
                             data-bs-target={`#Modal${address.id}`}
                             onClick={() =>
                               handleAddressOpen(
+                                address.name,
+                                address.phone_number,
+                                address.detail,
                                 address.city_id,
                                 address.district_id,
                                 address.ward_id,

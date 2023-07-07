@@ -55,39 +55,63 @@ function Checkout() {
   const [selectedWardIdError, setSelectedWardIdError] = useState("");
   const [selectedPaymentIdError, setSelectedPaymentIdError] = useState("");
   //  useStates for (city, district, ward)
+  const [detail, setDetail] = useState("");
   const [cityName, setCityName] = useState("");
   const [districtName, setDistrictName] = useState("");
   const [wardName, setWardName] = useState("");
+
+  // Temp address
+  const [tempName, setTempName] = useState("");
+  const [tempPhone, setTempPhone] = useState("");
+  const [tempDetail, setTempDetail] = useState("");
+  const [tempCityName, setTempCityName] = useState("");
+  const [tempDistrictName, setTempDistrictName] = useState("");
+  const [tempWardName, setTempWardName] = useState("");
+  const [tempAddressId, setTempAddressId] = useState("");
 
   // Shipping fee
   const [shippingFee, setShippingFee] = useState(30000);
 
   // Call API get user info
   useEffect(() => {
-    axios
-      .get("/checkout/user_info", {
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-      })
-      .then((response) => {
-        setUserInfo(response.data);
-        setName(response.data.name);
-        setPhone(response.data.phone_number);
-        setEmail(response.data.email);
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get("/checkout/user_info", {
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        });
 
+        setUserInfo(response.data);
         setSelectedCityId(response.data.address.city_id);
         setSelectedDistrictId(response.data.address.district_id);
         setSelectedWardId(response.data.address.ward_id);
         setAddressQuantity(response.data.address.quantity);
         setAddressDetail(response.data.address.data);
         setLoading(false);
-        console.log(response.data);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.log(error);
-      });
+      }
+    };
+
+    fetchUserInfo();
   }, []);
+
+  //  Address default
+  useEffect(() => {
+    addressDetail.map((item) => {
+      if (item.is_default === 1) {
+        setSelectedOption(item.id);
+        setName(item.name);
+        setPhone(item.phone_number);
+        setDetail(item.detail);
+        setCityName(item.city);
+        setDistrictName(item.district);
+        setWardName(item.ward);
+        setAddressId(item.id);
+      }
+    });
+  }, [addressDetail]);
 
   // Call API get city
   useEffect(() => {
@@ -104,15 +128,6 @@ function Checkout() {
         console.log(error);
       });
   }, []);
-
-  // Check shipping fee when city change
-  // useEffect(() => {
-  //   if (selectedCityId === 1 || selectedCityId === "1") {
-  //     setShippingFee("");
-  //   } else {
-  //     setShippingFee(30000);
-  //   }
-  // }, [selectedCityId]);
 
   // Call API get district
   useEffect(() => {
@@ -182,8 +197,6 @@ function Checkout() {
 
   // Payment change handle
   const handlePaymentChange = (paymentId) => {
-    console.log("paymentId");
-    console.log(paymentId);
     setSelectedPaymentId(paymentId);
   };
   //  Format number
@@ -209,30 +222,23 @@ function Checkout() {
     setAddressDetail(event.target.value);
   };
 
-  //  Address default
-  useEffect(() => {
-    addressDetail.find((item) => {
-      console.log(item.city_id);
-      if (item.is_default === 1) {
-        if (item.city_id === 1) {
-          setShippingFee("");
-        } else {
-          setShippingFee(30000);
-        }
-        setAddressId(item.id);
-        setSelectedOption(item.id);
-        return true;
-      }
-      return false;
-    });
-  }, [addressId, addressDetail]);
-
   // Address change
   const handleOptionChange = (option) => {
     if (selectedOption === option) {
       setSelectedOption(null);
     } else {
       setSelectedOption(option);
+      const selectedAddress = addressDetail.find((item) => item.id === option);
+
+      if (selectedAddress) {
+        setTempName(selectedAddress.name);
+        setTempPhone(selectedAddress.phone_number);
+        setTempDetail(selectedAddress.detail);
+        setTempCityName(selectedAddress.city);
+        setTempDistrictName(selectedAddress.district);
+        setTempWardName(selectedAddress.ward);
+        setTempAddressId(selectedAddress.id);
+      }
     }
   };
 
@@ -264,39 +270,15 @@ function Checkout() {
 
   //  Handle default address
   const handleDefaultAddress = () => {
-    axios
-      .get(`/address/set_default?address_id=${selectedOption}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        toast.success("Đã cập nhật thành công", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 2000);
-      })
-      .catch((error) => {
-        toast.error("Cập nhật không thành công", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
-      });
+    setSelectedOption(selectedOption);
+
+    setName(tempName);
+    setPhone(tempPhone);
+    setDetail(tempDetail);
+    setCityName(tempCityName);
+    setDistrictName(tempDistrictName);
+    setWardName(tempWardName);
+    setAddressId(tempAddressId);
   };
 
   // Add Address
@@ -411,8 +393,6 @@ function Checkout() {
   const handlePlaceOrder = (e) => {
     e.preventDefault();
 
-    console.log(name);
-    console.log(note);
     // Validate form before submit
     let hasError = false;
 
@@ -493,114 +473,123 @@ function Checkout() {
                           <strong className="mb-2">Thông tin giao hàng:</strong>{" "}
                         </h6>
                         <br></br>
-                        {addressDetail.map((item) => {
-                          if (item.is_default === 1) {
-                            return (
-                              <div key={item.id} className="d-flex mb-4">
-                                <div className="me-5">
-                                  {item.name} | {item.phone_number}
-                                </div>
-                                {item.detail} - {item.city} - {item.district} -{" "}
-                                {item.ward}
-                              </div>
-                            );
-                          }
-                          return null;
-                        })}
 
-                        <button
-                          type="button"
-                          class="btn btn-primary"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModal"
-                        >
-                          Thay đổi địa chỉ
-                        </button>
-                        <div
-                          class="modal fade"
-                          id="exampleModal"
-                          tabindex="-1"
-                          aria-labelledby="exampleModalLabel"
-                          aria-hidden="true"
-                        >
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">
-                                  Danh sách địa chỉ
-                                </h5>
-                                <button
-                                  type="button"
-                                  class="btn-close"
-                                  data-bs-dismiss="modal"
-                                  aria-label="Close"
-                                ></button>
-                              </div>
-                              <div class="modal-body">
-                                {addressDetail.map((addressDetail) => (
-                                  <div
-                                    className="row mb-4 pb-4"
-                                    style={{
-                                      borderBottom: "1px solid gray",
-                                    }}
+                        <div className="d-flex mb-4">
+                          <div className="me-5">
+                            {name} | {phone}
+                          </div>
+                          {detail} - {cityName} - {districtName} - {wardName}
+                        </div>
+
+                        <div className="mb-4 d-flex ">
+                          <button
+                            type="button"
+                            class="btn btn-primary me-4"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModal"
+                          >
+                            Thay đổi địa chỉ
+                          </button>
+                          <div
+                            class="modal fade"
+                            id="exampleModal"
+                            tabindex="-1"
+                            aria-labelledby="exampleModalLabel"
+                            aria-hidden="true"
+                          >
+                            <div class="modal-dialog">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5
+                                    class="modal-title"
+                                    id="exampleModalLabel"
                                   >
-                                    <div className="col-lg-2">
-                                      <input
-                                        type="checkbox"
-                                        checked={
-                                          selectedOption === addressDetail.id
-                                        }
-                                        onChange={() =>
-                                          handleOptionChange(addressDetail.id)
-                                        }
-                                        id={addressDetail.id}
-                                      />
-                                    </div>
-                                    <div className=" col-lg-6">
-                                      <div>
-                                        <strong>{addressDetail.name}</strong> |{" "}
-                                        {addressDetail.phone_number}
+                                    Danh sách địa chỉ
+                                  </h5>
+                                  <button
+                                    type="button"
+                                    class="btn-close"
+                                    data-bs-dismiss="modal"
+                                    aria-label="Close"
+                                  ></button>
+                                </div>
+                                <div class="modal-body">
+                                  {addressDetail.map((addressDetail) => (
+                                    <div
+                                      className="row mb-4 pb-4"
+                                      style={{
+                                        borderBottom: "1px solid gray",
+                                      }}
+                                    >
+                                      <div className="col-lg-2">
+                                        <input
+                                          type="checkbox"
+                                          checked={
+                                            selectedOption === addressDetail.id
+                                          }
+                                          onChange={() =>
+                                            handleOptionChange(addressDetail.id)
+                                          }
+                                          id={addressDetail.id}
+                                        />
                                       </div>
-                                      {addressDetail.detail},{" "}
-                                      {addressDetail.city},{" "}
-                                      {addressDetail.district},{" "}
-                                      {addressDetail.ward}
-                                      <br></br>
-                                      <br></br>
-                                      {addressDetail.is_default === 1 ? (
-                                        <span
-                                          className=" p-1"
-                                          style={{
-                                            color: "red",
-                                            border: "1px solid red",
-                                          }}
-                                        >
-                                          Địa chỉ mặc định
-                                        </span>
-                                      ) : null}
+                                      <div className=" col-lg-6">
+                                        <div>
+                                          <strong>{addressDetail.name}</strong>{" "}
+                                          | {addressDetail.phone_number}
+                                        </div>
+                                        {addressDetail.detail},{" "}
+                                        {addressDetail.city},{" "}
+                                        {addressDetail.district},{" "}
+                                        {addressDetail.ward}
+                                        <br></br>
+                                        <br></br>
+                                        {addressDetail.is_default === 1 ? (
+                                          <span
+                                            className=" p-1"
+                                            style={{
+                                              color: "red",
+                                              border: "1px solid red",
+                                            }}
+                                          >
+                                            Địa chỉ mặc định
+                                          </span>
+                                        ) : null}
+                                      </div>
+                                      <div className="col-lg-4"></div>
                                     </div>
-                                  </div>
-                                ))}
-                              </div>
+                                  ))}
+                                </div>
 
-                              <div class="modal-footer">
-                                <button
-                                  type="button"
-                                  class="btn btn-secondary"
-                                  data-bs-dismiss="modal"
-                                >
-                                  Close
-                                </button>
-                                <button
-                                  type="button"
-                                  class="btn btn-primary"
-                                  onClick={handleDefaultAddress}
-                                >
-                                  Thay đổi
-                                </button>
+                                <div class="modal-footer">
+                                  <button
+                                    type="button"
+                                    class="btn btn-secondary"
+                                    data-bs-dismiss="modal"
+                                  >
+                                    Close
+                                  </button>
+                                  <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                    onClick={handleDefaultAddress}
+                                  >
+                                    Thay đổi
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           </div>
+                          {addressQuantity < 5 && (
+                            <button
+                              type="button"
+                              className="btn btn-primary d-flex align-items-center justify-content-center"
+                              data-bs-toggle="modal"
+                              data-bs-target="#AddNewAddress"
+                            >
+                              Thêm mới địa chỉ
+                            </button>
+                          )}
                         </div>
                       </>
                     ) : (
@@ -614,248 +603,6 @@ function Checkout() {
                         >
                           Thêm mới địa chỉ
                         </button>
-
-                        {/* Modal add new Address*/}
-                        <div
-                          class="modal fade"
-                          id="AddNewAddress"
-                          tabindex="-1"
-                          aria-labelledby="exampleModalLabel"
-                          aria-hidden="true"
-                        >
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">
-                                  Thêm mới địa chỉ
-                                </h5>
-                                <button
-                                  type="button"
-                                  class="btn-close"
-                                  data-bs-dismiss="modal"
-                                  aria-label="Close"
-                                ></button>
-                              </div>
-                              <div class="modal-body">
-                                <div className="row">
-                                  <div
-                                    className={`col-lg-6 col-md-6 col-sm-6 ${
-                                      nameError ? "is-invalid" : ""
-                                    }`}
-                                  >
-                                    <div className="checkout__form__input">
-                                      <p>
-                                        Tên người nhận <span>*</span>
-                                      </p>
-                                      <input
-                                        type="text"
-                                        onChange={handleNameChange}
-                                      />
-                                    </div>
-                                    {nameError && (
-                                      <div
-                                        className="alert alert-danger"
-                                        role="alert"
-                                      >
-                                        {nameError}
-                                      </div>
-                                    )}
-                                  </div>
-                                  <div
-                                    className={`col-lg-6 col-md-6 col-sm-6 ${
-                                      phoneError ? "is-invalid" : ""
-                                    }`}
-                                  >
-                                    <div className="checkout__form__input">
-                                      <p>
-                                        Số điện thoại <span>*</span>
-                                      </p>
-                                      <input
-                                        type="text"
-                                        onChange={handlePhoneChange}
-                                      />
-                                      {phoneError && (
-                                        <div
-                                          className="alert alert-danger"
-                                          role="alert"
-                                        >
-                                          {phoneError}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  {/* <div
-                                    className={`col-lg-12 ${
-                                      emailError ? "is-invalid" : ""
-                                    }`}
-                                  >
-                                    <div className="checkout__form__input">
-                                      <p>
-                                        Email <span>*</span>
-                                      </p>
-                                      <input type="text" readOnly />
-                                    </div> */}
-
-                                  <div className="row">
-                                    <div
-                                      className={`checkout__form__input col-lg-6 col-md-6 col-sm-6 ${
-                                        addressDetailError ? "is-invalid" : ""
-                                      }`}
-                                    >
-                                      <p>
-                                        Địa chỉ <span>*</span>
-                                      </p>
-                                      <input
-                                        type="text"
-                                        onChange={handleAddressDetailChange}
-                                      />
-                                      {addressDetailError && (
-                                        <div
-                                          className="alert alert-danger"
-                                          role="alert"
-                                        >
-                                          {addressDetailError}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div
-                                      className={`checkout__form__input col-lg-6 col-md-6 col-sm-6${
-                                        selectedCityIdError ? "is-invalid" : ""
-                                      }`}
-                                    >
-                                      <p>
-                                        Thành phố <span>*</span>
-                                      </p>
-                                      <select
-                                        onChange={(e) => {
-                                          setSelectedCityId(e.target.value);
-                                        }}
-                                      >
-                                        <option value="">
-                                          -- Chọn thành phố --
-                                        </option>
-                                        {city.map((item) => (
-                                          <option
-                                            key={item.id}
-                                            value={item.id}
-                                            selected={
-                                              item.id === selectedCityId
-                                            }
-                                          >
-                                            {item.name}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      {selectedCityIdError && (
-                                        <div
-                                          className="alert alert-danger"
-                                          role="alert"
-                                        >
-                                          {selectedCityIdError}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div
-                                      className={`checkout__form__input col-lg-6 col-md-6 col-sm-6${
-                                        selectedDistrictIdError
-                                          ? "is-invalid"
-                                          : ""
-                                      }`}
-                                    >
-                                      <p>
-                                        Quận/Huyện <span>*</span>
-                                      </p>
-                                      <select
-                                        onChange={(e) =>
-                                          setSelectedDistrictId(e.target.value)
-                                        }
-                                      >
-                                        <option value="">
-                                          -- Chọn quận/huyện --
-                                        </option>
-                                        {district.map((item) => (
-                                          <option
-                                            key={item.id}
-                                            value={item.id}
-                                            selected={
-                                              item.id === selectedDistrictId
-                                            }
-                                          >
-                                            {item.name}
-                                          </option>
-                                        ))}
-                                        ...
-                                      </select>
-                                      {selectedDistrictIdError && (
-                                        <div
-                                          className="alert alert-danger"
-                                          role="alert"
-                                        >
-                                          {selectedDistrictIdError}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div
-                                      className={`checkout__form__input col-lg-6 col-md-6 col-sm-6${
-                                        selectedWardIdError ? "is-invalid" : ""
-                                      }`}
-                                    >
-                                      <p>
-                                        Phường/Xã <span>*</span>
-                                      </p>
-                                      <select
-                                        onChange={(e) =>
-                                          setSelectedWardId(e.target.value)
-                                        }
-                                      >
-                                        <option value="">
-                                          -- Chọn phường/xã --
-                                        </option>
-                                        {ward.map((item) => (
-                                          <option
-                                            key={item.id}
-                                            value={item.id}
-                                            selected={
-                                              item.id === selectedWardId
-                                            }
-                                          >
-                                            {item.name}
-                                          </option>
-                                        ))}
-                                      </select>
-                                      {selectedWardIdError && (
-                                        <div
-                                          className="alert alert-danger"
-                                          role="alert"
-                                        >
-                                          {selectedWardIdError}
-                                        </div>
-                                      )}
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                              <div class="modal-footer">
-                                <button
-                                  type="button"
-                                  class="btn btn-secondary"
-                                  data-bs-dismiss="modal"
-                                >
-                                  Đóng
-                                </button>
-                                <button
-                                  type="button"
-                                  class="btn btn-primary"
-                                  onClick={handleAddAddress}
-                                >
-                                  Thêm mới
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                        {/* </div> */}
                       </>
                     )}
                   </div>
@@ -937,6 +684,201 @@ function Checkout() {
           </section>
         </>
       )}
+
+      {/* Modal add new Address*/}
+      <div
+        class="modal fade"
+        id="AddNewAddress"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">
+                Thêm mới địa chỉ
+              </h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body">
+              <div className="row">
+                <div
+                  className={`col-lg-6 col-md-6 col-sm-6 ${
+                    nameError ? "is-invalid" : ""
+                  }`}
+                >
+                  <div className="checkout__form__input">
+                    <p>
+                      Tên người nhận <span>*</span>
+                    </p>
+                    <input type="text" onChange={handleNameChange} />
+                  </div>
+                  {nameError && (
+                    <div className="alert alert-danger" role="alert">
+                      {nameError}
+                    </div>
+                  )}
+                </div>
+                <div
+                  className={`col-lg-6 col-md-6 col-sm-6 ${
+                    phoneError ? "is-invalid" : ""
+                  }`}
+                >
+                  <div className="checkout__form__input">
+                    <p>
+                      Số điện thoại <span>*</span>
+                    </p>
+                    <input type="text" onChange={handlePhoneChange} />
+                    {phoneError && (
+                      <div className="alert alert-danger" role="alert">
+                        {phoneError}
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* <div
+                                    className={`col-lg-12 ${
+                                      emailError ? "is-invalid" : ""
+                                    }`}
+                                  >
+                                    <div className="checkout__form__input">
+                                      <p>
+                                        Email <span>*</span>
+                                      </p>
+                                      <input type="text" readOnly />
+                                    </div> */}
+
+                <div className="row">
+                  <div
+                    className={`checkout__form__input col-lg-6 col-md-6 col-sm-6 ${
+                      addressDetailError ? "is-invalid" : ""
+                    }`}
+                  >
+                    <p>
+                      Địa chỉ <span>*</span>
+                    </p>
+                    <input type="text" onChange={handleAddressDetailChange} />
+                    {addressDetailError && (
+                      <div className="alert alert-danger" role="alert">
+                        {addressDetailError}
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    className={`checkout__form__input col-lg-6 col-md-6 col-sm-6${
+                      selectedCityIdError ? "is-invalid" : ""
+                    }`}
+                  >
+                    <p>
+                      Thành phố <span>*</span>
+                    </p>
+                    <select
+                      onChange={(e) => {
+                        setSelectedCityId(e.target.value);
+                      }}
+                    >
+                      <option value="">-- Chọn thành phố --</option>
+                      {city.map((item) => (
+                        <option
+                          key={item.id}
+                          value={item.id}
+                          selected={item.id === selectedCityId}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                    {selectedCityIdError && (
+                      <div className="alert alert-danger" role="alert">
+                        {selectedCityIdError}
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    className={`checkout__form__input col-lg-6 col-md-6 col-sm-6${
+                      selectedDistrictIdError ? "is-invalid" : ""
+                    }`}
+                  >
+                    <p>
+                      Quận/Huyện <span>*</span>
+                    </p>
+                    <select
+                      onChange={(e) => setSelectedDistrictId(e.target.value)}
+                    >
+                      <option value="">-- Chọn quận/huyện --</option>
+                      {district.map((item) => (
+                        <option
+                          key={item.id}
+                          value={item.id}
+                          selected={item.id === selectedDistrictId}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                      ...
+                    </select>
+                    {selectedDistrictIdError && (
+                      <div className="alert alert-danger" role="alert">
+                        {selectedDistrictIdError}
+                      </div>
+                    )}
+                  </div>
+                  <div
+                    className={`checkout__form__input col-lg-6 col-md-6 col-sm-6${
+                      selectedWardIdError ? "is-invalid" : ""
+                    }`}
+                  >
+                    <p>
+                      Phường/Xã <span>*</span>
+                    </p>
+                    <select onChange={(e) => setSelectedWardId(e.target.value)}>
+                      <option value="">-- Chọn phường/xã --</option>
+                      {ward.map((item) => (
+                        <option
+                          key={item.id}
+                          value={item.id}
+                          selected={item.id === selectedWardId}
+                        >
+                          {item.name}
+                        </option>
+                      ))}
+                    </select>
+                    {selectedWardIdError && (
+                      <div className="alert alert-danger" role="alert">
+                        {selectedWardIdError}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Đóng
+              </button>
+              <button
+                type="button"
+                class="btn btn-primary"
+                onClick={handleAddAddress}
+              >
+                Thêm mới
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* </div> */}
     </div>
   );
 }
