@@ -1,7 +1,8 @@
 import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
 import axios from "axios";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function OrderTracking() {
   // token
   const token = sessionStorage.getItem("token");
@@ -190,6 +191,35 @@ function OrderTracking() {
       });
   };
 
+  const handleOrderCancel = (id) => {
+    axios
+      .delete(`/order/cancel?order_id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        toast.success("Đã hủy đơn hàng thành công", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+
+        setTimeout(() => {
+          setLoading(true);
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   // Format number
   const formatNumber = (number) => {
     if (number) {
@@ -298,9 +328,9 @@ function OrderTracking() {
                       </ul>
                       <hr />
                       <div className="row">
-                        <div className="col-md-3 col-lg-3">
+                        <div className="col-md-6 col-lg-6">
                           <strong>Phương thức thanh toán:</strong>{" "}
-                          {item.bankCode}
+                          {item.payment_type}
                           <br />
                           <strong>Tình trạng:</strong>{" "}
                           {item.payment_status === 0
@@ -331,10 +361,57 @@ function OrderTracking() {
                                   </a>
                                 </div>
                               )}
-
-                            <a className="btn btn-danger" data-abc="true">
+                            <button
+                              type="button"
+                              class="btn btn-danger"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#orderCancel${item.id}`}
+                            >
                               Hủy đơn
-                            </a>
+                            </button>
+                            <div
+                              class="modal fade"
+                              id={`orderCancel${item.id}`}
+                              tabindex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="exampleModalLabel"
+                                    >
+                                      Huỷ đơn hàng {item.id}
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div class="modal-body">...</div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-bs-dismiss="modal"
+                                    >
+                                      Đóng
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-primary"
+                                      onClick={() => handleOrderCancel(item.id)}
+                                    >
+                                      Huỷ đơn
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </div>
                         )}
                       </div>
@@ -355,7 +432,7 @@ function OrderTracking() {
                 </>
               ) : (
                 <div className="col-lg-9 col-md-9 text-center">
-                  <p>Không có sản phẩm</p>
+                  <p>Không có đơn hàng</p>
                 </div>
               )}
             </article>

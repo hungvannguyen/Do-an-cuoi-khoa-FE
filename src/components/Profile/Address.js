@@ -59,6 +59,7 @@ function Address() {
         setLoading(false);
       })
       .catch((error) => {
+        setLoading(false);
         console.log(error);
       });
   }, []);
@@ -72,9 +73,11 @@ function Address() {
       })
       .then((response) => {
         setAddressDetail(response.data.data);
+        setLoading(false);
       })
       .catch((error) => {
         console.log(error);
+        setLoading(false);
       });
   }, []);
 
@@ -497,15 +500,22 @@ function Address() {
 
                 <div className="col-lg-8" style={{ marginTop: 30 }}>
                   <div className="card mb-4">
-                    <button
-                      type="button"
-                      class="btn btn-primary"
-                      data-bs-toggle="modal"
-                      data-bs-target="#Add"
-                    >
-                      {" "}
-                      Thêm địa chỉ
-                    </button>
+                    {address.length < 5 ? (
+                      <button
+                        type="button"
+                        class="btn btn-primary"
+                        data-bs-toggle="modal"
+                        data-bs-target="#Add"
+                      >
+                        {" "}
+                        Thêm địa chỉ
+                      </button>
+                    ) : (
+                      <button type="button" class="btn btn-primary">
+                        Địa chỉ giao hàng
+                      </button>
+                    )}
+
                     <div
                       class="modal fade"
                       id="Add"
@@ -755,6 +765,7 @@ function Address() {
                             >
                               Close
                             </button>
+
                             <button
                               type="button"
                               class="btn btn-primary"
@@ -768,432 +779,446 @@ function Address() {
                     </div>
 
                     {/* Display infor */}
-                    {address.map((address, index) => (
-                      <div
-                        key={index}
-                        class="row mb-4 ms-5 mt-5 pb-3"
-                        style={{ borderBottom: "1px solid black", width: 680 }}
-                      >
-                        <div class="col-lg-6">
-                          <label>
-                            <strong>Địa chỉ {count++}</strong>
-                            {" - "}
-                            {address.is_default === 1 ? (
-                              <span style={{ color: "red" }}>
-                                Địa chỉ nhận hàng
+
+                    {address.length > 0 ? (
+                      address.map((address, index) => (
+                        <div
+                          key={index}
+                          class="row mb-4 ms-5 mt-5 pb-3"
+                          style={{
+                            borderBottom: "1px solid black",
+                            width: 680,
+                          }}
+                        >
+                          <div class="col-lg-6">
+                            <label>
+                              <strong>Địa chỉ {count++}</strong>
+                              {" - "}
+                              {address.is_default === 1 ? (
+                                <span style={{ color: "red" }}>
+                                  Địa chỉ nhận hàng
+                                </span>
+                              ) : null}
+                            </label>
+                            {addressDetail.map((addressDetail) => {
+                              if (address.id === addressDetail.id) {
+                                return (
+                                  <div>
+                                    <div>
+                                      {addressDetail.name} |{" "}
+                                      {addressDetail.phone_number}
+                                    </div>
+                                    {addressDetail.detail} -{" "}
+                                    {addressDetail.city_id} -{" "}
+                                    {addressDetail.district_id} -{" "}
+                                    {addressDetail.ward_id}
+                                  </div>
+                                );
+                              } else {
+                                return null;
+                              }
+                            })}
+                            {address.is_default === 99 ? (
+                              <span
+                                className="btn btn-warning"
+                                style={{
+                                  color: "red",
+                                  cursor: "pointer",
+                                  fontSize: "12px",
+                                }}
+                                onClick={() =>
+                                  handleSetDefaultAddress(address.id)
+                                }
+                              >
+                                Đặt làm mặc định
                               </span>
                             ) : null}
-                          </label>
-                          {addressDetail.map((addressDetail) => {
-                            if (address.id === addressDetail.id) {
-                              return (
-                                <div>
-                                  <div>
-                                    {addressDetail.name} |{" "}
-                                    {addressDetail.phone_number}
+                          </div>
+
+                          <div class="col-lg-2 ">
+                            <button
+                              type="button"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#deleteModal${address.id}`}
+                              className="btn btn-danger mb-2"
+                            >
+                              Xóa
+                            </button>
+
+                            <div
+                              class="modal fade"
+                              id={`deleteModal${address.id}`}
+                              tabindex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="exampleModalLabel"
+                                    >
+                                      Bạn có chắc chắn muốn xóa địa chỉ này
+                                      không?
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
                                   </div>
-                                  {addressDetail.detail} -{" "}
-                                  {addressDetail.city_id} -{" "}
-                                  {addressDetail.district_id} -{" "}
-                                  {addressDetail.ward_id}
+                                  <div class="modal-body">
+                                    {" "}
+                                    {addressDetail.map((addressDetail) => {
+                                      if (address.id === addressDetail.id) {
+                                        return (
+                                          <>
+                                            <div>
+                                              {addressDetail.detail} -{" "}
+                                              {addressDetail.city_id} -{" "}
+                                              {addressDetail.district_id} -{" "}
+                                              {addressDetail.ward_id}
+                                            </div>
+                                          </>
+                                        );
+                                      } else {
+                                        return null;
+                                      }
+                                    })}
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-bs-dismiss="modal"
+                                    >
+                                      Đóng
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-primary"
+                                      onClick={() =>
+                                        handleDeleteAddress(address.id)
+                                      }
+                                    >
+                                      Xóa
+                                    </button>
+                                  </div>
                                 </div>
-                              );
-                            } else {
-                              return null;
-                            }
-                          })}
-                          {address.is_default === 99 ? (
-                            <span
-                              className="btn btn-warning"
-                              style={{
-                                color: "red",
-                                cursor: "pointer",
-                                fontSize: "12px",
-                              }}
+                              </div>
+                            </div>
+
+                            {/* Update */}
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#Modal${address.id}`}
                               onClick={() =>
-                                handleSetDefaultAddress(address.id)
+                                handleAddressOpen(
+                                  address.name,
+                                  address.phone_number,
+                                  address.detail,
+                                  address.city_id,
+                                  address.district_id,
+                                  address.ward_id,
+                                  index
+                                )
                               }
                             >
-                              Đặt làm mặc định
-                            </span>
-                          ) : null}
-                        </div>
+                              {" "}
+                              Cập nhật
+                            </button>
 
-                        <div class="col-lg-2 ">
-                          <button
-                            type="button"
-                            data-bs-toggle="modal"
-                            data-bs-target={`#deleteModal${address.id}`}
-                            className="btn btn-danger mb-2"
-                          >
-                            Xóa
-                          </button>
-
-                          <div
-                            class="modal fade"
-                            id={`deleteModal${address.id}`}
-                            tabindex="-1"
-                            aria-labelledby="exampleModalLabel"
-                            aria-hidden="true"
-                          >
-                            <div class="modal-dialog">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5
-                                    class="modal-title"
-                                    id="exampleModalLabel"
-                                  >
-                                    Bạn có chắc chắn muốn xóa địa chỉ này không?
-                                  </h5>
-                                  <button
-                                    type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                                  ></button>
-                                </div>
-                                <div class="modal-body">
-                                  {" "}
-                                  {addressDetail.map((addressDetail) => {
-                                    if (address.id === addressDetail.id) {
-                                      return (
-                                        <>
-                                          <div>
-                                            {addressDetail.detail} -{" "}
-                                            {addressDetail.city_id} -{" "}
-                                            {addressDetail.district_id} -{" "}
-                                            {addressDetail.ward_id}
-                                          </div>
-                                        </>
-                                      );
-                                    } else {
-                                      return null;
-                                    }
-                                  })}
-                                </div>
-                                <div class="modal-footer">
-                                  <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                                  >
-                                    Đóng
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="btn btn-primary"
-                                    onClick={() =>
-                                      handleDeleteAddress(address.id)
-                                    }
-                                  >
-                                    Xóa
-                                  </button>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Update */}
-                          <button
-                            type="button"
-                            class="btn btn-primary"
-                            data-bs-toggle="modal"
-                            data-bs-target={`#Modal${address.id}`}
-                            onClick={() =>
-                              handleAddressOpen(
-                                address.name,
-                                address.phone_number,
-                                address.detail,
-                                address.city_id,
-                                address.district_id,
-                                address.ward_id,
-                                index
-                              )
-                            }
-                          >
-                            {" "}
-                            Cập nhật
-                          </button>
-
-                          <div
-                            class="modal fade"
-                            id={`Modal${address.id}`}
-                            tabindex="-1"
-                            aria-labelledby="exampleModalLabel"
-                            aria-hidden="true"
-                          >
-                            <div class="modal-dialog">
-                              <div class="modal-content">
-                                <div class="modal-header">
-                                  <h5
-                                    class="modal-title"
-                                    id="exampleModalLabel"
-                                  >
-                                    Cập nhật địa chỉ
-                                  </h5>
-                                  <button
-                                    type="button"
-                                    class="btn-close"
-                                    data-bs-dismiss="modal"
-                                    aria-label="Close"
-                                  ></button>
-                                </div>
-
-                                <div class="modal-body">
-                                  <div className="row">
-                                    <div className="col-lg-6">
-                                      <label
-                                        htmlFor="validationServer03"
-                                        className="form-label"
-                                      >
-                                        Tên người nhận
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className={`form-control ${
-                                          nameError ? "is-invalid" : ""
-                                        }`}
-                                        id="validationServer03"
-                                        aria-describedby="validationServer03Feedback"
-                                        value={address.name}
-                                        onChange={(e) =>
-                                          handleNameChange(
-                                            e.target.value,
-                                            index
-                                          )
-                                        }
-                                      />
-
-                                      {nameError && (
-                                        <div
-                                          id="validationServer03Feedback"
-                                          className="invalid-feedback"
-                                        >
-                                          {nameError}
-                                        </div>
-                                      )}
-                                    </div>
-                                    <div className="col-lg-6">
-                                      <label
-                                        htmlFor="validationServer03"
-                                        className="form-label"
-                                      >
-                                        Số điện thoại
-                                      </label>
-                                      <input
-                                        type="text"
-                                        className={`form-control ${
-                                          phoneNumberError ? "is-invalid" : ""
-                                        }`}
-                                        id="validationServer03"
-                                        aria-describedby="validationServer03Feedback"
-                                        value={address.phone_number}
-                                        onChange={(e) =>
-                                          handlePhoneNumberChange(
-                                            e.target.value,
-                                            index
-                                          )
-                                        }
-                                      />
-
-                                      {phoneNumberError && (
-                                        <div
-                                          id="validationServer03Feedback"
-                                          className="invalid-feedback"
-                                        >
-                                          {phoneNumberError}
-                                        </div>
-                                      )}
-                                    </div>
+                            <div
+                              class="modal fade"
+                              id={`Modal${address.id}`}
+                              tabindex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="exampleModalLabel"
+                                    >
+                                      Cập nhật địa chỉ
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
                                   </div>
-                                  <label
-                                    htmlFor="validationServer03"
-                                    className="form-label"
-                                  >
-                                    Địa chỉ
-                                  </label>
-                                  <input
-                                    type="text"
-                                    className={`form-control ${
-                                      addressError ? "is-invalid" : ""
-                                    }`}
-                                    id="validationServer03"
-                                    aria-describedby="validationServer03Feedback"
-                                    value={address.detail}
-                                    onChange={(e) =>
-                                      handleDetailChange(e.target.value, index)
-                                    }
-                                  />
 
-                                  {addressError && (
-                                    <div
-                                      id="validationServer03Feedback"
-                                      className="invalid-feedback"
-                                    >
-                                      {addressError}
+                                  <div class="modal-body">
+                                    <div className="row">
+                                      <div className="col-lg-6">
+                                        <label
+                                          htmlFor="validationServer03"
+                                          className="form-label"
+                                        >
+                                          Tên người nhận
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className={`form-control ${
+                                            nameError ? "is-invalid" : ""
+                                          }`}
+                                          id="validationServer03"
+                                          aria-describedby="validationServer03Feedback"
+                                          value={address.name}
+                                          onChange={(e) =>
+                                            handleNameChange(
+                                              e.target.value,
+                                              index
+                                            )
+                                          }
+                                        />
+
+                                        {nameError && (
+                                          <div
+                                            id="validationServer03Feedback"
+                                            className="invalid-feedback"
+                                          >
+                                            {nameError}
+                                          </div>
+                                        )}
+                                      </div>
+                                      <div className="col-lg-6">
+                                        <label
+                                          htmlFor="validationServer03"
+                                          className="form-label"
+                                        >
+                                          Số điện thoại
+                                        </label>
+                                        <input
+                                          type="text"
+                                          className={`form-control ${
+                                            phoneNumberError ? "is-invalid" : ""
+                                          }`}
+                                          id="validationServer03"
+                                          aria-describedby="validationServer03Feedback"
+                                          value={address.phone_number}
+                                          onChange={(e) =>
+                                            handlePhoneNumberChange(
+                                              e.target.value,
+                                              index
+                                            )
+                                          }
+                                        />
+
+                                        {phoneNumberError && (
+                                          <div
+                                            id="validationServer03Feedback"
+                                            className="invalid-feedback"
+                                          >
+                                            {phoneNumberError}
+                                          </div>
+                                        )}
+                                      </div>
                                     </div>
-                                  )}
-                                </div>
+                                    <label
+                                      htmlFor="validationServer03"
+                                      className="form-label"
+                                    >
+                                      Địa chỉ
+                                    </label>
+                                    <input
+                                      type="text"
+                                      className={`form-control ${
+                                        addressError ? "is-invalid" : ""
+                                      }`}
+                                      id="validationServer03"
+                                      aria-describedby="validationServer03Feedback"
+                                      value={address.detail}
+                                      onChange={(e) =>
+                                        handleDetailChange(
+                                          e.target.value,
+                                          index
+                                        )
+                                      }
+                                    />
 
-                                <div
-                                  className="col-md-8 col-lg-8  d-flex flex-column justify-content-center align-items-center"
-                                  style={{
-                                    margin: "auto",
-                                    paddingTop: 20,
-                                  }}
-                                >
-                                  <label
-                                    htmlFor="validationServer04"
-                                    className="form-label"
-                                  >
-                                    Tỉnh / Thành phố
-                                  </label>
-                                  <select
-                                    className={`form-control ${
-                                      cityError ? "is-invalid" : ""
-                                    }`}
-                                    id="validationServer04"
-                                    aria-describedby="validationServer04Feedback"
-                                    onChange={handleCityChange}
-                                  >
-                                    <option selected disabled value="">
-                                      Chọn tỉnh/thành phố
-                                    </option>
-                                    {city.map((city) => (
-                                      <option
-                                        value={city.id}
-                                        key={city.id}
-                                        selected={city.id === address.city_id}
+                                    {addressError && (
+                                      <div
+                                        id="validationServer03Feedback"
+                                        className="invalid-feedback"
                                       >
-                                        {city.name}
-                                      </option>
-                                    ))}
-                                  </select>
+                                        {addressError}
+                                      </div>
+                                    )}
+                                  </div>
 
-                                  {cityError && (
-                                    <div
-                                      id="validationServer04Feedback"
-                                      className="invalid-feedback"
+                                  <div
+                                    className="col-md-8 col-lg-8  d-flex flex-column justify-content-center align-items-center"
+                                    style={{
+                                      margin: "auto",
+                                      paddingTop: 20,
+                                    }}
+                                  >
+                                    <label
+                                      htmlFor="validationServer04"
+                                      className="form-label"
                                     >
-                                      {cityError}
-                                    </div>
-                                  )}
-                                </div>
+                                      Tỉnh / Thành phố
+                                    </label>
+                                    <select
+                                      className={`form-control ${
+                                        cityError ? "is-invalid" : ""
+                                      }`}
+                                      id="validationServer04"
+                                      aria-describedby="validationServer04Feedback"
+                                      onChange={handleCityChange}
+                                    >
+                                      <option selected disabled value="">
+                                        Chọn tỉnh/thành phố
+                                      </option>
+                                      {city.map((city) => (
+                                        <option
+                                          value={city.id}
+                                          key={city.id}
+                                          selected={city.id === address.city_id}
+                                        >
+                                          {city.name}
+                                        </option>
+                                      ))}
+                                    </select>
 
-                                <div
-                                  className="col-md-8 col-lg-8  d-flex flex-column justify-content-center align-items-center"
-                                  style={{
-                                    margin: "auto",
-                                    paddingTop: 20,
-                                  }}
-                                >
-                                  <label
-                                    htmlFor="validationServer04"
-                                    className="form-label"
-                                  >
-                                    Quận / Huyện
-                                  </label>
-                                  <select
-                                    className={`form-control ${
-                                      districtError ? "is-invalid" : ""
-                                    }`}
-                                    id="validationServer04"
-                                    aria-describedby="validationServer04Feedback"
-                                    onChange={handleDistrictChange}
-                                  >
-                                    <option selected disabled value="">
-                                      Chọn quận/huyện
-                                    </option>
-                                    {district.map((district) => (
-                                      <option
-                                        value={district.id}
-                                        key={district.id}
-                                        selected={
-                                          district.id === address.district_id
-                                        }
+                                    {cityError && (
+                                      <div
+                                        id="validationServer04Feedback"
+                                        className="invalid-feedback"
                                       >
-                                        {district.name}
-                                      </option>
-                                    ))}
-                                  </select>
+                                        {cityError}
+                                      </div>
+                                    )}
+                                  </div>
 
-                                  {districtError && (
-                                    <div
-                                      id="validationServer04Feedback"
-                                      className="invalid-feedback"
+                                  <div
+                                    className="col-md-8 col-lg-8  d-flex flex-column justify-content-center align-items-center"
+                                    style={{
+                                      margin: "auto",
+                                      paddingTop: 20,
+                                    }}
+                                  >
+                                    <label
+                                      htmlFor="validationServer04"
+                                      className="form-label"
                                     >
-                                      {districtError}
-                                    </div>
-                                  )}
-                                </div>
+                                      Quận / Huyện
+                                    </label>
+                                    <select
+                                      className={`form-control ${
+                                        districtError ? "is-invalid" : ""
+                                      }`}
+                                      id="validationServer04"
+                                      aria-describedby="validationServer04Feedback"
+                                      onChange={handleDistrictChange}
+                                    >
+                                      <option selected disabled value="">
+                                        Chọn quận/huyện
+                                      </option>
+                                      {district.map((district) => (
+                                        <option
+                                          value={district.id}
+                                          key={district.id}
+                                          selected={
+                                            district.id === address.district_id
+                                          }
+                                        >
+                                          {district.name}
+                                        </option>
+                                      ))}
+                                    </select>
 
-                                <div
-                                  className="col-md-8 col-lg-8 d-flex flex-column justify-content-center align-items-center mb-4"
-                                  style={{
-                                    margin: "auto",
-                                    paddingTop: 20,
-                                  }}
-                                >
-                                  <label
-                                    htmlFor="validationServer04"
-                                    className="form-label"
-                                  >
-                                    Phường / Xã
-                                  </label>
-                                  <select
-                                    className={`form-control ${
-                                      wardError ? "is-invalid" : ""
-                                    }`}
-                                    id="validationServer04"
-                                    aria-describedby="validationServer04Feedback"
-                                    onChange={handleWardChange}
-                                  >
-                                    <option selected disabled value="">
-                                      Chọn phường/xã
-                                    </option>
-                                    {ward.map((ward) => (
-                                      <option
-                                        value={ward.id}
-                                        key={ward.id}
-                                        selected={ward.id === address.ward_id}
+                                    {districtError && (
+                                      <div
+                                        id="validationServer04Feedback"
+                                        className="invalid-feedback"
                                       >
-                                        {ward.name}
-                                      </option>
-                                    ))}
-                                  </select>
-                                  {wardError && (
-                                    <div
-                                      id="validationServer04Feedback"
-                                      className="invalid-feedback"
+                                        {districtError}
+                                      </div>
+                                    )}
+                                  </div>
+
+                                  <div
+                                    className="col-md-8 col-lg-8 d-flex flex-column justify-content-center align-items-center mb-4"
+                                    style={{
+                                      margin: "auto",
+                                      paddingTop: 20,
+                                    }}
+                                  >
+                                    <label
+                                      htmlFor="validationServer04"
+                                      className="form-label"
                                     >
-                                      {wardError}
-                                    </div>
-                                  )}
-                                </div>
-                                <div class="modal-footer">
-                                  <button
-                                    type="button"
-                                    class="btn btn-secondary"
-                                    data-bs-dismiss="modal"
-                                  >
-                                    Close
-                                  </button>
-                                  <button
-                                    type="button"
-                                    class="btn btn-primary"
-                                    onClick={() =>
-                                      handleUpdateAddress(address.id)
-                                    }
-                                  >
-                                    Câp nhật
-                                  </button>
+                                      Phường / Xã
+                                    </label>
+                                    <select
+                                      className={`form-control ${
+                                        wardError ? "is-invalid" : ""
+                                      }`}
+                                      id="validationServer04"
+                                      aria-describedby="validationServer04Feedback"
+                                      onChange={handleWardChange}
+                                    >
+                                      <option selected disabled value="">
+                                        Chọn phường/xã
+                                      </option>
+                                      {ward.map((ward) => (
+                                        <option
+                                          value={ward.id}
+                                          key={ward.id}
+                                          selected={ward.id === address.ward_id}
+                                        >
+                                          {ward.name}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    {wardError && (
+                                      <div
+                                        id="validationServer04Feedback"
+                                        className="invalid-feedback"
+                                      >
+                                        {wardError}
+                                      </div>
+                                    )}
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-bs-dismiss="modal"
+                                    >
+                                      Close
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-primary"
+                                      onClick={() =>
+                                        handleUpdateAddress(address.id)
+                                      }
+                                    >
+                                      Câp nhật
+                                    </button>
+                                  </div>
                                 </div>
                               </div>
                             </div>
                           </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="d-flex justify-content-center align-content-center mt-3">
+                        Không có địa chỉ nào.
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>

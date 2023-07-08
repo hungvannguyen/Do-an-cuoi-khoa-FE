@@ -1,20 +1,20 @@
 import { useState, useEffect } from "react";
-import { useNavigate,Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 function Success() {
   const navigate = useNavigate();
   const [time, setTime] = useState(3);
 
-  useEffect(() => {
-    let secondsToGo = 3;
-    const timer = setInterval(() => {
-      secondsToGo -= 1;
-      setTime(secondsToGo);
-      if (secondsToGo === 0) {
-        clearInterval(timer);
-        navigate("/");
-      }
-    }, 3000);
-  }, []);
+  // useEffect(() => {
+  //   let secondsToGo = 3;
+  //   const timer = setInterval(() => {
+  //     secondsToGo -= 1;
+  //     setTime(secondsToGo);
+  //     if (secondsToGo === 0) {
+  //       clearInterval(timer);
+  //       navigate("/");
+  //     }
+  //   }, 3000);
+  // }, []);
 
   return (
     <section className="mail-seccess section">
@@ -33,9 +33,9 @@ function Success() {
               <Link to="/" className="btn btn-primary btn-lg">
                 Về trang chủ
               </Link>
-              <div className="timer">
+              {/* <div className="timer">
                 <p>Redirecting in {time} seconds</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
