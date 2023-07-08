@@ -2,6 +2,7 @@ import Countdown from "../CountDown/CountDown";
 import { Link } from "react-router-dom";
 
 function DiscountSection() {
+  const targetDate = new Date("2023-08-07T00:00:00");
   return (
     <section className="discount">
       <div className="container">
@@ -21,7 +22,7 @@ function DiscountSection() {
                 </h5>
               </div>
               <div className="discount__countdown" id="countdown-time">
-                <Countdown days={0} hours={1} minutes={0} seconds={0} />
+                <Countdown targetDate={targetDate} />
                 {/* <div className="countdown__item">
                   <span>22</span>
                   <p>Days</p> 

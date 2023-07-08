@@ -1,105 +1,44 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import { format, differenceInSeconds } from 'date-fns';
 
-const CountdownTimer = ({ days, hours, minutes, seconds }) => {
-  const endTime = new Date();
-  endTime.setDate(endTime.getDate() + days);
-  endTime.setHours(endTime.getHours() + hours);
-  endTime.setMinutes(endTime.getMinutes() + minutes);
-  endTime.setSeconds(endTime.getSeconds() + seconds);
-
-  const [remainingTime, setRemainingTime] = useState(calculateRemainingTime());
-  const [isCountdownFinished, setCountdownFinished] = useState(false);
-
-  function calculateRemainingTime() {
-    const currentTime = new Date();
-    const difference = endTime - currentTime;
-    return Math.max(0, Math.floor(difference / 1000));
-  }
+const CountdownTimer = ({ targetDate }) => {
+  const [remainingTime, setRemainingTime] = useState(0);
 
   useEffect(() => {
-    if (remainingTime <= 0) {
-      setCountdownFinished(true);
-      // Xử lý khi đếm ngược kết thúc
-      // Ví dụ: hiển thị thông báo hoặc thực hiện một hành động nào đó
-    } else {
-      const intervalId = setInterval(() => {
-        setRemainingTime((prevTime) => {
-          const updatedTime = prevTime - 1;
-          if (updatedTime <= 0) {
-            clearInterval(intervalId);
-            setCountdownFinished(true);
-          }
-          return updatedTime;
-        });
-      }, 1000);
-
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
-  }, [remainingTime]);
-
-  useEffect(() => {
-    if (remainingTime > 0) {
-      localStorage.setItem("countdownRemainingTime", remainingTime.toString());
-    }
-  }, [remainingTime]);
-
-  useEffect(() => {
-    const storedRemainingTime = localStorage.getItem("countdownRemainingTime");
-    if (storedRemainingTime && remainingTime <= 0) {
-      const parsedRemainingTime = parseInt(storedRemainingTime, 10);
-      if (!isNaN(parsedRemainingTime) && parsedRemainingTime > 0) {
-        setRemainingTime(parsedRemainingTime);
-      }
-    }
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    const intervalId = setInterval(() => {
+      const currentTime = new Date();
+      const difference = differenceInSeconds(targetDate, currentTime);
+      setRemainingTime(difference > 0 ? difference : 0);
+    }, 1000);
 
     return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
+      clearInterval(intervalId);
     };
-  }, []);
+  }, [targetDate]);
 
-  function handleBeforeUnload() {
-    if (remainingTime > 0) {
-      localStorage.setItem("countdownRemainingTime", remainingTime.toString());
-    } else {
-      localStorage.removeItem("countdownRemainingTime");
-    }
-  }
-
-  const displayDays = Math.floor(remainingTime / (24 * 60 * 60));
-  const displayHours = Math.floor((remainingTime % (24 * 60 * 60)) / (60 * 60));
-  const displayMinutes = Math.floor((remainingTime % (60 * 60)) / 60);
-  const displaySeconds = remainingTime % 60;
+  const days = Math.floor(remainingTime / (24 * 60 * 60));
+  const hours = Math.floor((remainingTime % (24 * 60 * 60)) / (60 * 60));
+  const minutes = Math.floor((remainingTime % (60 * 60)) / 60);
+  const seconds = remainingTime % 60;
 
   return (
     <div className="countdown">
-      {isCountdownFinished ? (
-        <p>Chương trình đã kết thúc</p>
-      ) : (
-        <>
-          <div className="countdown__item">
-            <span>{displayDays.toString().padStart(2, "0")}</span>
-            <p>Days</p>
-          </div>
-          <div className="countdown__item">
-            <span>{displayHours.toString().padStart(2, "0")}</span>
-            <p>Hours</p>
-          </div>
-          <div className="countdown__item">
-            <span>{displayMinutes.toString().padStart(2, "0")}</span>
-            <p>Min</p>
-          </div>
-          <div className="countdown__item">
-            <span>{displaySeconds.toString().padStart(2, "0")}</span>
-            <p>Sec</p>
-          </div>
-        </>
-      )}
+      <div className="countdown__item">
+        <span>{days.toString().padStart(2, '0')}</span>
+        <p>Days</p>
+      </div>
+      <div className="countdown__item">
+        <span>{hours.toString().padStart(2, '0')}</span>
+        <p>Hours</p>
+      </div>
+      <div className="countdown__item">
+        <span>{minutes.toString().padStart(2, '0')}</span>
+        <p>Min</p>
+      </div>
+      <div className="countdown__item">
+        <span>{seconds.toString().padStart(2, '0')}</span>
+        <p>Sec</p>
+      </div>
     </div>
   );
 };
