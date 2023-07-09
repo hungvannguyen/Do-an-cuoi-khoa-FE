@@ -1,26 +1,50 @@
 import style from "./Footer.module.css";
 import ChatBot from "../../../components/ChatBot/ChatBot";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
 function Footer() {
+  const [intro, setIntro] = useState([]);
+  const [logo, setLogo] = useState([]);
+  // call API get logo
+  useEffect(() => {
+    axios
+      .get("/file/img/DHS_Logo_main_1.png", { responseType: "blob" })
+      .then((response) => {
+        setLogo((logo) => [...logo, URL.createObjectURL(response.data)]);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
+
+  // call API get intro
+  useEffect(() => {
+    axios
+      .get("/setting/all")
+      .then((response) => {
+        setIntro(response.data.intro_text_footer);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <>
       <ChatBot />
-
       <footer className="footer">
         <div className="container">
           <div className="row">
             <div className="col-lg-4 col-md-6 col-sm-7">
               <div className="footer__about">
                 <div className="footer__logo">
-                  <a href="./index.html">
-                    <img src="img/logo.png" alt="" />
-                  </a>
+                  <Link to="/">
+                    <img src={logo} alt="" />
+                  </Link>
                 </div>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt cilisis.
-                </p>
-                <div className="footer__payment">
+                <p>{intro}</p>
+                {/* <div className="footer__payment">
                   <a href="#">
                     <img src="img/payment/payment-1.png" alt="" />
                   </a>
@@ -36,7 +60,7 @@ function Footer() {
                   <a href="#">
                     <img src="img/payment/payment-5.png" alt="" />
                   </a>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="col-lg-2 col-md-3 col-sm-5">

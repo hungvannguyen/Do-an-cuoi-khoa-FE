@@ -1,15 +1,49 @@
 import Countdown from "../CountDown/CountDown";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 function DiscountSection() {
   const targetDate = new Date("2023-08-07T00:00:00");
+  const [imageBanners, setImageBanners] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("/setting/all")
+      .then((response) => {
+        console.log(response.data);
+        const imageName = [response.data.sale_banner];
+
+        Promise.all(
+          imageName.map((imageName) => {
+            return axios
+              .get(`/file/img/${imageName}`, { responseType: "blob" })
+              .then((response) => URL.createObjectURL(response.data))
+              .catch((error) => {
+                console.log(error);
+                return null;
+              });
+          })
+        )
+          .then((imageUrls) => {
+            const filteredImageUrls = imageUrls.filter((url) => url !== null);
+            setImageBanners(filteredImageUrls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   return (
     <section className="discount">
       <div className="container">
         <div className="row">
           <div className="col-lg-6 p-0">
             <div className="discount__pic">
-              <img src="img/discount.jpg" alt="" />
+              <img src={imageBanners} alt="" />
             </div>
           </div>
           <div className="col-lg-6 p-0">
