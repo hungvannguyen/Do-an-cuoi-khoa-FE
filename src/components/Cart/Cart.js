@@ -14,6 +14,11 @@ function Cart() {
   const [cart, setCart] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
 
+  // Slected Product
+
+  const [selectedProduct, setSelectedProduct] = useState([]);
+  const [selectedProductId, setSelectedProductId] = useState([]);
+
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
@@ -147,20 +152,48 @@ function Cart() {
   };
 
   const handleCheckout = () => {
-    axios
-      .get("/checkout/check/cart", {
-        headers: {
-          Authorization: "Bearer " + sessionStorage.getItem("token"),
-        },
-      })
-      .then((response) => {
-        setLoading(false);
-        navigate("/checkout");
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.log(error);
+    console.log("selectedProductId");
+    console.log(selectedProductId);
+    // axios
+    //   .get("/checkout/check/cart", {
+    //     headers: {
+    //       Authorization: "Bearer " + sessionStorage.getItem("token"),
+    //     },
+    //   })
+    //   .then((response) => {
+    //     setLoading(false);
+    //     navigate("/checkout");
+    //   })
+    //   .catch((error) => {
+    //     setLoading(false);
+    //     console.log(error);
+    //   });
+  };
+
+  const handleSelectAll = () => {
+    setSelectedProduct(cart.map((item) => item.prd_id));
+    setSelectedProductId(cart.map((item) => item.prd_id));
+  };
+
+  const handleDeselectAll = () => {
+    setSelectedProduct([]);
+  };
+
+  const handleToggleItem = (product_id) => {
+    if (selectedProduct.includes(product_id)) {
+      setSelectedProduct(
+        selectedProduct.filter((selectedId) => selectedId !== product_id)
+      );
+    } else {
+      setSelectedProduct((prevSelectedProduct) => {
+        const updatedProduct = prevSelectedProduct.filter(Boolean);
+        return [...updatedProduct, product_id];
       });
+      setSelectedProductId((prevSelectedProduct) => {
+        const updatedProduct = prevSelectedProduct.filter(Boolean);
+        return [...updatedProduct, product_id];
+      });
+    }
   };
 
   const formatNumber = (number) => {
@@ -181,17 +214,28 @@ function Cart() {
                       <table>
                         <thead>
                           <tr>
+                            <th>Chọn</th>
                             <th>Sản phẩm</th>
                             <th>Giá</th>
                             <th>Số lượng</th>
                             <th>Tổng tiền</th>
-                            <th></th>
                           </tr>
                         </thead>
                         <tbody>
                           {cart.map((item, index) => (
                             <React.Fragment key={item.id}>
                               <tr>
+                                <td className="me-2">
+                                  <input
+                                    type="checkbox"
+                                    checked={selectedProduct.includes(
+                                      item.prd_id
+                                    )}
+                                    onChange={() =>
+                                      handleToggleItem(item.prd_id)
+                                    }
+                                  />
+                                </td>
                                 <td className="cart__product__item">
                                   {index < imageProduct.length && (
                                     <img
@@ -263,9 +307,9 @@ function Cart() {
                 </div>
                 <div className="row">
                   <div className="col-lg-6 col-md-6 col-sm-6">
-                    {/* <div className="cart__btn">
-              <Link to="#">Continue Shopping</Link>
-            </div> */}
+                    <div className="cart__btn" onClick={handleSelectAll}>
+                      Chọn tất cả
+                    </div>
                   </div>
                   <div className="col-lg-6 col-md-6 col-sm-6">
                     <div className="cart__btn update__btn">
