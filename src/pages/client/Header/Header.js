@@ -91,6 +91,10 @@ function Header() {
     setIsSearchOpen(false);
   };
   // Handle search
+  const handleSearchButton = () => {
+    navigate(`/products?status=search&keyword=${searchKey}`);
+  };
+
   const handleSearch = (value) => {
     setSearchKey(value);
   };
@@ -251,7 +255,11 @@ function Header() {
                           }}
                         />
                       </div>
-                      <button type="button" class="btn btn-secondary">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        onClick={handleSearchButton}
+                      >
                         <i class="fas fa-search"></i>
                       </button>
                     </div>

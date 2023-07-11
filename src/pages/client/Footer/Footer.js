@@ -40,7 +40,7 @@ function Footer() {
               <div className="footer__about">
                 <div className="footer__logo">
                   <Link to="/">
-                    <img src={logo} alt="" />
+                    <img src={logo} alt="" style={{ width: 120, height: 31 }} />
                   </Link>
                 </div>
                 <p>{intro}</p>

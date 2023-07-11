@@ -91,6 +91,7 @@ function Checkout() {
         setLoading(false);
       } catch (error) {
         console.log(error);
+        setLoading(false);
       }
     };
 
@@ -109,6 +110,9 @@ function Checkout() {
         setDistrictName(item.district);
         setWardName(item.ward);
         setAddressId(item.id);
+      }
+      if (item.city_id === 1) {
+        setShippingFee("");
       }
     });
   }, [addressDetail]);
@@ -239,6 +243,11 @@ function Checkout() {
         setTempWardName(selectedAddress.ward);
         setTempAddressId(selectedAddress.id);
       }
+      if (selectedAddress.city_id === 1) {
+        setShippingFee("");
+      } else {
+        setShippingFee(30000);
+      }
     }
   };
 
@@ -271,7 +280,6 @@ function Checkout() {
   //  Handle default address
   const handleDefaultAddress = () => {
     setSelectedOption(selectedOption);
-
     setName(tempName);
     setPhone(tempPhone);
     setDetail(tempDetail);
@@ -581,28 +589,30 @@ function Checkout() {
                             </div>
                           </div>
                           {addressQuantity < 5 && (
-                            <button
-                              type="button"
-                              className="btn btn-primary d-flex align-items-center justify-content-center"
-                              data-bs-toggle="modal"
-                              data-bs-target="#AddNewAddress"
-                            >
-                              Thêm mới địa chỉ
-                            </button>
+                            // <button
+                            //   type="button"
+                            //   className="btn btn-primary d-flex align-items-center justify-content-center"
+                            //   data-bs-toggle="modal"
+                            //   data-bs-target="#AddNewAddress"
+                            // >
+                            //   Thêm mới địa chỉ
+                            // </button>
+                            <span></span>
                           )}
                         </div>
                       </>
                     ) : (
                       <>
                         {/* Button add new Address */}
-                        <button
+                        {/* <button
                           type="button"
                           class="btn btn-primary d-flex align-items-center justify-content-center"
                           data-bs-toggle="modal"
                           data-bs-target="#AddNewAddress"
                         >
                           Thêm mới địa chỉ
-                        </button>
+                        </button> */}
+                        <span></span>
                       </>
                     )}
                   </div>
@@ -614,11 +624,13 @@ function Checkout() {
                         <ul>
                           <li>
                             <span className="top__text">Product</span>
-                            <span className="top__text__right">Total</span>
+                            {/* <span className="top__text__right">Total</span> */}
                           </li>
                           {checkoutProduct.map((item) => (
                             <li>
-                              01. {item.name} <span>$ 300.0</span>
+                              {/* 01.  */}
+                              {item.name}
+                              {/* <span>$ 300.0</span> */}
                             </li>
                           ))}
                         </ul>

@@ -14,7 +14,7 @@ function HomePage() {
       <ToastContainer />
       <Categories />
       <ProductSection />
-      <BannerSection />
+      {/* <BannerSection /> */}
       <TrendSection />
       <DiscountSection />
       <ServicesSection />

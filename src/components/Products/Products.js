@@ -383,7 +383,9 @@ function Products() {
                             <div className="product__price mb-4">
                               {product.is_sale === 1 ? (
                                 <>
-                                  {formatNumber(product.sale_price)} đ{" "}
+                                  <spanp style={{ color: "#ca1515" }}>
+                                    {formatNumber(product.sale_price)} đ{" "}
+                                  </spanp>
                                   <span>{formatNumber(product.price)} đ</span>
                                 </>
                               ) : (

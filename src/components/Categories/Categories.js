@@ -95,11 +95,11 @@ function Categories() {
                   className="categories__item set-bg"
                   style={{ backgroundImage: `url(${imageBanners[2]})` }}
                 >
-                  <div className="categories__text">
+                  {/* <div className="categories__text">
                     <h4>Kid’s fashion</h4>
                     <p>273 items</p>
                     <a href="#">Shop now</a>
-                  </div>
+                  </div> */}
                 </div>
               </div>
               <div className="col-lg-6 col-md-6 col-sm-6 p-0">

@@ -325,11 +325,7 @@ function Cart() {
                       <h3>
                         <strong>Giỏ hàng trống</strong>
                       </h3>
-                      <h4>
-                        Hãy thêm gì đó để khiến Sơn vui chụt chụt{" "}
-                        <i class="fa-solid fa-heart"></i>{" "}
-                        <i class="fa-solid fa-heart"></i>
-                      </h4>
+                      <h4>Hãy thêm gì đó </h4>
                       <Link
                         to="/products"
                         class="btn btn-danger cart-btn-transform m-3"

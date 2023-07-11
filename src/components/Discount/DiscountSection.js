@@ -49,10 +49,10 @@ function DiscountSection() {
           <div className="col-lg-6 p-0">
             <div className="discount__text">
               <div className="discount__text__title">
-                <span>Discount</span>
-                <h2>Summer 2019</h2>
+                <span>Giảm giá</span>
+                <h2>Hè 2023</h2>
                 <h5>
-                  <span>Sale</span> 50%
+                  <span>Lên đến </span> 50%
                 </h5>
               </div>
               <div className="discount__countdown" id="countdown-time">
@@ -74,7 +74,7 @@ function DiscountSection() {
                   <p>Sec</p>
                 </div> */}
               </div>
-              <Link to="/products?status=sale">Shop now</Link>
+              <Link to="/products?status=sale">Mua ngay thôi</Link>
             </div>
           </div>
         </div>
