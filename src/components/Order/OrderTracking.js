@@ -1,5 +1,6 @@
 import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
+import { Collapse } from "react-bootstrap";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -15,6 +16,7 @@ function OrderTracking() {
   const [page, setPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   let counter = 0;
 
   // Call API to get Order
@@ -78,6 +80,10 @@ function OrderTracking() {
   const handleOrderStatusChange = (status) => {
     setOrderStatus(status);
     setLoading(true);
+  };
+  // Handle Collapse
+  const handleCollapse = () => {
+    setIsOpen(!isOpen);
   };
 
   // Render the dropdown menu items
@@ -262,7 +268,11 @@ function OrderTracking() {
               {order.length > 0 ? (
                 <>
                   {order.map((item, index) => (
-                    <div className="card-body" key={index}>
+                    <div
+                      className="card-body"
+                      key={index}
+                      onClick={handleCollapse}
+                    >
                       <h6 className="mb-3">
                         <strong>Mã đơn hàng: {item.id}</strong>{" "}
                       </h6>
@@ -297,35 +307,37 @@ function OrderTracking() {
                       </article>
 
                       <hr />
-                      <ul className="row" style={{ listStyle: "none" }}>
-                        {item.products.map((product, innerIndex) => (
-                          <li className="col-md-4">
-                            <figure className="itemside mb-3 d-flex">
-                              <div className="aside">
-                                {index < imageProduct.length && (
-                                  <img
-                                    key={innerIndex}
-                                    src={imageProduct[counter++]}
-                                    className="img-sm border"
-                                    style={{ width: "100px" }}
-                                    alt={`Product Image ${innerIndex + 1}`}
-                                  />
-                                )}
-                              </div>
-                              <figcaption className="info align-self-center ms-2">
-                                <p className="title">{product.name}</p>
-                                <span className="text-muted">
-                                  {formatNumber(product.price)} đ
-                                </span>
-                                <span className="text-muted">
-                                  {" "}
-                                  x {product.quantity}
-                                </span>
-                              </figcaption>
-                            </figure>
-                          </li>
-                        ))}
-                      </ul>
+                      <Collapse in={isOpen}>
+                        <ul className="row" style={{ listStyle: "none" }}>
+                          {item.products.map((product, innerIndex) => (
+                            <li className="col-md-4">
+                              <figure className="itemside mb-3 d-flex">
+                                <div className="aside">
+                                  {index < imageProduct.length && (
+                                    <img
+                                      key={innerIndex}
+                                      src={imageProduct[counter++]}
+                                      className="img-sm border"
+                                      style={{ width: "100px" }}
+                                      alt={`Product Image ${innerIndex + 1}`}
+                                    />
+                                  )}
+                                </div>
+                                <figcaption className="info align-self-center ms-2">
+                                  <p className="title">{product.name}</p>
+                                  <span className="text-muted">
+                                    {formatNumber(product.price)} đ
+                                  </span>
+                                  <span className="text-muted">
+                                    {" "}
+                                    x {product.quantity}
+                                  </span>
+                                </figcaption>
+                              </figure>
+                            </li>
+                          ))}
+                        </ul>
+                      </Collapse>
                       <hr />
                       <div className="row">
                         <div className="col-md-6 col-lg-6">

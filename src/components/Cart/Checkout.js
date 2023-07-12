@@ -44,7 +44,7 @@ function Checkout() {
   const [addressQuantity, setAddressQuantity] = useState(0);
   const [addressId, setAddressId] = useState("");
   const [addressDetail, setAddressDetail] = useState([]);
-
+  const [addressName, setAddressName] = useState("");
   // Set error
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
@@ -59,6 +59,11 @@ function Checkout() {
   const [cityName, setCityName] = useState("");
   const [districtName, setDistrictName] = useState("");
   const [wardName, setWardName] = useState("");
+
+  // Display address if user has address
+  const [displayName, setDisplayName] = useState("");
+  const [displayPhone, setDisplayPhone] = useState("");
+  const [displayDetail, setDisplayDetail] = useState("");
 
   // Temp address
   const [tempName, setTempName] = useState("");
@@ -79,7 +84,7 @@ function Checkout() {
   // Call API get user info
   useEffect(() => {
     console.log("selectedProductId");
-    console.log(trimmedProduct);
+    console.log(typeof selectedProductId);
     const fetchUserInfo = async () => {
       try {
         const response = await axios.get("/checkout/user_info", {
@@ -110,7 +115,10 @@ function Checkout() {
         setSelectedOption(item.id);
         setName(item.name);
         setPhone(item.phone_number);
-        setDetail(item.detail);
+        setAddressName(item.detail);
+        setDisplayName(item.name);
+        setDisplayPhone(item.phone_number);
+        setDisplayDetail(item.detail);
         setCityName(item.city);
         setDistrictName(item.district);
         setWardName(item.ward);
@@ -192,6 +200,15 @@ function Checkout() {
       });
   }, []);
 
+  useEffect(() => {
+    let all = 0;
+    checkoutProduct.map(
+      (item) =>
+        selectedProductId.includes(item.prd_id) &&
+        (all += item.price * item.quantity)
+    );
+    setTotal(all);
+  }, [selectedProductId]);
   // Call API get payment
   useEffect(() => {
     axios
@@ -228,7 +245,7 @@ function Checkout() {
   };
 
   const handleAddressDetailChange = (event) => {
-    setAddressDetail(event.target.value);
+    setAddressName(event.target.value);
   };
 
   // Address change
@@ -285,6 +302,9 @@ function Checkout() {
   //  Handle default address
   const handleDefaultAddress = () => {
     setSelectedOption(selectedOption);
+    setDisplayName(tempName);
+    setDisplayPhone(tempPhone);
+    setDisplayDetail(tempDetail);
     setName(tempName);
     setPhone(tempPhone);
     setDetail(tempDetail);
@@ -362,7 +382,7 @@ function Checkout() {
             city_id: selectedCityId,
             district_id: selectedDistrictId,
             ward_id: selectedWardId,
-            detail: addressDetail,
+            detail: addressName,
           },
           {
             headers: {
@@ -489,9 +509,10 @@ function Checkout() {
 
                         <div className="d-flex mb-4">
                           <div className="me-5">
-                            {name} | {phone}
+                            {displayName} | {displayPhone}
                           </div>
-                          {detail} - {cityName} - {districtName} - {wardName}
+                          {displayDetail} - {cityName} - {districtName} -{" "}
+                          {wardName}
                         </div>
 
                         <div className="mb-4 d-flex ">
@@ -593,50 +614,52 @@ function Checkout() {
                               </div>
                             </div>
                           </div>
+
                           {addressQuantity < 5 && (
-                            // <button
-                            //   type="button"
-                            //   className="btn btn-primary d-flex align-items-center justify-content-center"
-                            //   data-bs-toggle="modal"
-                            //   data-bs-target="#AddNewAddress"
-                            // >
-                            //   Thêm mới địa chỉ
-                            // </button>
-                            <span></span>
+                            <button
+                              type="button"
+                              className="btn btn-primary d-flex align-items-center justify-content-center"
+                              data-bs-toggle="modal"
+                              data-bs-target="#AddNewAddress"
+                            >
+                              Thêm mới địa chỉ
+                            </button>
                           )}
                         </div>
                       </>
                     ) : (
                       <>
                         {/* Button add new Address */}
-                        {/* <button
+                        <button
                           type="button"
                           class="btn btn-primary d-flex align-items-center justify-content-center"
                           data-bs-toggle="modal"
                           data-bs-target="#AddNewAddress"
                         >
                           Thêm mới địa chỉ
-                        </button> */}
-                        <span></span>
+                        </button>
                       </>
                     )}
                   </div>
 
                   <div className="col-lg-4">
                     <div className="checkout__order">
-                      <h5>Đơn của bạn</h5>
+                      <h5>Đơn hàng của bạn</h5>
                       <div className="checkout__order__product">
                         <ul>
                           <li>
                             <span className="top__text">Sản phẩm</span>
-                            {/* <span className="top__text__right">Total</span> */}
+                            <span className="top__text__right">Số lượng</span>
                           </li>
-                          {checkoutProduct.map((item) => (
-                            <li key={item.prd_id}>
-                              {item.name}
-                              {/* <span>$ 300.0</span> */}
-                            </li>
-                          ))}
+                          {checkoutProduct.map(
+                            (item) =>
+                              selectedProductId.includes(item.prd_id) && (
+                                <li key={item.prd_id}>
+                                  {item.name}
+                                  <span>x{item.quantity}</span>
+                                </li>
+                              )
+                          )}
                         </ul>
                       </div>
                       <div className="checkout__form__input col-lg-12 col-md-12 col-sm-12">
@@ -780,7 +803,11 @@ function Checkout() {
                     <p>
                       Địa chỉ <span>*</span>
                     </p>
-                    <input type="text" onChange={handleAddressDetailChange} />
+                    <input
+                      style={{ width: "100%" }}
+                      type="text"
+                      onChange={handleAddressDetailChange}
+                    />
                     {addressDetailError && (
                       <div className="alert alert-danger" role="alert">
                         {addressDetailError}
