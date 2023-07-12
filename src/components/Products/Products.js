@@ -171,10 +171,16 @@ function Products() {
     setCollapseOpen(!CollapseOpen);
   };
   // Handle price range filter
-  const handlePriceRange = () => {
+  const handlePriceRange = (minPrice, maxPrice) => {
     setMinPrice(minPrice);
     setMaxPrice(maxPrice);
     setSort(rangePrice);
+  };
+
+  const handleCancelFilter = () => {
+    setMinPrice(0);
+    setMaxPrice(0);
+    setSort(base);
   };
   // Handle option change sort
   const handleOptionChange = (option) => {
@@ -289,32 +295,41 @@ function Products() {
                         <h4>Lọc theo giá</h4>
                       </div>
                       <div className="filter-range-wrap">
-                        <div className="range-slider">
-                          <div className="price-input">
-                            <label htmlFor="minamount">Giá:</label>
-
-                            <div className="price-input">
-                              <input
-                                type="text"
-                                id="minamount"
-                                value={formatMinPrice}
-                                className="price-input-field"
-                                onChange={handleMinPriceChange}
-                              />
-
-                              <input
-                                type="text"
-                                id="maxamount"
-                                value={formatMaxPrice}
-                                className="price-input-field"
-                                onChange={handleMaxPriceChange}
-                              />
-                            </div>
+                        <div className="row">
+                          <div className="col-lg-12 d-flex flex-column text-center">
+                            <p onClick={() => handlePriceRange(0, 100000)}>
+                              0 đ - 100.000 đ
+                            </p>
+                            <p onClick={() => handlePriceRange(100000, 500000)}>
+                              100.000 đ - 500.000 đ{" "}
+                            </p>
+                          </div>
+                          <div className="col-lg-12 d-flex flex-column text-center">
+                            <p
+                              onClick={() => handlePriceRange(500000, 1000000)}
+                            >
+                              500.000 đ - 1.000.000 đ
+                            </p>
+                            <p
+                              onClick={() =>
+                                handlePriceRange(1000000, 10000000)
+                              }
+                            >
+                              {" "}
+                              > 1.000.0000 đ
+                            </p>
+                            <p
+                              onClick={handleCancelFilter}
+                              style={{
+                                backgroundColor: "yellow",
+                                color: "black",
+                              }}
+                            >
+                              Bỏ lọc
+                            </p>
                           </div>
                         </div>
                       </div>
-
-                      <span onClick={handlePriceRange}>Lọc</span>
                     </div>
 
                     <div className="sidebar__sizes">

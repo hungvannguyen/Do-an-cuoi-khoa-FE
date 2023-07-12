@@ -4,6 +4,8 @@ import React from "react";
 import { useState, useEffect, useLayoutEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function Cart() {
   const navigate = useNavigate();
@@ -152,22 +154,33 @@ function Cart() {
   };
 
   const handleCheckout = () => {
-    console.log("selectedProductId");
-    console.log(selectedProductId);
-    // axios
-    //   .get("/checkout/check/cart", {
-    //     headers: {
-    //       Authorization: "Bearer " + sessionStorage.getItem("token"),
-    //     },
-    //   })
-    //   .then((response) => {
-    //     setLoading(false);
-    //     navigate("/checkout");
-    //   })
-    //   .catch((error) => {
-    //     setLoading(false);
-    //     console.log(error);
-    //   });
+    if (selectedProductId.length === 0) {
+      toast.error("Vui lòng chọn sản phẩm", {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+    } else {
+      // axios
+      //   .get("/checkout/check/cart", {
+      //     headers: {
+      //       Authorization: "Bearer " + sessionStorage.getItem("token"),
+      //     },
+      //   })
+      //   .then((response) => {
+      //     setLoading(false);
+      //     navigate("/checkout");
+      //   })
+      //   .catch((error) => {
+      //     setLoading(false);
+      //     console.log(error);
+      //   });
+    }
   };
 
   const handleSelectAll = () => {
@@ -177,6 +190,7 @@ function Cart() {
 
   const handleDeselectAll = () => {
     setSelectedProduct([]);
+    setSelectedProductId([]);
   };
 
   const handleToggleItem = (product_id) => {
@@ -307,8 +321,17 @@ function Cart() {
                 </div>
                 <div className="row">
                   <div className="col-lg-6 col-md-6 col-sm-6">
-                    <div className="cart__btn" onClick={handleSelectAll}>
-                      Chọn tất cả
+                    <div
+                      className="cart__btn product_selection"
+                      onClick={
+                        selectedProduct.length === cart.length
+                          ? handleDeselectAll
+                          : handleSelectAll
+                      }
+                    >
+                      {selectedProduct.length === cart.length
+                        ? "Bỏ chọn tất cả"
+                        : "Chọn tất cả"}
                     </div>
                   </div>
                   <div className="col-lg-6 col-md-6 col-sm-6">
