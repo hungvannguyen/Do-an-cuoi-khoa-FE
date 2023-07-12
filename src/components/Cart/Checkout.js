@@ -71,9 +71,15 @@ function Checkout() {
 
   // Shipping fee
   const [shippingFee, setShippingFee] = useState(30000);
+  const selectedProductId = JSON.parse(
+    sessionStorage.getItem("selectedProductId")
+  );
+  const trimmedProduct = selectedProductId.toString().replace(/\s+/g, "");
 
   // Call API get user info
   useEffect(() => {
+    console.log("selectedProductId");
+    console.log(trimmedProduct);
     const fetchUserInfo = async () => {
       try {
         const response = await axios.get("/checkout/user_info", {
@@ -81,7 +87,6 @@ function Checkout() {
             Authorization: "Bearer " + token,
           },
         });
-
         setUserInfo(response.data);
         setSelectedCityId(response.data.address.city_id);
         setSelectedDistrictId(response.data.address.district_id);
@@ -619,16 +624,15 @@ function Checkout() {
 
                   <div className="col-lg-4">
                     <div className="checkout__order">
-                      <h5>Your order</h5>
+                      <h5>Đơn của bạn</h5>
                       <div className="checkout__order__product">
                         <ul>
                           <li>
-                            <span className="top__text">Product</span>
+                            <span className="top__text">Sản phẩm</span>
                             {/* <span className="top__text__right">Total</span> */}
                           </li>
                           {checkoutProduct.map((item) => (
-                            <li>
-                              {/* 01.  */}
+                            <li key={item.prd_id}>
                               {item.name}
                               {/* <span>$ 300.0</span> */}
                             </li>

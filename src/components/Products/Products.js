@@ -216,23 +216,6 @@ function Products() {
     return numericPrice.toLocaleString("vi-VN");
   };
 
-  const handleMinPriceChange = (e) => {
-    const inputValue = e.target.value;
-    const numericValue = parseInt(inputValue.replace(/[^\d]/g, ""), 10);
-    const formattedValue = formatPrice(inputValue);
-    setMinPrice(numericValue);
-    setFormatMinPrice(formattedValue);
-    console.log(numericValue);
-  };
-
-  const handleMaxPriceChange = (e) => {
-    const inputValue = e.target.value;
-    const numericValue = parseInt(inputValue.replace(/[^\d]/g, ""), 10);
-    const formattedValue = formatPrice(inputValue);
-    setMaxPrice(numericValue);
-    setFormatMaxPrice(formattedValue);
-    console.log(numericValue);
-  };
   return (
     <div>
       <Loading isLoading={loading} />

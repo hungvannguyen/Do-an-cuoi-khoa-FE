@@ -166,20 +166,24 @@ function Cart() {
         theme: "colored",
       });
     } else {
-      // axios
-      //   .get("/checkout/check/cart", {
-      //     headers: {
-      //       Authorization: "Bearer " + sessionStorage.getItem("token"),
-      //     },
-      //   })
-      //   .then((response) => {
-      //     setLoading(false);
-      //     navigate("/checkout");
-      //   })
-      //   .catch((error) => {
-      //     setLoading(false);
-      //     console.log(error);
-      //   });
+      axios
+        .get("/checkout/check/cart", {
+          headers: {
+            Authorization: "Bearer " + sessionStorage.getItem("token"),
+          },
+        })
+        .then((response) => {
+          setLoading(false);
+          sessionStorage.setItem(
+            "selectedProductId",
+            JSON.stringify(selectedProductId)
+          );
+          navigate("/checkout");
+        })
+        .catch((error) => {
+          setLoading(false);
+          console.log(error);
+        });
     }
   };
 
@@ -219,6 +223,7 @@ function Cart() {
       <Loading isLoading={loading} />
       {!loading && (
         <>
+          <ToastContainer />
           {cart.length !== 0 ? (
             <section className="shop-cart spad">
               <div className="container">
