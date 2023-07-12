@@ -16,7 +16,8 @@ function OrderTracking() {
   const [page, setPage] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPage, setTotalPage] = useState(0);
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(Array(order.length).fill(false));
+
   let counter = 0;
 
   // Call API to get Order
@@ -82,8 +83,12 @@ function OrderTracking() {
     setLoading(true);
   };
   // Handle Collapse
-  const handleCollapse = () => {
-    setIsOpen(!isOpen);
+  const handleCollapse = (index) => {
+    setIsOpen((prevIsOpen) => {
+      const updatedIsOpen = [...prevIsOpen];
+      updatedIsOpen[index] = !updatedIsOpen[index];
+      return updatedIsOpen;
+    });
   };
 
   // Render the dropdown menu items
@@ -271,7 +276,8 @@ function OrderTracking() {
                     <div
                       className="card-body"
                       key={index}
-                      onClick={handleCollapse}
+                      onClick={() => handleCollapse(index)}
+                      style={{ cursor: "pointer",borderBottom: "6px solid #e0e0e0" }}
                     >
                       <h6 className="mb-3">
                         <strong>Mã đơn hàng: {item.id}</strong>{" "}
@@ -307,7 +313,7 @@ function OrderTracking() {
                       </article>
 
                       <hr />
-                      <Collapse in={isOpen}>
+                      <Collapse in={isOpen[index]}>
                         <ul className="row" style={{ listStyle: "none" }}>
                           {item.products.map((product, innerIndex) => (
                             <li className="col-md-4">
@@ -447,6 +453,7 @@ function OrderTracking() {
                   <p>Không có đơn hàng</p>
                 </div>
               )}
+           
             </article>
           </div>
         </>

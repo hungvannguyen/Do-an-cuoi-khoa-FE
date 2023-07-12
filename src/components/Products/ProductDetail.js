@@ -179,15 +179,11 @@ function ProductDetail() {
               <div className="product__details__text">
                 <h3>
                   {ProductDetail.name}
-                  <span>Brand: SKMEIMore Men Watches from SKMEI</span>
+                  {/* <span>Brand: SKMEIMore Men Watches from SKMEI</span> */}
                 </h3>
 
                 <div className="product__details__price"></div>
-                <p>
-                  Nemo enim ipsam voluptatem quia aspernatur aut odit aut loret
-                  fugit, sed quia consequuntur magni lores eos qui ratione
-                  voluptatem sequi nesciunt.
-                </p>
+                <p>{ProductDetail.description}</p>
                 <div className="product__details__button">
                   <div className="quantity">
                     <span>Quantity:</span>
@@ -211,7 +207,7 @@ function ProductDetail() {
                     className="cart-btn"
                     onClick={() => handleAddToCart(ProductDetail.id)}
                   >
-                    <span className="icon_bag_alt"></span> Add to cart
+                    <span className="icon_bag_alt"></span> Thêm vào giỏ hàng
                   </div>
                 </div>
                 {/* <div className="product__details__widget">
@@ -235,7 +231,7 @@ function ProductDetail() {
               </div>
             </div>
             <div className="col-lg-12">
-              <div className="product__details__tab">
+              {/* <div className="product__details__tab">
                 <ul className="nav nav-tabs" role="tablist">
                   <li className="nav-item">
                     <a
@@ -254,7 +250,7 @@ function ProductDetail() {
                     <p>{ProductDetail.description}</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

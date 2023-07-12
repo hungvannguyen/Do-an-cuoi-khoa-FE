@@ -64,7 +64,7 @@ function Footer() {
               </div>
             </div>
             <div className="col-lg-2 col-md-3 col-sm-5">
-              <div className="footer__widget">
+              {/* <div className="footer__widget">
                 <h6>Quick links</h6>
                 <ul>
                   <li>
@@ -80,24 +80,24 @@ function Footer() {
                     <a href="#">FAQ</a>
                   </li>
                 </ul>
-              </div>
+              </div> */}
             </div>
             <div className="col-lg-2 col-md-3 col-sm-4">
               <div className="footer__widget">
                 <h6>Account</h6>
                 <ul>
                   <li>
-                    <a href="#">My Account</a>
+                    <a href="/profile">Hồ sơ</a>
                   </li>
                   <li>
-                    <a href="#">Orders Tracking</a>
+                    <a href="/order/tracking">Đơn mua</a>
                   </li>
                   <li>
-                    <a href="#">Checkout</a>
+                    <a href="/cart">Giỏ hàng</a>
                   </li>
-                  <li>
+                  {/* <li>
                     <a href="#">Wishlist</a>
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -130,9 +130,9 @@ function Footer() {
               </div>
             </div>
           </div>
-          <div className="row">
+          {/* <div className="row">
             <div className="col-lg-12">
-              {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
+         
               <div className="footer__copyright__text">
                 <p>
                   Copyright &copy;{" "}
@@ -148,9 +148,9 @@ function Footer() {
                   </a>
                 </p>
               </div>
-              {/* Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. */}
+     
             </div>
-          </div>
+          </div> */}
         </div>
       </footer>
     </>

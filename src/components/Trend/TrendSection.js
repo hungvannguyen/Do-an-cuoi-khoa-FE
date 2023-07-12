@@ -1,10 +1,11 @@
 import image from "../../assest/image/image.png";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function TrendSection() {
   const imageUrl = image;
+  const navigate = useNavigate();
   // useState for TrendSection
   const [imageProductSale, setImageProductSale] = useState([]);
   const [imageProductBestSale, setImageProductBestSale] = useState([]);
@@ -18,7 +19,7 @@ function TrendSection() {
       .get(`/product/sale/?page=${pages}`)
       .then((response) => {
         setSaleProducts(response.data.data);
-        console.log("Product");
+        console.log("Product sale");
         console.log(response.data.data);
         const imageSaleName = response.data.data.map((product) => {
           return product.img_url;
@@ -48,6 +49,40 @@ function TrendSection() {
       });
   }, []);
 
+  useEffect(() => {
+    axios
+      .get("/best-seller")
+      .then((response) => {
+        setBestSaleProducts(response.data.data);
+        console.log("Product");
+        console.log(response.data.data);
+        const imageSaleName = response.data.data.map((product) => {
+          return product.img_url;
+        });
+        Promise.all(
+          imageSaleName.map((imageName) => {
+            return axios
+              .get(`/file/img/${imageName}`, { responseType: "blob" })
+              .then((response) => URL.createObjectURL(response.data))
+              .catch((error) => {
+                console.log(error);
+                return null;
+              });
+          })
+        )
+          .then((imageUrls) => {
+            const filteredImageUrls = imageUrls.filter((url) => url !== null);
+            setImageProductBestSale(filteredImageUrls);
+            console.log(filteredImageUrls);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }, []);
   // Call API to get TrendSection
   useEffect(() => {
     axios
@@ -81,6 +116,10 @@ function TrendSection() {
       });
   }, []);
 
+  const handleOnClick = (id) => {
+    navigate(`/product/detail/${id}`);
+  };
+
   // Format number
   const formatNumber = (number) => {
     if (number) {
@@ -92,13 +131,13 @@ function TrendSection() {
     <section className="trend spad">
       <div className="container">
         <div className="row">
-          <div className="col-lg-4 col-md-4 col-sm-6">
+          <div className="col-lg-6 col-md-6 col-sm-6">
             <div className="trend__content">
               <div className="section-title">
                 <h4>Siêu giảm giá</h4>
               </div>
               {saleProducts.slice(0, 3).map((saleProduct, index) => (
-                <div className="trend__item">
+                <div className="trend__item" onClick={() => handleOnClick(saleProduct.id)}>
                   {index < imageProductSale.length && (
                     <div className="trend__item__pic">
                       <img
@@ -127,13 +166,16 @@ function TrendSection() {
             </div>
           </div>
 
-          <div className="col-lg-4 col-md-4 col-sm-6">
+          <div className="col-lg-6 col-md-6 col-sm-6">
             <div className="trend__content">
               <div className="section-title">
                 <h4>Bán chạy</h4>
               </div>
               {bestSaleProducts.slice(0, 3).map((bestSaleProduct, index) => (
-                <div className="trend__item">
+                <div
+                  className="trend__item"
+                  onClick={() => handleOnClick(bestSaleProduct.id)}
+                >
                   {index < imageProductBestSale.length && (
                     <div className="trend__item__pic">
                       <img
@@ -158,7 +200,7 @@ function TrendSection() {
               ))}
             </div>
           </div>
-          <div className="col-lg-4 col-md-4 col-sm-6">
+          {/* <div className="col-lg-4 col-md-4 col-sm-6">
             <div className="trend__content">
               <div className="section-title">
                 <h4>Hot Trend</h4>
@@ -179,9 +221,9 @@ function TrendSection() {
                   <div className="product__price">$ 59.0</div>
                 </div>
               </div>
-              {/* Repeat the trend__item blocks with different content */}
+           
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </section>

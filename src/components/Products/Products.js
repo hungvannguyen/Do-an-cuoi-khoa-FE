@@ -225,6 +225,7 @@ function Products() {
             <div className="container">
               <div className="row">
                 <div className="col-lg-3 col-md-3">
+                   {param !== "new" && (
                   <div className="shop__sidebar">
                     <div className="sidebar__categories">
                       <div className="section-title">
@@ -340,6 +341,7 @@ function Products() {
                       </div>
                     </div>
                   </div>
+                    )}
                 </div>
                 {products.length > 0 ? (
                   <div className="col-lg-9 col-md-9">

@@ -39,7 +39,9 @@ function Cart() {
       })
       .then((response) => {
         setCart(response.data.products);
-        setTotalPrice(response.data.total_price);
+        console.log("response.data.products");
+        console.log(response.data.products);
+
         const imageName = response.data.products.map((product) => {
           return product.img_url;
         });
@@ -188,29 +190,41 @@ function Cart() {
   };
 
   const handleSelectAll = () => {
-    setSelectedProduct(cart.map((item) => item.prd_id));
-    setSelectedProductId(cart.map((item) => item.prd_id));
+    const selectedProductIds = cart.map((item) => item.prd_id);
+    setSelectedProduct(selectedProductIds);
+    setSelectedProductId(selectedProductIds);
+
+    const totalPrice = cart.reduce((total, item) => {
+      return total + item.total_price;
+    }, 0);
+    setTotalPrice(totalPrice);
   };
 
   const handleDeselectAll = () => {
     setSelectedProduct([]);
     setSelectedProductId([]);
+    setTotalPrice(0);
   };
 
-  const handleToggleItem = (product_id) => {
+  const handleToggleItem = (product_id, total_price) => {
     if (selectedProduct.includes(product_id)) {
-      setSelectedProduct(
-        selectedProduct.filter((selectedId) => selectedId !== product_id)
+      setSelectedProduct((prevSelectedProduct) =>
+        prevSelectedProduct.filter((selectedId) => selectedId !== product_id)
       );
+      setSelectedProductId((prevSelectedProductId) =>
+        prevSelectedProductId.filter((selectedId) => selectedId !== product_id)
+      );
+      setTotalPrice((prevTotal) => prevTotal - total_price);
     } else {
-      setSelectedProduct((prevSelectedProduct) => {
-        const updatedProduct = prevSelectedProduct.filter(Boolean);
-        return [...updatedProduct, product_id];
-      });
-      setSelectedProductId((prevSelectedProduct) => {
-        const updatedProduct = prevSelectedProduct.filter(Boolean);
-        return [...updatedProduct, product_id];
-      });
+      setSelectedProduct((prevSelectedProduct) => [
+        ...prevSelectedProduct,
+        product_id,
+      ]);
+      setSelectedProductId((prevSelectedProductId) => [
+        ...prevSelectedProductId,
+        product_id,
+      ]);
+      setTotalPrice((prevTotal) => prevTotal + total_price);
     }
   };
 
@@ -251,7 +265,10 @@ function Cart() {
                                       item.prd_id
                                     )}
                                     onChange={() =>
-                                      handleToggleItem(item.prd_id)
+                                      handleToggleItem(
+                                        item.prd_id,
+                                        item.total_price
+                                      )
                                     }
                                   />
                                 </td>

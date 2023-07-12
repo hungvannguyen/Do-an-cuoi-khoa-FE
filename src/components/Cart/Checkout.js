@@ -202,13 +202,16 @@ function Checkout() {
 
   useEffect(() => {
     let all = 0;
-    checkoutProduct.map(
-      (item) =>
-        selectedProductId.includes(item.prd_id) &&
-        (all += item.price * item.quantity)
-    );
+    checkoutProduct.map((item) => {
+      let price = item.is_sale === 1 ? item.sale_price : item.price;
+      if (selectedProductId.includes(item.prd_id)) {
+        all += price * item.quantity;
+      }
+      return null; // or you can remove the return statement if you don't need to return anything
+    });
     setTotal(all);
   }, [selectedProductId]);
+
   // Call API get payment
   useEffect(() => {
     axios
@@ -265,11 +268,6 @@ function Checkout() {
         setTempWardName(selectedAddress.ward);
         setTempAddressId(selectedAddress.id);
       }
-      if (selectedAddress.city_id === 1) {
-        setShippingFee("");
-      } else {
-        setShippingFee(30000);
-      }
     }
   };
 
@@ -301,6 +299,14 @@ function Checkout() {
 
   //  Handle default address
   const handleDefaultAddress = () => {
+    const selectedAddress = addressDetail.find(
+      (item) => item.id === tempAddressId
+    );
+    if (selectedAddress.city_id === 1) {
+      setShippingFee("");
+    } else {
+      setShippingFee(30000);
+    }
     setSelectedOption(selectedOption);
     setDisplayName(tempName);
     setDisplayPhone(tempPhone);
@@ -443,7 +449,7 @@ function Checkout() {
           "/order/add",
           {
             payment_type_id: selectedPaymentId,
-            email: email,
+            prd_ids: trimmedProduct,
             note: note,
             address_id: selectedOption,
           },
