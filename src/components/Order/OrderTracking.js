@@ -231,6 +231,72 @@ function OrderTracking() {
       });
   };
 
+  const handleOrderRefund = (id) => {
+    axios
+      .get(`/order/update?order_status=49&order_id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        toast.success("Đã yêu cầu trả hàng thành công", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+
+        setTimeout(() => {
+          setLoading(true);
+          window.location.reload();
+        }, 2000);
+      })
+      .then(() => {
+        toast.error("Yêu cầu trả đơn hàng không thành công", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
+  };
+
+  const handleOrderComplete = (id) => {
+    axios
+      .get(`/order/update?order_status=10&order_id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        toast.success("Đã xác nhận đã nhận hàng thành công", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setTimeout(() => {
+          setLoading(true);
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   // Format number
   const formatNumber = (number) => {
     if (number) {
@@ -244,6 +310,7 @@ function OrderTracking() {
       <Loading isLoading={loading} />
       {!loading && (
         <>
+          <ToastContainer />
           <div className="container mt-5">
             <article className="card">
               <div>
@@ -277,7 +344,10 @@ function OrderTracking() {
                       className="card-body"
                       key={index}
                       onClick={() => handleCollapse(index)}
-                      style={{ cursor: "pointer",borderBottom: "6px solid #e0e0e0" }}
+                      style={{
+                        cursor: "pointer",
+                        borderBottom: "6px solid #e0e0e0",
+                      }}
                     >
                       <h6 className="mb-3">
                         <strong>Mã đơn hàng: {item.id}</strong>{" "}
@@ -302,12 +372,31 @@ function OrderTracking() {
                           </div>
                           <div className="col">
                             <strong>Trạng thái:</strong> <br />
-                            {item.status === 0 && <span>Chờ xác nhận</span>}
-                            {item.status === 1 && <span>Đã xác nhận</span>}
-                            {item.status === 2 && <span>Đang vận chuyển</span>}
-                            {item.status === 10 && <span>Đã giao hàng</span>}
-                            {item.status === 99 && <span>Đã hủy</span>}
-                            {item.status === 100 && <span>Hoàn thành</span>}
+                            {item.status === 0 && (
+                              <span style={{ color: "blue" }}>
+                                Chờ xác nhận
+                              </span>
+                            )}
+                            {item.status === 1 && (
+                              <span style={{ color: "blue" }}>Đã xác nhận</span>
+                            )}
+                            {item.status === 2 && (
+                              <span style={{ color: "blue" }}>
+                                {" "}
+                                Đang vận chuyển
+                              </span>
+                            )}
+                            {item.status === 10 && (
+                              <span style={{ color: "blue" }}>
+                                Đã giao hàng
+                              </span>
+                            )}
+                            {item.status === 99 && (
+                              <span style={{ color: "red" }}>Đã hủy</span>
+                            )}
+                            {item.status === 100 && (
+                              <span style={{ color: "green" }}>Hoàn thành</span>
+                            )}
                           </div>
                         </div>
                       </article>
@@ -358,6 +447,117 @@ function OrderTracking() {
                           <strong>Tổng tiền:</strong>{" "}
                           {formatNumber(item.total_price)} đ
                         </div>
+                        {item.status === 10 && (
+                          <div className="col-md-12 col-lg-12 d-flex justify-content-end ">
+                            {/* Order refund */}
+                            <button
+                              type="button"
+                              class="btn btn-warning"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#orderRefund${item.id}`}
+                            >
+                              Trả hàng
+                            </button>
+                            <div
+                              class="modal fade "
+                              id={`orderRefund${item.id}`}
+                              tabindex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="exampleModalLabel"
+                                    >
+                                      Yêu cầu trả lại hàng đơn hàng {item.id}
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div class="modal-body">...</div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-bs-dismiss="modal"
+                                    >
+                                      Đóng
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-primary"
+                                      onClick={() => handleOrderRefund(item.id)}
+                                    >
+                                      Xác nhận
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Confirm order */}
+                            <button
+                              type="button"
+                              class="btn btn-success ms-2"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#orderSuccess${item.id}`}
+                            >
+                              Đã nhận hàng
+                            </button>
+                            <div
+                              class="modal fade"
+                              id={`orderSuccess${item.id}`}
+                              tabindex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="exampleModalLabel"
+                                    >
+                                      Xác nhận đã nhận được đơn hàng {item.id}
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div class="modal-body">...</div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-bs-dismiss="modal"
+                                    >
+                                      Đóng
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-primary"
+                                      onClick={() =>
+                                        handleOrderComplete(item.id)
+                                      }
+                                    >
+                                      Xác nhận
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
 
                         {item.status === 0 && (
                           <div className="col-md-12 col-lg-12 d-flex justify-content-end ">
@@ -453,7 +653,6 @@ function OrderTracking() {
                   <p>Không có đơn hàng</p>
                 </div>
               )}
-           
             </article>
           </div>
         </>

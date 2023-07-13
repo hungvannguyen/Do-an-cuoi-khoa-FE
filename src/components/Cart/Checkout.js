@@ -112,6 +112,8 @@ function Checkout() {
   useEffect(() => {
     addressDetail.map((item) => {
       if (item.is_default === 1) {
+        console.log("item.id");
+        console.log(item.id);
         setSelectedOption(item.id);
         setName(item.name);
         setPhone(item.phone_number);
