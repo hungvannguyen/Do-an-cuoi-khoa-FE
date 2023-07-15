@@ -10,6 +10,8 @@ function OrderTracking() {
   // useState
   const [loading, setLoading] = useState(true);
   const [order_status, setOrderStatus] = useState(-1);
+  const [orderCancelReason, setOrderCancelReason] = useState("");
+  const [orderRefundReason, setOrderRefundReason] = useState("");
   // const [product, setProduct] = useState([]);
   const [order, setOrder] = useState([]);
   const [imageProduct, setImageProduct] = useState([]);
@@ -204,11 +206,14 @@ function OrderTracking() {
 
   const handleOrderCancel = (id) => {
     axios
-      .delete(`/order/cancel?order_id=${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .delete(
+        `/order/cancel?order_id=${id}&cancel_reason=${orderCancelReason}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         toast.success("Đã hủy đơn hàng thành công", {
           position: "bottom-right",
@@ -233,11 +238,14 @@ function OrderTracking() {
 
   const handleOrderRefund = (id) => {
     axios
-      .get(`/order/update?order_status=49&order_id=${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      .get(
+        `/order/update?order_status=49&order_id=${id}&cancel_reason=${orderRefundReason}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         toast.success("Đã yêu cầu trả hàng thành công", {
           position: "bottom-right",
@@ -314,7 +322,7 @@ function OrderTracking() {
           <div className="container mt-5">
             <article className="card">
               <div>
-                <header className="card-header"> My Orders / Tracking </header>
+                <header className="card-header"> Đơn hàng của bạn </header>
               </div>
               <div className="row me-2">
                 <div className="col-md-12  d-flex justify-content-end mt-3">
@@ -331,6 +339,7 @@ function OrderTracking() {
                     <ul
                       class="dropdown-menu"
                       aria-labelledby="dropdownMenuButton1"
+                      style={{ cursor: "pointer" }}
                     >
                       {renderDropdownItems()}
                     </ul>
@@ -343,16 +352,18 @@ function OrderTracking() {
                     <div
                       className="card-body"
                       key={index}
-                      onClick={() => handleCollapse(index)}
                       style={{
                         cursor: "pointer",
-                        borderBottom: "6px solid #e0e0e0",
+                        borderBottom: "12px solid #e0e0e0",
                       }}
                     >
-                      <h6 className="mb-3">
+                      <h6 className="mb-3" style={{ color: "blue" }}>
                         <strong>Mã đơn hàng: {item.id}</strong>{" "}
                       </h6>
-                      <article className="card">
+                      <article
+                        className="card"
+                        onClick={() => handleCollapse(index)}
+                      >
                         <div className="card-body row">
                           <div className="col">
                             <strong>Ngày tạo:</strong> <br />
@@ -451,6 +462,37 @@ function OrderTracking() {
                           <br />
                           <strong>Tổng tiền:</strong>{" "}
                           {formatNumber(item.total_price)} đ
+                          <br />
+                          {item.status === 99 ? (
+                            <>
+                              <strong>Lý do hủy đơn:</strong>{" "}
+                              {item.cancel_reason
+                                ? item.cancel_reason
+                                : "Không có lý do"}
+                            </>
+                          ) : (
+                            ""
+                          )}
+                          {item.status === 49 ? (
+                            <>
+                              <strong>Lý do trả hàng:</strong>{" "}
+                              {item.cancel_reason
+                                ? item.cancel_reason
+                                : "Không có lý do"}
+                            </>
+                          ) : (
+                            ""
+                          )}
+                          {item.status === 50 ? (
+                            <>
+                              <strong>Lý do trả hàng:</strong>{" "}
+                              {item.cancel_reason
+                                ? item.cancel_reason
+                                : "Không có lý do"}
+                            </>
+                          ) : (
+                            ""
+                          )}
                         </div>
                         {item.status === 10 && (
                           <div className="col-md-12 col-lg-12 d-flex justify-content-end ">
@@ -486,7 +528,22 @@ function OrderTracking() {
                                       aria-label="Close"
                                     ></button>
                                   </div>
-                                  <div class="modal-body">...</div>
+                                  <div class="modal-body">
+                                    <div className="form-group">
+                                      <label htmlFor="orderRefundReason">
+                                        Lý do trả hàng
+                                      </label>
+                                      <textarea
+                                        className="form-control"
+                                        id="orderRefundReason"
+                                        rows="3"
+                                        value={orderRefundReason}
+                                        onChange={(e) =>
+                                          setOrderRefundReason(e.target.value)
+                                        }
+                                      ></textarea>
+                                    </div>
+                                  </div>
                                   <div class="modal-footer">
                                     <button
                                       type="button"
@@ -615,7 +672,22 @@ function OrderTracking() {
                                       aria-label="Close"
                                     ></button>
                                   </div>
-                                  <div class="modal-body">...</div>
+                                  <div class="modal-body">
+                                    <div className="form-group">
+                                      <label htmlFor="orderCancelReason">
+                                        Lý do huỷ đơn hàng
+                                      </label>
+                                      <textarea
+                                        className="form-control"
+                                        id="orderCancelReason"
+                                        rows="3"
+                                        value={orderCancelReason}
+                                        onChange={(e) =>
+                                          setOrderCancelReason(e.target.value)
+                                        }
+                                      ></textarea>
+                                    </div>
+                                  </div>
                                   <div class="modal-footer">
                                     <button
                                       type="button"
