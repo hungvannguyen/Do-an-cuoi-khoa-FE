@@ -255,7 +255,7 @@ function OrderTracking() {
           window.location.reload();
         }, 2000);
       })
-      .then(() => {
+      .catch(() => {
         toast.error("Yêu cầu trả đơn hàng không thành công", {
           position: "bottom-right",
           autoClose: 2000,
@@ -271,7 +271,7 @@ function OrderTracking() {
 
   const handleOrderComplete = (id) => {
     axios
-      .get(`/order/update?order_status=10&order_id=${id}`, {
+      .get(`/order/update?order_status=100&order_id=${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -389,6 +389,11 @@ function OrderTracking() {
                             {item.status === 10 && (
                               <span style={{ color: "blue" }}>
                                 Đã giao hàng
+                              </span>
+                            )}
+                            {item.status === 49 && (
+                              <span style={{ color: "red" }}>
+                                Yêu cầu trả hàng
                               </span>
                             )}
                             {item.status === 99 && (
