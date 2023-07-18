@@ -9,7 +9,7 @@ function Breadcrumb({ setBreadcrumb }) {
           <div className="col-lg-12">
             <div className="breadcrumb__links">
               <Link to="/">
-                <i className="fa fa-home"></i> Home
+                <i className="fa fa-home"></i> Trang chủ
               </Link>
               <span>{setBreadcrumb}</span>
             </div>

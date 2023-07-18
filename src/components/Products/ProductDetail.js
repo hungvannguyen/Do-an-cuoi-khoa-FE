@@ -186,7 +186,7 @@ function ProductDetail() {
                 <p>{ProductDetail.description}</p>
                 <div className="product__details__button">
                   <div className="quantity">
-                    <span>Quantity:</span>
+                    <span>Số lượng:</span>
                     <div className="pro-qty">
                       <span
                         className="dec qtybtn"

@@ -48,7 +48,6 @@ function Checkout() {
   // Set error
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
-  const [emailError, setEmailError] = useState("");
   const [addressDetailError, setAddressDetailError] = useState("");
   const [selectedCityIdError, setSelectedCityIdError] = useState("");
   const [selectedDistrictIdError, setSelectedDistrictIdError] = useState("");
@@ -73,6 +72,9 @@ function Checkout() {
   const [tempDistrictName, setTempDistrictName] = useState("");
   const [tempWardName, setTempWardName] = useState("");
   const [tempAddressId, setTempAddressId] = useState("");
+
+  // check if order has been placed
+  const [isPlacingOrder, setIsPlacingOrder] = useState(false);
 
   // Shipping fee
   const [shippingFee, setShippingFee] = useState(30000);
@@ -459,6 +461,9 @@ function Checkout() {
       });
       hasError = true;
     }
+    if (isPlacingOrder) {
+      return;
+    }
 
     if (hasError === false) {
       axios
@@ -479,6 +484,7 @@ function Checkout() {
         .then((response) => {
           if (selectedPaymentId === 2) {
             setLoading(true);
+            setIsPlacingOrder(true);
             navigate("/success");
           } else {
             console.log(response.data);
@@ -492,6 +498,7 @@ function Checkout() {
               progress: undefined,
               theme: "colored",
             });
+
             setInterval(() => {
               window.location.href = response.data.vnpay_url;
             }, 2000);
@@ -650,6 +657,7 @@ function Checkout() {
                                     type="button"
                                     class="btn btn-primary"
                                     onClick={handleDefaultAddress}
+                                    data-bs-dismiss="modal"
                                   >
                                     Thay đổi
                                   </button>

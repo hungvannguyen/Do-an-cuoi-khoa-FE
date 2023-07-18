@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { format, differenceInSeconds } from 'date-fns';
+import React, { useState, useEffect } from "react";
+import { format, differenceInSeconds } from "date-fns";
 
 const CountdownTimer = ({ targetDate }) => {
   const [remainingTime, setRemainingTime] = useState(0);
@@ -24,20 +24,20 @@ const CountdownTimer = ({ targetDate }) => {
   return (
     <div className="countdown">
       <div className="countdown__item">
-        <span>{days.toString().padStart(2, '0')}</span>
-        <p>Days</p>
+        <span>{days.toString().padStart(2, "0")}</span>
+        <p>Ngày</p>
       </div>
       <div className="countdown__item">
-        <span>{hours.toString().padStart(2, '0')}</span>
-        <p>Hours</p>
+        <span>{hours.toString().padStart(2, "0")}</span>
+        <p>Giờ</p>
       </div>
       <div className="countdown__item">
-        <span>{minutes.toString().padStart(2, '0')}</span>
-        <p>Min</p>
+        <span>{minutes.toString().padStart(2, "0")}</span>
+        <p>Phút</p>
       </div>
       <div className="countdown__item">
-        <span>{seconds.toString().padStart(2, '0')}</span>
-        <p>Sec</p>
+        <span>{seconds.toString().padStart(2, "0")}</span>
+        <p>Giây</p>
       </div>
     </div>
   );

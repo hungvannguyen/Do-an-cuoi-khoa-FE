@@ -96,7 +96,7 @@ function Login() {
                   type="email"
                   id="form3Example3"
                   className="form-control form-control-lg"
-                  placeholder="Enter a valid email address"
+                  placeholder="Nhập tên đăng nhập"
                   onChange={(e) => setUsername(e.target.value)}
                 />
               </div>
@@ -111,7 +111,7 @@ function Login() {
                   type="password"
                   id="form3Example4"
                   className="form-control form-control-lg"
-                  placeholder="Enter password"
+                  placeholder="Nhập mật khẩu"
                   onChange={(e) => setPassword(e.target.value)}
                 />
               </div>

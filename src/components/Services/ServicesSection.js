@@ -6,29 +6,29 @@ function ServicesSection() {
           <div className="col-lg-3 col-md-4 col-sm-6">
             <div className="services__item">
               <i className="fa fa-car"></i>
-              <h6>Free Shipping</h6>
-              <p>For all oder over $99</p>
+              <h6>Miễn phí vận chuyên</h6>
+              <p>Đơn hàng trong khu vực Hà Nội</p>
             </div>
           </div>
           <div className="col-lg-3 col-md-4 col-sm-6">
             <div className="services__item">
               <i className="fa fa-money"></i>
-              <h6>Money Back Guarantee</h6>
-              <p>If good have Problems</p>
+              <h6>Hoàn hàng</h6>
+              <p>Nếu sản phẩm có lỗi</p>
             </div>
           </div>
           <div className="col-lg-3 col-md-4 col-sm-6">
             <div className="services__item">
               <i className="fa fa-support"></i>
-              <h6>Online Support 24/7</h6>
-              <p>Dedicated support</p>
+              <h6>Hỗ trợ trực tuyến 24/7</h6>
+              <p>Hỗ trợ tận tình</p>
             </div>
           </div>
           <div className="col-lg-3 col-md-4 col-sm-6">
             <div className="services__item">
               <i className="fa fa-headphones"></i>
-              <h6>Payment Secure</h6>
-              <p>100% secure payment</p>
+              <h6>Thanh toán an toàn</h6>
+              <p>Thanh toán an toàn 100%</p>
             </div>
           </div>
         </div>

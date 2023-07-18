@@ -285,7 +285,7 @@ function Cart() {
                                   </div>
                                 </td>
                                 <td className="cart__price">
-                                  {item.is_sale ? (
+                                  {item.is_sale === 1 ? (
                                     <>
                                       {formatNumber(item.sale_price)} đ
                                       <span>{formatNumber(item.price)} đ </span>
