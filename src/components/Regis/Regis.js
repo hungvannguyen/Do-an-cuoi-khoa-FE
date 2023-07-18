@@ -168,7 +168,7 @@ function Regis() {
                         className={`form-control form-control-lg ${
                           emailError ? "is-invalid" : ""
                         }`}
-                        placeholder="Enter a valid email address"
+                        placeholder="Nhập email"
                         onChange={(e) => setEmail(e.target.value)}
                       />
                       {emailError && (

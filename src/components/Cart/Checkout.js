@@ -463,51 +463,52 @@ function Checkout() {
     }
     if (isPlacingOrder) {
       return;
-    }
-
-    if (hasError === false) {
-      axios
-        .post(
-          "/order/add",
-          {
-            payment_type_id: selectedPaymentId,
-            prd_ids: trimmedProduct,
-            note: note,
-            address_id: selectedOption,
-          },
-          {
-            headers: {
-              Authorization: "Bearer " + token,
+    } else {
+      if (hasError === false) {
+        setIsPlacingOrder(true);
+        axios
+          .post(
+            "/order/add",
+            {
+              payment_type_id: selectedPaymentId,
+              prd_ids: trimmedProduct,
+              note: note,
+              address_id: selectedOption,
             },
-          }
-        )
-        .then((response) => {
-          if (selectedPaymentId === 2) {
-            setLoading(true);
-            setIsPlacingOrder(true);
-            navigate("/success");
-          } else {
-            console.log(response.data);
-            toast.success(response.data.detail, {
-              position: "bottom-right",
-              autoClose: 2000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            }
+          )
+          .then((response) => {
+            if (selectedPaymentId === 2) {
+              setLoading(true);
 
-            setInterval(() => {
-              window.location.href = response.data.vnpay_url;
-            }, 2000);
-          }
-        })
-        .catch((error) => {
-          setLoading(false);
-          console.log(error);
-        });
+              navigate("/success");
+            } else {
+              console.log(response.data);
+              toast.success(response.data.detail, {
+                position: "bottom-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+
+              setInterval(() => {
+                window.location.href = response.data.vnpay_url;
+              }, 2000);
+            }
+          })
+          .catch((error) => {
+            setLoading(false);
+            console.log(error);
+          });
+      }
     }
   };
 
