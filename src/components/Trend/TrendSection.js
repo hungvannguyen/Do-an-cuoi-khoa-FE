@@ -51,7 +51,7 @@ function TrendSection() {
 
   useEffect(() => {
     axios
-      .get("/best-seller")
+      .get("/product/best-seller")
       .then((response) => {
         setBestSaleProducts(response.data.data);
         console.log("Product");
@@ -179,22 +179,25 @@ function TrendSection() {
                   {index < imageProductBestSale.length && (
                     <div className="trend__item__pic">
                       <img
-                        src={imageProductBestSale}
+                        src={imageProductBestSale[index]}
                         alt=""
                         style={{ width: 90 }}
                       />
                     </div>
                   )}
                   <div className="trend__item__text">
-                    <h6>Chain bucket bag</h6>
-                    <div className="rating">
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
-                      <i className="fa fa-star"></i>
+                    <h6>{bestSaleProduct.name}</h6>
+                    
+                    <div className="product__price">
+                      {bestSaleProduct.is_sale === 1 ? (
+                        <>
+                          {formatNumber(bestSaleProduct.sale_price)} đ{" "}
+                          <span>{formatNumber(bestSaleProduct.price)} đ</span>
+                        </>
+                      ) : (
+                        `${formatNumber(bestSaleProduct.price)} đ`
+                      )}
                     </div>
-                    <div className="product__price">$ 59.0</div>
                   </div>
                 </div>
               ))}
