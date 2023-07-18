@@ -1,16 +1,28 @@
 import Navbar from "../Profile/Navbar";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 function Profile() {
+  const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState([]);
   const token = sessionStorage.getItem("token");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+
+  useEffect(() => {
+    if (token) {
+      navigate("/profile");
+    } else {
+      window.location.href = "/login";
+      navigate("/login");
+    }
+  }, []);
+
   useEffect(() => {
     axios
       .get("/user/info", {

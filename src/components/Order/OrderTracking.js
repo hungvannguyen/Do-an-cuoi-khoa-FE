@@ -3,8 +3,10 @@ import { useState, useEffect } from "react";
 import { Collapse } from "react-bootstrap";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 function OrderTracking() {
+  const navigate = useNavigate();
   // token
   const token = sessionStorage.getItem("token");
   // useState
@@ -21,6 +23,15 @@ function OrderTracking() {
   const [isOpen, setIsOpen] = useState(Array(order.length).fill(false));
 
   let counter = 0;
+
+  useEffect(() => {
+    const token = sessionStorage.getItem("token");
+    if (token) {
+      navigate("/order/tracking");
+    } else {
+      navigate("/login");
+    }
+  }, []);
 
   // Call API to get Order
   useEffect(() => {
