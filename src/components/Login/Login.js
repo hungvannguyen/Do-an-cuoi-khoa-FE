@@ -104,7 +104,7 @@ function Login() {
               {/* Password input */}
               <div className="form-outline mb-3">
                 <label className="form-label" htmlFor="form3Example4">
-                  Password
+                  Mật khẩu
                 </label>
                 <input
                   value={password}

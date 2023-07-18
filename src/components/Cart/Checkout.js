@@ -557,15 +557,17 @@ function Checkout() {
                                   Thêm mới địa chỉ
                                 </button>
                               )}
-                              <button
-                                type="button"
-                                class="btn btn-outline-dark float-end button-color"
-                                data-mdb-ripple-color="dark"
-                                data-bs-toggle="modal"
-                                data-bs-target="#exampleModal"
-                              >
-                                Thay đổi địa chỉ
-                              </button>
+                              {addressQuantity > 1 && (
+                                <button
+                                  type="button"
+                                  class="btn btn-outline-dark float-end button-color"
+                                  data-mdb-ripple-color="dark"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#exampleModal"
+                                >
+                                  Thay đổi địa chỉ
+                                </button>
+                              )}
                             </div>
                           </div>
                         </div>
