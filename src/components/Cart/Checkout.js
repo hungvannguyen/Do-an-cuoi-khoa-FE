@@ -443,6 +443,21 @@ function Checkout() {
       hasError = true;
     } else {
       setSelectedPaymentIdError("");
+      hasError = false;
+    }
+
+    if (!selectedOption) {
+      toast.error("Vui lòng chọn địa chỉ giao hàng", {
+        position: "bottom-right",
+        autoClose: 2000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      hasError = true;
     }
 
     if (hasError === false) {
@@ -505,33 +520,53 @@ function Checkout() {
               <form action="#" className="checkout__form">
                 <div className="row">
                   <div className="col-lg-8">
-                    <h5>Thông tin đơn hàng</h5>
+                    <h5>Thông tin giao hàng</h5>
 
                     {addressQuantity > 0 ? (
                       // Display address if user has address
                       <>
-                        <h6>
-                          <strong className="mb-2">Thông tin giao hàng:</strong>{" "}
-                        </h6>
-                        <br></br>
+                        <div class="card-body">
+                          <p class=" fw-bold mb-3 text-font">
+                            {" "}
+                            {displayName} | {displayPhone}
+                          </p>
+                          <div class="row">
+                            <div class="col-md-6">
+                              <p>
+                                {" "}
+                                {displayDetail} - {cityName} - {districtName} -{" "}
+                                {wardName}
+                              </p>
+                            </div>
+                            <div class="col-md-6">
+                              {addressQuantity < 5 && (
+                                <button
+                                  type="button"
+                                  class="btn btn-outline-dark float-end button-color ms-2"
+                                  data-bs-toggle="modal"
+                                  data-bs-target="#AddNewAddress"
+                                >
+                                  Thêm mới địa chỉ
+                                </button>
+                              )}
+                              <button
+                                type="button"
+                                class="btn btn-outline-dark float-end button-color"
+                                data-mdb-ripple-color="dark"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
+                              >
+                                Thay đổi địa chỉ
+                              </button>
+                            </div>
+                          </div>
+                        </div>
 
                         <div className="d-flex mb-4">
-                          <div className="me-5">
-                            {displayName} | {displayPhone}
-                          </div>
-                          {displayDetail} - {cityName} - {districtName} -{" "}
-                          {wardName}
+                          <div className="me-5"></div>
                         </div>
 
                         <div className="mb-4 d-flex ">
-                          <button
-                            type="button"
-                            class="btn btn-primary me-4"
-                            data-bs-toggle="modal"
-                            data-bs-target="#exampleModal"
-                          >
-                            Thay đổi địa chỉ
-                          </button>
                           <div
                             class="modal fade"
                             id="exampleModal"
@@ -622,17 +657,6 @@ function Checkout() {
                               </div>
                             </div>
                           </div>
-
-                          {addressQuantity < 5 && (
-                            <button
-                              type="button"
-                              className="btn btn-primary d-flex align-items-center justify-content-center"
-                              data-bs-toggle="modal"
-                              data-bs-target="#AddNewAddress"
-                            >
-                              Thêm mới địa chỉ
-                            </button>
-                          )}
                         </div>
                       </>
                     ) : (

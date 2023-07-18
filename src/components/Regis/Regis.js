@@ -1,6 +1,6 @@
 import Loading from "../Loading/Loading";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
@@ -18,13 +18,11 @@ function Regis() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
-
   useEffect(() => {
     setLoading(false);
   }, []);
-  // Handle Regis 
+  // Handle Regis
   const handleRegistration = () => {
-
     // Validate username
     if (username.length < 3 || username.length > 20) {
       setUsernameError(
@@ -231,9 +229,9 @@ function Regis() {
                       </button>
                       <p className="small fw-bold mt-2 pt-1 mb-0">
                         Đã có tài khoản?{" "}
-                        <a href="#!" className="link-danger">
+                        <Link to="/login" className="link-danger">
                           Đăng nhập
-                        </a>
+                        </Link>
                       </p>
                     </div>
                   </form>

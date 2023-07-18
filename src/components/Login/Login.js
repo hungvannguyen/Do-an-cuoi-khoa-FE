@@ -135,9 +135,9 @@ function Login() {
                 </button>
                 <p className="small fw-bold mt-2 pt-1 mb-0">
                   Không có tài khoản?{" "}
-                  <a href="#!" className="link-danger">
+                  <Link to="/regis" className="link-danger">
                     Đăng ký
-                  </a>
+                  </Link>
                 </p>
               </div>
             </form>

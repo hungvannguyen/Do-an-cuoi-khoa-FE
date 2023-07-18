@@ -84,7 +84,7 @@ function Footer() {
             </div>
             <div className="col-lg-2 col-md-3 col-sm-4">
               <div className="footer__widget">
-                <h6>Account</h6>
+                <h6>Tài khoản</h6>
                 <ul>
                   <li>
                     <a href="/profile">Hồ sơ</a>
@@ -101,7 +101,7 @@ function Footer() {
                 </ul>
               </div>
             </div>
-            <div className="col-lg-4 col-md-8 col-sm-8">
+            {/* <div className="col-lg-4 col-md-8 col-sm-8">
               <div className="footer__newslatter">
                 <h6>NEWSLETTER</h6>
                 <form action="#">
@@ -128,7 +128,7 @@ function Footer() {
                   </a>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
           {/* <div className="row">
             <div className="col-lg-12">
