@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 function ProductSection() {
   // useState for ProductSection
+  const navigate = useNavigate();
   const [newProduct, setNewProduct] = useState([]);
   const [imageProduct, setImageProduct] = useState([]);
 
@@ -41,6 +42,10 @@ function ProductSection() {
       });
   }, []);
 
+  const handleProductClick = (id) => {
+    navigate(`/product/detail/${id}`);
+  };
+
   // Format number
   const formatNumber = (number) => {
     return number.toLocaleString("vi-VN");
@@ -64,6 +69,7 @@ function ProductSection() {
                   <div
                     className="product__item__pic set-bg"
                     style={{ backgroundImage: `url(${imageProduct[index]})` }}
+                    onClick={() => handleProductClick(product.id)}
                   >
                     <div className="label new">Mới</div>
                   </div>
