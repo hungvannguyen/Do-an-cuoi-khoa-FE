@@ -171,7 +171,7 @@ function Header() {
                       ))}
                     </ul>
                   </li>
-                  <li className={active === 5 ? "active" : ""}>
+                  {/* <li className={active === 5 ? "active" : ""}>
                     <Link to="./blog.html" onClick={() => handleMenuClick(5)}>
                       Blog
                     </Link>
@@ -183,7 +183,7 @@ function Header() {
                     >
                       Liên hệ
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </nav>
             </div>
