@@ -341,6 +341,9 @@ function Checkout() {
     if (!phone) {
       setPhoneError("Vui lòng nhập số điện thoại");
       hasError = true;
+    } else if (/\s/.test(phone)) {
+      setPhoneError("Số điện thoại không được chứa khoảng trắng");
+      hasError = true;
     } else if (phone.length !== 10) {
       setPhoneError("Số điện thoại phải có 10 kí tự");
       hasError = true;
