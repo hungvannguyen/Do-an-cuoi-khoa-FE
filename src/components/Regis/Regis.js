@@ -60,10 +60,11 @@ function Regis() {
       setConfirmPassword("");
     }
     // Call API to get Regis
+    const formattedEmail = email.replace(/\s/g, "");
     axios
       .post("/user/regis", {
         account: username,
-        email: email,
+        email: formattedEmail,
         password: password,
         confirm_password: confirmPassword,
       })
