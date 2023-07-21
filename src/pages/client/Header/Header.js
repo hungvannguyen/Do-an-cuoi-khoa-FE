@@ -25,6 +25,8 @@ function Header() {
 
   // tokenCheck
   let hasSessionData = sessionStorage.getItem("token") !== null;
+  const token = sessionStorage.getItem("token");
+  const role_id = sessionStorage.getItem("role_id");
 
   // call API get logo
   useEffect(() => {
@@ -71,9 +73,10 @@ function Header() {
   // Handle logout
   const handleLogout = () => {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("role_id");
     setCountCart(0);
     hasSessionData = false;
-    navigate("/");
+    window.location.href = "http://localhost:3000/";
   };
 
   useEffect(() => {}, [hasSessionData]);
@@ -218,6 +221,17 @@ function Header() {
                           Đơn mua
                         </Link>
                       </li>
+                      {(role_id === "1" || role_id === "10") && (
+                        <li onClick={handleLogout}>
+                          <Link
+                            className="dropdown-item"
+                            to={`http://localhost:5000/login?token=${token}&role_id=${role_id}`}
+                          >
+                            Quay về trang quản lý
+                          </Link>
+                        </li>
+                      )}
+
                       <li className="d-flex justify-co">
                         <span className="dropdown-item" onClick={handleLogout}>
                           Đăng xuất <i className="fa fa-power-off"> </i>

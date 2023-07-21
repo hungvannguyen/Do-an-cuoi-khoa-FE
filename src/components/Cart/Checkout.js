@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 function Checkout() {
   //  Token
   const token = sessionStorage.getItem("token");
+  const role_id = sessionStorage.getItem("role_id");
   // Loading
   const [loading, setLoading] = useState(true);
   // useNavigate
@@ -85,8 +86,11 @@ function Checkout() {
 
   // Call API get user info
   useEffect(() => {
-    console.log("selectedProductId");
-    console.log(typeof selectedProductId);
+    if (role_id === "1" || role_id === "10") {
+      setSelectedPaymentId(2);
+      console.log("selectedPaymentId");
+      console.log(selectedPaymentId);
+    }
     const fetchUserInfo = async () => {
       try {
         const response = await axios.get("/checkout/user_info", {
@@ -443,6 +447,7 @@ function Checkout() {
     let hasError = false;
 
     // Validate slelected payment
+
     if (!selectedPaymentId) {
       setSelectedPaymentIdError("Vui lòng chọn phương thức thanh toán");
       hasError = true;
@@ -487,7 +492,6 @@ function Checkout() {
           .then((response) => {
             if (selectedPaymentId === 2) {
               setLoading(true);
-
               navigate("/success");
             } else {
               console.log(response.data);
@@ -550,16 +554,18 @@ function Checkout() {
                               </p>
                             </div>
                             <div class="col-md-6">
-                              {addressQuantity < 5 && (
-                                <button
-                                  type="button"
-                                  class="btn btn-outline-dark float-end button-color ms-2"
-                                  data-bs-toggle="modal"
-                                  data-bs-target="#AddNewAddress"
-                                >
-                                  Thêm mới địa chỉ
-                                </button>
-                              )}
+                              {addressQuantity < 5 &&
+                                !(role_id === "1" || role_id === "10") && (
+                                  <button
+                                    type="button"
+                                    className="btn btn-outline-dark float-end button-color ms-2"
+                                    data-bs-toggle="modal"
+                                    data-bs-target="#AddNewAddress"
+                                  >
+                                    Thêm mới địa chỉ
+                                  </button>
+                                )}
+
                               {addressQuantity > 1 && (
                                 <button
                                   type="button"
@@ -740,18 +746,21 @@ function Checkout() {
                         </ul>
                       </div>
                       <div className="checkout__order__widget">
-                        {payment.map((item) => (
-                          <div className=" d-flex">
-                            <input
-                              className="me-2"
-                              type="checkbox"
-                              id={item.id}
-                              checked={selectedPaymentId === item.id}
-                              onChange={() => handlePaymentChange(item.id)}
-                            />
-                            <label htmlFor={item.id}>{item.name}</label>
-                          </div>
-                        ))}
+                        {payment.map(
+                          (item) =>
+                            !(role_id === "1" || role_id === "10") && (
+                              <div className=" d-flex">
+                                <input
+                                  className="me-2"
+                                  type="checkbox"
+                                  id={item.id}
+                                  checked={selectedPaymentId === item.id}
+                                  onChange={() => handlePaymentChange(item.id)}
+                                />
+                                <label htmlFor={item.id}>{item.name}</label>
+                              </div>
+                            )
+                        )}
                       </div>
                       {selectedPaymentIdError && (
                         <div className="alert alert-danger" role="alert">

@@ -39,7 +39,7 @@ function PaymentSuccess() {
           </g>
         </svg>
       </div>
-      <br />    
+      <br />
       <h2>Thanh toán thành công</h2>
       <Link to="/" className="btn btn-primary btn-lg mt-5">
         Về trang chủ
