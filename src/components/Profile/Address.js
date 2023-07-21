@@ -171,6 +171,18 @@ function Address() {
     setSelectedWardId(selectedWardId);
   };
 
+  const handleNameAdd = (name) => {
+    setName(name);
+  };
+
+  const handlePhoneNumberAdd = (phone_number) => {
+    setPhoneNumber(phone_number);
+  };
+
+  const handleDetailAdd = (detail) => {
+    setDetail(detail);
+  };
+
   const handleNameChange = (value, index) => {
     setAddress((prevAddress) => {
       const updatedAddress = [...prevAddress];
@@ -265,10 +277,10 @@ function Address() {
     if (!phone_number) {
       setPhoneNumberError("Vui lòng nhập số điện thoại");
       hasError = true;
-    } else {
-      setPhoneNumberError("");
-    }
-    if (phone_number.length < 10 || phone_number.length > 11) {
+    } else if (/\s/.test(phone_number)) {
+      setPhoneNumberError("Số điện thoại không được chứa khoảng trắng");
+      hasError = true;
+    } else if (phone_number.length < 10 || phone_number.length > 11) {
       setPhoneNumberError("Số điện thoại không hợp lệ");
       hasError = true;
     } else {
@@ -500,7 +512,7 @@ function Address() {
 
                 <div className="col-lg-8" style={{ marginTop: 30 }}>
                   <div className="card mb-4">
-                    {address.length < 5 ? (
+                    {count < 5 ? (
                       <button
                         type="button"
                         class="btn btn-primary"
@@ -554,7 +566,7 @@ function Address() {
                                   id="validationServer03"
                                   aria-describedby="validationServer03Feedback"
                                   onChange={(e) =>
-                                    handleNameChange(e.target.value)
+                                    handleNameAdd(e.target.value)
                                   }
                                 />
 
@@ -582,7 +594,7 @@ function Address() {
                                   id="validationServer03"
                                   aria-describedby="validationServer03Feedback"
                                   onChange={(e) =>
-                                    handlePhoneNumberChange(e.target.value)
+                                    handlePhoneNumberAdd(e.target.value)
                                   }
                                 />
 
@@ -609,9 +621,7 @@ function Address() {
                               }`}
                               id="validationServer03"
                               aria-describedby="validationServer03Feedback"
-                              onChange={(e) =>
-                                handleDetailChange(e.target.value)
-                              }
+                              onChange={(e) => handleDetailAdd(e.target.value)}
                             />
 
                             {addressError && (
