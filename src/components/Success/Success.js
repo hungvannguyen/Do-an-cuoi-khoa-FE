@@ -4,17 +4,19 @@ function Success() {
   const navigate = useNavigate();
   const [time, setTime] = useState(3);
 
-  // useEffect(() => {
-  //   let secondsToGo = 3;
-  //   const timer = setInterval(() => {
-  //     secondsToGo -= 1;
-  //     setTime(secondsToGo);
-  //     if (secondsToGo === 0) {
-  //       clearInterval(timer);
-  //       navigate("/");
-  //     }
-  //   }, 3000);
-  // }, []);
+  useEffect(() => {
+    window.history.pushState(null, document.title, window.location.href);
+
+    const handlePopState = (event) => {
+      window.history.pushState(null, document.title, window.location.href);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   return (
     <section className="mail-seccess section">

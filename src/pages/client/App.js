@@ -26,6 +26,7 @@ import ChartTest from "../../components/Chart/Chart";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const token = sessionStorage.getItem("token");
+
   useEffect(() => {
     if (token) {
       setIsLoggedIn(true);

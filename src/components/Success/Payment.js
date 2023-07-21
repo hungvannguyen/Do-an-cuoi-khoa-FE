@@ -1,6 +1,20 @@
+import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 
 function PaymentSuccess() {
+  useEffect(() => {
+    window.history.pushState(null, document.title, window.location.href);
+
+    const handlePopState = (event) => {
+      window.history.pushState(null, document.title, window.location.href);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
   return (
     <div className="animation-ctn">
       <div className="icon icon--order-success svg">
