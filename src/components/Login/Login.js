@@ -36,7 +36,7 @@ function Login() {
         sessionStorage.setItem("token", response.data.token);
         if (response.data.role_id === 1 || response.data.role_id === 10) {
           const token = sessionStorage.getItem("token");
-          const url = `http://45.124.95.80/login?token=${token}&role_id=${response.data.role_id}`;
+          const url = `http://45.124.95.80:81/login?token=${token}&role_id=${response.data.role_id}`;
           sessionStorage.removeItem("token");
           window.location.href = url;
         } else {
