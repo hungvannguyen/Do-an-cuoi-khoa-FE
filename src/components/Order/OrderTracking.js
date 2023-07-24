@@ -288,6 +288,34 @@ function OrderTracking() {
       });
   };
 
+  const handleOrderRefundCancel = (id) => {
+    axios
+      .get(`/order/update?order_status=100&order_id=${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        toast.success("Đã xác nhận nhận hàng thành công", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setTimeout(() => {
+          setLoading(true);
+          window.location.reload();
+        }, 2000);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
+
   const handleOrderComplete = (id) => {
     axios
       .get(`/order/update?order_status=100&order_id=${id}`, {
@@ -296,7 +324,7 @@ function OrderTracking() {
         },
       })
       .then((response) => {
-        toast.success("Đã xác nhận đã nhận hàng thành công", {
+        toast.success("Đã xác nhận nhận hàng thành công", {
           position: "bottom-right",
           autoClose: 2000,
           hideProgressBar: true,
@@ -416,6 +444,11 @@ function OrderTracking() {
                             {item.status === 49 && (
                               <span style={{ color: "red" }}>
                                 Yêu cầu trả hàng
+                              </span>
+                            )}
+                            {item.status === 50 && (
+                              <span style={{ color: "red" }}>
+                                Đã xác nhận trả hàng
                               </span>
                             )}
                             {item.status === 99 && (
@@ -621,6 +654,70 @@ function OrderTracking() {
                                       class="btn btn-primary"
                                       onClick={() =>
                                         handleOrderComplete(item.id)
+                                      }
+                                    >
+                                      Xác nhận
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        )}
+
+                        {item.status === 49 && (
+                          <div className="col-md-12 col-lg-12 d-flex justify-content-end ">
+                            <button
+                              type="button"
+                              class="btn btn-primary"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#orderRefundCancel${item.id}`}
+                            >
+                              Huỷ yêu cầu trả hàng
+                            </button>
+                            <div
+                              class="modal fade "
+                              id={`orderRefundCancel${item.id}`}
+                              tabindex="-1"
+                              aria-labelledby="exampleModalLabel"
+                              aria-hidden="true"
+                            >
+                              <div class="modal-dialog">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5
+                                      class="modal-title"
+                                      id="exampleModalLabel"
+                                    >
+                                      Hủy yêu cầu trả lại hàng đơn hàng{" "}
+                                      {item.id}
+                                    </h5>
+                                    <button
+                                      type="button"
+                                      class="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <div className="form-group">
+                                      Xác nhận rằng bạn đã nhận được hàng số{" "}
+                                      {item.id}
+                                    </div>
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button
+                                      type="button"
+                                      class="btn btn-secondary"
+                                      data-bs-dismiss="modal"
+                                    >
+                                      Đóng
+                                    </button>
+                                    <button
+                                      type="button"
+                                      class="btn btn-primary"
+                                      onClick={() =>
+                                        handleOrderRefundCancel(item.id)
                                       }
                                     >
                                       Xác nhận
