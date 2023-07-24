@@ -11,10 +11,15 @@ function Regis() {
   const [loading, setLoading] = useState(true);
   // useState for Regis
   const [username, setUsername] = useState("");
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState("");
+
   const [usernameError, setUsernameError] = useState("");
+  const [nameError, setNameError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [emailError, setEmailError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
@@ -29,26 +34,64 @@ function Regis() {
         "Tên đăng nhập phải có ít nhất 3 kí tự và tối đa 20 kí tự"
       );
       return;
+    } else {
+      setUsernameError("");
     }
+
+    // Validate name
+    if (name.length <= 0) {
+      setNameError("Họ và tên không được để trống");
+      return;
+    } else {
+      setNameError("");
+    }
+    // Validate phone
+    if (/\s/.test(phone)) {
+      setPhoneError("Số điện thoại không được chứa khoảng trắng");
+      return;
+    } else {
+      setPhoneError("");
+    }
+
+    if (phone.length < 10 || phone.length > 11) {
+      setPhoneError("Số điện thoại phải có 10 hoặc 11 số");
+      return;
+    } else {
+      setPhoneError("");
+    }
+
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError("Email không hợp lệ");
       return;
+    } else {
+      setEmailError("");
     }
+
     // Validate password
     if (password.length < 6 || password.length > 30) {
       setPasswordError("Mật khẩu phải có ít nhất 6 kí tự và tối đa 30 kí tự");
       return;
+    } else {
+      setPasswordError("");
     }
     // Validate confirm password
     if (password !== confirmPassword) {
       setPasswordError("Mật khẩu không khớp");
       return;
+    } else {
+      setPasswordError("");
     }
     // Reset error
     if (usernameError) {
       setUsernameError("");
+    }
+    if (nameError) {
+      setNameError("");
+    }
+    if (phoneError) {
+      setPhoneError("");
     }
     if (emailError) {
       setEmailError("");
@@ -65,6 +108,8 @@ function Regis() {
       .post("/user/regis", {
         account: username,
         email: formattedEmail,
+        name: name,
+        phone_number: phone,
         password: password,
         confirm_password: confirmPassword,
       })
@@ -157,6 +202,47 @@ function Regis() {
                         <div className="invalid-feedback">{usernameError}</div>
                       )}
                     </div>
+
+                    {/* Name input */}
+                    <div className="form-outline mb-4">
+                      <label className="form-label" htmlFor="nameInput">
+                        Họ và tên
+                      </label>
+                      <input
+                        value={name}
+                        type="text"
+                        id="nameInput"
+                        className={`form-control form-control-lg ${
+                          nameError ? "is-invalid" : ""
+                        }`}
+                        placeholder="Nhập họ và tên"
+                        onChange={(e) => setName(e.target.value)}
+                      />
+                      {nameError && (
+                        <div className="invalid-feedback">{nameError}</div>
+                      )}
+                    </div>
+
+                    {/* Phone input */}
+                    <div className="form-outline mb-4">
+                      <label className="form-label" htmlFor="phoneInput">
+                        Số điện thoại
+                      </label>
+                      <input
+                        value={phone}
+                        type="text"
+                        id="phoneInput"
+                        className={`form-control form-control-lg ${
+                          phoneError ? "is-invalid" : ""
+                        }`}
+                        placeholder="Nhập số điện thoại"
+                        onChange={(e) => setPhone(e.target.value)}
+                      />
+                      {phoneError && (
+                        <div className="invalid-feedback">{phoneError}</div>
+                      )}
+                    </div>
+
                     {/* Email input */}
                     <div className="form-outline mb-4">
                       <label className="form-label" htmlFor="emailInput">

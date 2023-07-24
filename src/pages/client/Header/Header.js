@@ -4,6 +4,7 @@ import "../Styles/css/magnific-popup.css";
 import "../Styles/css/slicknav.min.css";
 import "../Styles/css/style.css";
 import Search from "../../../components/Search/Search";
+import { ADMIN_URL, CLIENT_URL } from "../../../url.js";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import axios from "axios";
@@ -76,7 +77,7 @@ function Header() {
     sessionStorage.removeItem("role_id");
     setCountCart(0);
     hasSessionData = false;
-    window.location.href = "http://45.124.95.80/";
+    window.location.href = CLIENT_URL;
   };
 
   useEffect(() => {}, [hasSessionData]);
@@ -225,7 +226,7 @@ function Header() {
                         <li onClick={handleLogout}>
                           <Link
                             className="dropdown-item"
-                            to={`http://45.124.95.80:80/login?token=${token}&role_id=${role_id}`}
+                            to={`${ADMIN_URL}/login?token=${token}&role_id=${role_id}`}
                           >
                             Quay về trang quản lý
                           </Link>

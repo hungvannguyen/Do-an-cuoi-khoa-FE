@@ -1,3 +1,4 @@
+import { ADMIN_URL, CLIENT_URL } from "../../url";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -36,7 +37,7 @@ function Login() {
         sessionStorage.setItem("token", response.data.token);
         if (response.data.role_id === 1 || response.data.role_id === 10) {
           const token = sessionStorage.getItem("token");
-          const url = `http://45.124.95.80:80/login?token=${token}&role_id=${response.data.role_id}`;
+          const url = `${ADMIN_URL}/login?token=${token}&role_id=${response.data.role_id}`;
           sessionStorage.removeItem("token");
           window.location.href = url;
         } else {

@@ -736,7 +736,7 @@ function Checkout() {
                             )}
                           </li>
                           <li>
-                            Total{" "}
+                            Tổng tiền{" "}
                             {shippingFee !== "" ? (
                               <span>{formatNumber(shippingFee + total)}đ</span>
                             ) : (

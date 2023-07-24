@@ -29,8 +29,8 @@ function Success() {
                 <span>Đặt hàng thành công!</span>
               </h1>
               <p>
-                Cảm ơn bạn đã đặt hàng tại <b>Shop</b>. Chúng tôi sẽ giao hàng
-                đến cho bạn trong thời gian sớm nhất.
+                Cảm ơn bạn đã đặt hàng tại <b>DhsGundam</b>. Chúng tôi sẽ giao
+                hàng đến cho bạn trong thời gian sớm nhất.
               </p>
               <Link to="/" className="btn btn-primary btn-lg">
                 Về trang chủ
