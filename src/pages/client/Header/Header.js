@@ -225,7 +225,7 @@ function Header() {
                         <li onClick={handleLogout}>
                           <Link
                             className="dropdown-item"
-                            to={`http://localhost:5000/login?token=${token}&role_id=${role_id}`}
+                            to={`http://45.124.95.80/login?token=${token}&role_id=${role_id}`}
                           >
                             Quay về trang quản lý
                           </Link>
