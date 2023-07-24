@@ -76,7 +76,7 @@ function Header() {
     sessionStorage.removeItem("role_id");
     setCountCart(0);
     hasSessionData = false;
-    window.location.href = "localhost:3000";
+    window.location.href = "http://45.124.95.80/";
   };
 
   useEffect(() => {}, [hasSessionData]);
