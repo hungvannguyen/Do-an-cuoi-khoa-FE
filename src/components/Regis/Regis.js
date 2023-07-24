@@ -135,8 +135,9 @@ function Regis() {
             mail_to: email,
           })
           .then((response) => {
-            navigate("/confirm");
-            console.log("Gửi mail thành công");
+            setInterval(() => {
+              navigate("/confirm");
+            }, 1000);
           })
           .catch((error) => {
             setLoading(false);
