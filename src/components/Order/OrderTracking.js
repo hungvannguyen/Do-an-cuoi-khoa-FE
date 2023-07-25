@@ -83,7 +83,6 @@ function OrderTracking() {
           setOrder([]);
           setLoading(false);
         }
-        console.log(error);
       });
 
     console.log("Order length");
