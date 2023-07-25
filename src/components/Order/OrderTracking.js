@@ -516,6 +516,19 @@ function OrderTracking() {
                           <strong>Tổng tiền:</strong>{" "}
                           {formatNumber(item.total_price)} đ
                           <br />
+                          {item.status === 0 &&
+                          item.payment_status !== 0 &&
+                          item.payment_type_id !== 2 ? (
+                            <span style={{ color: "red" }}>
+                              Đơn hàng sẽ bị hủy sau 30 phút nữa nếu không thanh
+                              toán
+                            </span>
+                          ) : null}
+                          {item.status === 10 && (
+                            <span style={{ color: "green" }}>
+                              Đơn hàng sẽ tự động hoàn thành sau 5 ngày
+                            </span>
+                          )}
                           {item.status === 99 ? (
                             <>
                               <strong>Lý do hủy đơn:</strong>{" "}
