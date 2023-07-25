@@ -122,7 +122,7 @@ function Regis() {
     //   setConfirmPassword("");
     // }
     // Call API to get Regis
-    if (!hasError) {
+    if (hasError === false) {
       const formattedEmail = email.replace(/\s/g, "");
       axios
         .post("/user/regis", {
