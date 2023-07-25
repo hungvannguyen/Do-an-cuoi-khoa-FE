@@ -88,7 +88,7 @@ function Regis() {
       setPasswordError("Mật khẩu phải có ít nhất 6 kí tự và tối đa 30 kí tự");
       hasError = true;
     } else if (confirmPassword.length <= 0) {
-      setPasswordError("Mật khẩu không được để trống");
+      setPasswordError("Mật khẩu nhập lại không được để trống");
       hasError = true;
     } else if (password !== confirmPassword) {
       setPasswordError("Mật khẩu không khớp");
