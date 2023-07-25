@@ -476,7 +476,6 @@ function Regis() {
                             <span
                               style={{
                                 paddingLeft: "2.5rem",
-                                paddingTop: "9rem",
                               }}
                             >
                               Chờ {remainingTime} giây trước khi gửi lại mã
