@@ -136,6 +136,16 @@ function Regis() {
             setCanResendCode(true);
             setIsCountingDown(true);
             setCanResendCode(false);
+            toast.success("Hãy nhập mã xác thực được gửi tới email của bạn", {
+              position: "bottom-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
           })
           .catch((error) => {
             setLoading(false);
