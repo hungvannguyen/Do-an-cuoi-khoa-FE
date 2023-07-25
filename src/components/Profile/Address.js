@@ -413,7 +413,7 @@ function Address() {
     } else {
       setWardError("");
     }
-    if (!hasError) {
+    if (hasError === false) {
       axios
         .post(
           `/address/update?address_id=${id}`,
