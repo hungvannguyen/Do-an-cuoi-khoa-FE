@@ -179,13 +179,6 @@ function Regis() {
             });
         })
         .catch((error) => {
-          if (error.response.status === 400) {
-            setUsernameError(error.response.data.detail);
-          }
-          if (error.response.status === 403) {
-            setEmailError(error.response.data.detail);
-          }
-          console.log("Đăng ký thất bại");
           setLoading(false);
         });
     }
