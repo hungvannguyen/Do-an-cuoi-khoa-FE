@@ -54,13 +54,16 @@ function Profile() {
     if (!phone) {
       setPhoneError("Vui lòng nhập số điện thoại");
       isValid = false;
-    } else if (/\s/.test(phone)) {
+    }
+    if (/\s/.test(phone)) {
       setPhoneError("Số điện thoại không được chứa khoảng trắng");
       isValid = false;
-    } else if (phone.length !== 10) {
+    }
+    if (phone.length !== 10) {
       setPhoneError("Số điện thoại phải có 10 kí tự");
       isValid = false;
-    } else if (!/^\d+$/.test(phone)) {
+    }
+    if (!/^\d+$/.test(phone)) {
       setPhoneError("Số điện thoại không hợp lệ");
       isValid = false;
     }

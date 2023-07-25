@@ -1,4 +1,5 @@
 import Loading from "../Loading/Loading";
+import { CLIENT_URL } from "../../url";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -15,13 +16,23 @@ function Regis() {
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
+  const [codeVerify, setCodeVerify] = useState("");
 
+  //  Error for Regis
   const [usernameError, setUsernameError] = useState("");
   const [nameError, setNameError] = useState("");
   const [phoneError, setPhoneError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [codeVerifyError, setCodeVerifyError] = useState("");
+
+  // State for Regis
+  const [sendCode, setSendCode] = useState(false);
+  const [canResendCode, setCanResendCode] = useState(false);
+  const [remainingTime, setRemainingTime] = useState(60);
+  const [isResendingCode, setIsResendingCode] = useState(false);
+  const [isCountingDown, setIsCountingDown] = useState(false);
 
   useEffect(() => {
     setLoading(false);
@@ -114,34 +125,21 @@ function Regis() {
         confirm_password: confirmPassword,
       })
       .then((response) => {
-        toast.success("Đăng ký thành công", {
-          position: "bottom-right",
-          autoClose: 2000,
-          hideProgressBar: true,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-        });
         setLoading(true);
-        setUsername("");
-        setEmail("");
-        setPassword("");
-        setConfirmPassword("");
-
         axios
-          .post("/mail/confirm_email", {
-            mail_to: email,
+          .post("/mail/send_confirm_code", {
+            account: username,
           })
           .then((response) => {
-            setInterval(() => {
-              navigate("/confirm");
-            }, 1000);
+            setLoading(false);
+            setSendCode(true);
+            setCanResendCode(true);
+            setIsCountingDown(true);
+            setCanResendCode(false);
           })
           .catch((error) => {
             setLoading(false);
-            toast.error("Gửi mail thất bại", {
+            toast.error(error.response.detail, {
               position: "bottom-right",
               autoClose: 2000,
               hideProgressBar: true,
@@ -151,8 +149,6 @@ function Regis() {
               progress: undefined,
               theme: "colored",
             });
-
-            console.log("Gửi mail thất bại");
           });
       })
       .catch((error) => {
@@ -164,6 +160,116 @@ function Regis() {
         }
         console.log("Đăng ký thất bại");
         setLoading(false);
+      });
+  };
+
+  const handleResendCode = () => {
+    setIsCountingDown(true);
+    setCanResendCode(false);
+    setIsResendingCode(false);
+    setRemainingTime(60);
+    axios
+      .post("/mail/send_confirm_code", {
+        account: username,
+      })
+      .then((response) => {
+        setLoading(false);
+        setSendCode(true);
+        setCanResendCode(true);
+        setIsCountingDown(true);
+        setCanResendCode(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+        toast.error(error.response.detail, {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+      });
+  };
+  let countdownTimer = null;
+  useEffect(() => {
+    if (isCountingDown && remainingTime > 0) {
+      countdownTimer = setInterval(() => {
+        setRemainingTime((prevTime) => prevTime - 1);
+        console.log("Remaining time:", remainingTime);
+      }, 1000);
+    }
+
+    if (remainingTime === 0) {
+      setIsCountingDown(false);
+      setCanResendCode(true);
+      setIsResendingCode(false);
+      console.log("Countdown finished");
+      clearInterval(countdownTimer);
+    }
+
+    return () => {
+      clearInterval(countdownTimer);
+    };
+  }, [isCountingDown, remainingTime]);
+
+  const handleCodeSubmit = () => {
+    axios
+      .post("/user/confirm_code", {
+        account: username,
+        code: codeVerify,
+      })
+      .then((response) => {
+        setSendCode(false);
+        clearInterval(countdownTimer);
+        toast.success("Xác nhận mã thành công", {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
+        setInterval(() => {
+          axios
+            .post("/user/login", {
+              account: username,
+              password: password,
+            })
+            .then((response) => {
+              sessionStorage.setItem("token", response.data.token);
+              setName("");
+              setUsername("");
+              setPassword("");
+              setEmail("");
+              setPhone("");
+              setConfirmPassword("");
+              setLoading(true);
+              setInterval(() => {
+                window.location.href = CLIENT_URL;
+              }, 1000);
+            })
+            .catch((error) => {
+              console.log("Đăng nhập thất bại");
+              toast.error(error.response.data.detail, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+            });
+        }, 1000);
+      })
+      .catch((error) => {
+        setCodeVerifyError(error.response.data.detail);
       });
   };
 
@@ -302,26 +408,97 @@ function Regis() {
                         onChange={(e) => setConfirmPassword(e.target.value)}
                       />
                     </div>
+                    {/* Code vef */}
+                    {sendCode && (
+                      <div className="form-outline mb-4">
+                        <label className="form-label" htmlFor="codeVerify">
+                          Mã xác nhận
+                        </label>
+                        <input
+                          value={codeVerify}
+                          type="text"
+                          id="codeVerify"
+                          className={`form-control form-control-lg ${
+                            codeVerifyError ? "is-invalid" : ""
+                          }`}
+                          placeholder="Nhập mã xác nhận"
+                          onChange={(e) => setCodeVerify(e.target.value)}
+                        />
+                        {codeVerifyError && (
+                          <div className="invalid-feedback">
+                            {codeVerifyError}
+                          </div>
+                        )}
+                      </div>
+                    )}
 
-                    <div className="text-center text-lg-start mt-4 pt-2">
-                      <button
-                        type="button"
-                        className="btn btn-primary btn-lg"
-                        style={{
-                          paddingLeft: "2.5rem",
-                          paddingRight: "2.5rem",
-                        }}
-                        onClick={handleRegistration}
-                      >
-                        Đăng ký
-                      </button>
-                      <p className="small fw-bold mt-2 pt-1 mb-0">
-                        Đã có tài khoản?{" "}
-                        <Link to="/login" className="link-danger">
-                          Đăng nhập
-                        </Link>
-                      </p>
-                    </div>
+                    {/* Submit button */}
+                    {!sendCode ? (
+                      <div className="text-center text-lg-start mt-4 pt-2">
+                        <button
+                          type="button"
+                          className="btn btn-primary btn-lg"
+                          style={{
+                            paddingLeft: "2.5rem",
+                            paddingRight: "2.5rem",
+                          }}
+                          onClick={handleRegistration}
+                        >
+                          Đăng ký
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="d-flex">
+                        <div className="text-center text-lg-start mt-4 pt-2">
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-lg"
+                            style={{
+                              paddingLeft: "2.5rem",
+                              paddingRight: "2.5rem",
+                            }}
+                            onClick={handleCodeSubmit}
+                          >
+                            Xác nhận
+                          </button>
+                        </div>
+
+                        {canResendCode && (
+                          <div className="text-center text-lg-start mt-4 pt-2">
+                            <button
+                              type="button"
+                              className="btn btn-primary btn-lg ms-3"
+                              style={{
+                                paddingLeft: "2.5rem",
+                                paddingRight: "2.5rem",
+                              }}
+                              disabled={!canResendCode}
+                              onClick={handleResendCode}
+                            >
+                              Gửi lại mã
+                            </button>
+                          </div>
+                        )}
+                        {!canResendCode && !isResendingCode && sendCode && (
+                          <div className="text-center text-lg-start  mt-4 pt-3">
+                            <span
+                              style={{
+                                paddingLeft: "2.5rem",
+                                paddingTop: "9rem",
+                              }}
+                            >
+                              Chờ {remainingTime} giây trước khi gửi lại mã
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <p className="small fw-bold mt-2 pt-1 mb-0">
+                      Đã có tài khoản?{" "}
+                      <Link to="/login" className="link-danger">
+                        Đăng nhập
+                      </Link>
+                    </p>
                   </form>
                 </div>
               </div>

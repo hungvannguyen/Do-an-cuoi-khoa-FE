@@ -70,7 +70,6 @@ function Login() {
     setIsResendingCode(false);
     setRemainingTime(60);
     handleEmailSubmit();
-    console.log("Resend code");
   };
 
   let countdownTimer = null;
@@ -190,7 +189,6 @@ function Login() {
                   <form>
                     {/* Email input */}
                     {!inputEmail && !inputPassword && (
-                      
                       <div className="form-outline mb-4">
                         <label className="form-label" htmlFor="form3Example3">
                           Nhập Tài khoản
