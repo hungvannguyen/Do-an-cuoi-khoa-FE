@@ -64,8 +64,8 @@ function Regis() {
       setPhoneError("");
     }
 
-    if (phone.length < 10 || phone.length > 11) {
-      setPhoneError("Số điện thoại phải có 10 hoặc 11 số");
+    if (phone.length < 10 || phone.length > 10) {
+      setPhoneError("Số điện thoại phải có 10");
       return;
     } else {
       setPhoneError("");
@@ -286,6 +286,7 @@ function Regis() {
   return (
     <div>
       <Loading isLoading={loading} />
+      <ToastContainer />
       {!loading && (
         <>
           <section className="vh-100">
