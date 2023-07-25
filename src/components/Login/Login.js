@@ -45,7 +45,6 @@ function Login() {
         password: password,
       })
       .then((response) => {
-      
         sessionStorage.setItem("token", response.data.token);
         if (response.data.role_id === 1 || response.data.role_id === 10) {
           const token = sessionStorage.getItem("token");
@@ -194,7 +193,6 @@ function Login() {
               }, 1000);
             })
             .catch((error) => {
-              console.log("Đăng nhập thất bại");
               toast.error(error.response.data.detail, {
                 position: "bottom-right",
                 autoClose: 5000,
@@ -209,7 +207,16 @@ function Login() {
         }, 1000);
       })
       .catch((error) => {
-        setCodeVerifyError(error.response.data.detail);
+        toast.error(error.response.data.detail, {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       });
   };
 
