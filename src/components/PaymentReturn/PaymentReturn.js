@@ -42,21 +42,23 @@ const PaymentReturn = () => {
   //   API endpoint
   const apiEndpoint = `/vnpay/return?vnp_Amount=${vnp_AmountEncoded}&vnp_BankCode=${vnp_BankCodeEncoded}&vnp_BankTranNo=${vnp_BankTranNoEncoded}&vnp_CardType=${vnp_CardTypeEncoded}&vnp_OrderInfo=${vnp_OrderInfoEncoded}&vnp_PayDate=${vnp_PayDateEncoded}&vnp_ResponseCode=${vnp_ResponseCodeEncoded}&vnp_TmnCode=${vnp_TmnCodeEncoded}&vnp_TransactionNo=${vnp_TransactionNoEncoded}&vnp_TransactionStatus=${vnp_TransactionStatusEncoded}&vnp_TxnRef=${vnp_TxnRefEncoded}&vnp_SecureHash=${vnp_SecureHashEncoded}`;
 
+  console.log("vnp_TransactionStatus");
+  console.log(vnp_TransactionStatus);
   // Api call to return
   useEffect(() => {
-    axios
-      .get(apiEndpoint)
-      .then((response) => {
-        if (vnp_TransactionStatusEncoded === "00") {
+    if (vnp_TransactionStatus !== "00") {
+      navigate("/payment_fail");
+    } else {
+      axios
+        .get(apiEndpoint)
+        .then((response) => {
           navigate("/payment_success");
-        } else {
-          navigate("/payment_fail");
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-        setLoading(false);
-      });
+        })
+        .catch((error) => {
+          console.log(error);
+          setLoading(false);
+        });
+    }
   }, []);
 
   return (
