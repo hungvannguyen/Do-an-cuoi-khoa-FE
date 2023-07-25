@@ -47,8 +47,11 @@ const PaymentReturn = () => {
     axios
       .get(apiEndpoint)
       .then((response) => {
-        console.log(response);
-        navigate("/payment_success");
+        if (vnp_TransactionStatusEncoded === "00") {
+          navigate("/payment_success");
+        } else {
+          navigate("/payment_fail");
+        }
       })
       .catch((error) => {
         console.log(error);
