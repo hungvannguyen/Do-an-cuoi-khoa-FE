@@ -6,7 +6,7 @@ function ServicesSection() {
           <div className="col-lg-3 col-md-4 col-sm-6">
             <div className="services__item">
               <i className="fa fa-car"></i>
-              <h6>Miễn phí vận chuyên</h6>
+              <h6>Miễn phí vận chuyển</h6>
               <p>Đơn hàng trong khu vực Hà Nội</p>
             </div>
           </div>
