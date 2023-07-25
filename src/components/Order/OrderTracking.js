@@ -520,7 +520,7 @@ function OrderTracking() {
                           item.payment_status !== 0 &&
                           item.payment_type_id !== 2 ? (
                             <span style={{ color: "red" }}>
-                              Đơn hàng sẽ bị hủy sau 30 phút nữa nếu không thanh
+                              Đơn hàng sẽ bị hủy sau 30 phút nếu không thanh
                               toán
                             </span>
                           ) : null}
