@@ -39,7 +39,7 @@ function Login() {
     if (username.trim().length <= 0) {
       toast.error("Tên đăng nhập không được để trống", {
         position: "bottom-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -51,7 +51,7 @@ function Login() {
     } else if (password.trim().length <= 0) {
       toast.error("Mật khẩu không được để trống", {
         position: "bottom-right",
-        autoClose: 5000,
+        autoClose: 1000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
@@ -76,7 +76,7 @@ function Login() {
           } else {
             toast.success("Đăng nhập thành công", {
               position: "bottom-right",
-              autoClose: 2000,
+              autoClose: 1000,
               hideProgressBar: true,
               closeOnClick: true,
               pauseOnHover: true,
@@ -130,7 +130,7 @@ function Login() {
                 setLoading(false);
                 toast.error(error.response.detail, {
                   position: "bottom-right",
-                  autoClose: 2000,
+                  autoClose: 1000,
                   hideProgressBar: true,
                   closeOnClick: true,
                   pauseOnHover: true,
