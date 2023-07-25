@@ -422,7 +422,9 @@ function OrderTracking() {
                           </div>
                           <div className="col">
                             <strong>Trạng thái:</strong> <br />
-                            {item.status === 0 && item.payment_status !== 0 ? (
+                            {item.status === 0 &&
+                            item.payment_status !== 0 &&
+                            item.payment_type_id !== 2 ? (
                               <span style={{ color: "blue" }}>
                                 Chờ thanh toán
                               </span>
