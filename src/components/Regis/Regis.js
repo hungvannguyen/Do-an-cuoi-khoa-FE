@@ -77,6 +77,14 @@ function Regis() {
     }
 
     // Validate email
+    if (email.length <= 0) {
+      setEmailError("Email không được để trống");
+      hasError = true;
+    } else {
+      setEmailError("");
+      hasError = false;
+    }
+
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError("Email không hợp lệ");
