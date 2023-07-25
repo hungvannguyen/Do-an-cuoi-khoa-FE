@@ -453,7 +453,6 @@ function Checkout() {
       hasError = true;
     } else {
       setSelectedPaymentIdError("");
-      hasError = false;
     }
 
     if (!selectedOption) {
@@ -472,7 +471,7 @@ function Checkout() {
     if (isPlacingOrder) {
       return;
     } else {
-      if (hasError === false) {
+      if (!hasError) {
         setIsPlacingOrder(true);
         axios
           .post(

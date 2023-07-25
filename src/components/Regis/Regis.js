@@ -48,7 +48,6 @@ function Regis() {
       hasError = true;
     } else {
       setUsernameError("");
-      hasError = false;
     }
 
     // Validate name
@@ -57,23 +56,17 @@ function Regis() {
       hasError = true;
     } else {
       setNameError("");
-      hasError = false;
     }
+
     // Validate phone
     if (/\s/.test(phone)) {
       setPhoneError("Số điện thoại không được chứa khoảng trắng");
       hasError = true;
-    } else {
-      setPhoneError("");
-      hasError = false;
-    }
-
-    if (phone.length !== 10) {
+    } else if (phone.length !== 10) {
       setPhoneError("Số điện thoại phải có 10 chữ số");
       hasError = true;
     } else {
       setPhoneError("");
-      hasError = false;
     }
 
     // Validate email
@@ -81,56 +74,31 @@ function Regis() {
       setEmailError("Email không được để trống");
       hasError = true;
     } else {
-      setEmailError("");
-      hasError = false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setEmailError("Email không hợp lệ");
-      hasError = true;
-    } else {
-      setEmailError("");
-      hasError = false;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) {
+        setEmailError("Email không hợp lệ");
+        hasError = true;
+      } else {
+        setEmailError("");
+      }
     }
 
     // Validate password
     if (password.length < 6 || password.length > 30) {
       setPasswordError("Mật khẩu phải có ít nhất 6 kí tự và tối đa 30 kí tự");
       hasError = true;
-    } else {
-      setPasswordError("");
-      hasError = false;
-    }
-    // Validate confirm password
-    if (password !== confirmPassword) {
+    } else if (confirmPassword.length <= 0) {
+      setPasswordError("Mật khẩu không được để trống");
+      hasError = true;
+    } else if (password !== confirmPassword) {
       setPasswordError("Mật khẩu không khớp");
       hasError = true;
     } else {
       setPasswordError("");
-      hasError = false;
     }
-    // Reset error
-    // if (usernameError) {
-    //   setUsernameError("");
-    // }
-    // if (nameError) {
-    //   setNameError("");
-    // }
-    // if (phoneError) {
-    //   setPhoneError("");
-    // }
-    // if (emailError) {
-    //   setEmailError("");
-    // }
-    // if (passwordError) {
-    //   setPasswordError("");
-    // }
-    // if (passwordError) {
-    //   setConfirmPassword("");
-    // }
+
     // Call API to get Regis
-    if (hasError === false) {
+    if (!hasError) {
       const formattedEmail = email.replace(/\s/g, "");
       axios
         .post("/user/regis", {
@@ -181,6 +149,8 @@ function Regis() {
         .catch((error) => {
           setLoading(false);
         });
+    } else {
+      return;
     }
   };
 

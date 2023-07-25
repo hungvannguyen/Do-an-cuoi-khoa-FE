@@ -36,88 +36,113 @@ function Login() {
 
   // Handle Login
   const handleLogin = () => {
-    setUsername(username);
-    setPassword(password);
-
-    axios
-      .post("/user/login", {
-        account: username,
-        password: password,
-      })
-      .then((response) => {
-        sessionStorage.setItem("token", response.data.token);
-        if (response.data.role_id === 1 || response.data.role_id === 10) {
-          const token = sessionStorage.getItem("token");
-          const url = `${ADMIN_URL}/login?token=${token}&role_id=${response.data.role_id}`;
-          sessionStorage.removeItem("token");
-          window.location.href = url;
-        } else {
-          toast.success("Đăng nhập thành công", {
+    if (username.trim().length <= 0) {
+      toast.error("Tên đăng nhập không được để trống", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      return;
+    } else if (password.trim().length <= 0) {
+      toast.error("Mật khẩu không được để trống", {
+        position: "bottom-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      return;
+    } else {
+      axios
+        .post("/user/login", {
+          account: username,
+          password: password,
+        })
+        .then((response) => {
+          sessionStorage.setItem("token", response.data.token);
+          if (response.data.role_id === 1 || response.data.role_id === 10) {
+            const token = sessionStorage.getItem("token");
+            const url = `${ADMIN_URL}/login?token=${token}&role_id=${response.data.role_id}`;
+            sessionStorage.removeItem("token");
+            window.location.href = url;
+          } else {
+            toast.success("Đăng nhập thành công", {
+              position: "bottom-right",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+            });
+            const redirectInterval = setInterval(() => {
+              clearInterval(redirectInterval);
+              navigate("/");
+            }, 2000);
+          }
+        })
+        .catch((error) => {
+          toast.error(error.response.data.detail, {
             position: "bottom-right",
-            autoClose: 2000,
-            hideProgressBar: true,
+            autoClose: 5000,
+            hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
             theme: "colored",
           });
-          const redirectInterval = setInterval(() => {
-            clearInterval(redirectInterval);
-            navigate("/");
-          }, 2000);
-        }
-      })
-      .catch((error) => {
-        toast.error(error.response.data.detail, {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
+          if (error.response.status === 406) {
+            axios
+              .post("/mail/send_confirm_code", {
+                account: username,
+              })
+              .then((response) => {
+                setLoading(false);
+                setSendCode(true);
+                setCanResendCode(true);
+                setIsCountingDown(true);
+                setCanResendCode(false);
+                toast.success(
+                  "Hãy nhập mã xác thực được gửi tới email của bạn",
+                  {
+                    position: "bottom-right",
+                    autoClose: 2000,
+                    hideProgressBar: true,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored",
+                  }
+                );
+              })
+              .catch((error) => {
+                setLoading(false);
+                toast.error(error.response.detail, {
+                  position: "bottom-right",
+                  autoClose: 2000,
+                  hideProgressBar: true,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored",
+                });
+              });
+          }
         });
-        if (error.response.status === 406) {
-          axios
-            .post("/mail/send_confirm_code", {
-              account: username,
-            })
-            .then((response) => {
-              setLoading(false);
-              setSendCode(true);
-              setCanResendCode(true);
-              setIsCountingDown(true);
-              setCanResendCode(false);
-              toast.success("Hãy nhập mã xác thực được gửi tới email của bạn", {
-                position: "bottom-right",
-                autoClose: 2000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              });
-            })
-            .catch((error) => {
-              setLoading(false);
-              toast.error(error.response.detail, {
-                position: "bottom-right",
-                autoClose: 2000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored",
-              });
-            });
-        }
-      });
+    }
   };
-
   const handleResendCode = () => {
     setIsCountingDown(true);
     setCanResendCode(false);
