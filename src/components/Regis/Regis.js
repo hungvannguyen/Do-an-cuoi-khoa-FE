@@ -39,138 +39,148 @@ function Regis() {
   }, []);
   // Handle Regis
   const handleRegistration = () => {
+    let hasError = false;
     // Validate username
     if (username.length < 3 || username.length > 20) {
       setUsernameError(
         "Tên đăng nhập phải có ít nhất 3 kí tự và tối đa 20 kí tự"
       );
-      return;
+      hasError = true;
     } else {
       setUsernameError("");
+      hasError = false;
     }
 
     // Validate name
     if (name.length <= 0) {
       setNameError("Họ và tên không được để trống");
-      return;
+      hasError = true;
     } else {
       setNameError("");
+      hasError = false;
     }
     // Validate phone
     if (/\s/.test(phone)) {
       setPhoneError("Số điện thoại không được chứa khoảng trắng");
-      return;
+      hasError = true;
     } else {
       setPhoneError("");
+      hasError = false;
     }
 
-    if (phone.length < 10 || phone.length > 10) {
-      setPhoneError("Số điện thoại phải có 10");
-      return;
+    if (phone.length !== 10) {
+      setPhoneError("Số điện thoại phải có 10 chữ số");
+      hasError = true;
     } else {
       setPhoneError("");
+      hasError = false;
     }
 
     // Validate email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setEmailError("Email không hợp lệ");
-      return;
+      hasError = true;
     } else {
       setEmailError("");
+      hasError = false;
     }
 
     // Validate password
     if (password.length < 6 || password.length > 30) {
       setPasswordError("Mật khẩu phải có ít nhất 6 kí tự và tối đa 30 kí tự");
-      return;
+      hasError = true;
     } else {
       setPasswordError("");
+      hasError = false;
     }
     // Validate confirm password
     if (password !== confirmPassword) {
       setPasswordError("Mật khẩu không khớp");
-      return;
+      hasError = true;
     } else {
       setPasswordError("");
+      hasError = false;
     }
     // Reset error
-    if (usernameError) {
-      setUsernameError("");
-    }
-    if (nameError) {
-      setNameError("");
-    }
-    if (phoneError) {
-      setPhoneError("");
-    }
-    if (emailError) {
-      setEmailError("");
-    }
-    if (passwordError) {
-      setPasswordError("");
-    }
-    if (passwordError) {
-      setConfirmPassword("");
-    }
+    // if (usernameError) {
+    //   setUsernameError("");
+    // }
+    // if (nameError) {
+    //   setNameError("");
+    // }
+    // if (phoneError) {
+    //   setPhoneError("");
+    // }
+    // if (emailError) {
+    //   setEmailError("");
+    // }
+    // if (passwordError) {
+    //   setPasswordError("");
+    // }
+    // if (passwordError) {
+    //   setConfirmPassword("");
+    // }
     // Call API to get Regis
-    const formattedEmail = email.replace(/\s/g, "");
-    axios
-      .post("/user/regis", {
-        account: username,
-        email: formattedEmail,
-        name: name,
-        phone_number: phone,
-        password: password,
-        confirm_password: confirmPassword,
-      })
-      .then((response) => {
-        setLoading(true);
-        axios
-          .post("/mail/send_confirm_code", {
-            account: username,
-          })
-          .then((response) => {
-            setLoading(false);
-            setSendCode(true);
-            setCanResendCode(true);
-            setIsCountingDown(true);
-            setCanResendCode(false);
-            toast.success("Hãy nhập mã xác thực được gửi tới email của bạn", {
-              position: "bottom-right",
-              autoClose: 2000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
+    if (!hasError) {
+      const formattedEmail = email.replace(/\s/g, "");
+      axios
+        .post("/user/regis", {
+          account: username,
+          email: formattedEmail,
+          name: name,
+          phone_number: phone,
+          password: password,
+          confirm_password: confirmPassword,
+        })
+        .then((response) => {
+          setLoading(true);
+          axios
+            .post("/mail/send_confirm_code", {
+              account: username,
+            })
+            .then((response) => {
+              setLoading(false);
+              setSendCode(true);
+              setCanResendCode(true);
+              setIsCountingDown(true);
+              setCanResendCode(false);
+              toast.success("Hãy nhập mã xác thực được gửi tới email của bạn", {
+                position: "bottom-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
+            })
+            .catch((error) => {
+              setLoading(false);
+              toast.error(error.response.detail, {
+                position: "bottom-right",
+                autoClose: 2000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored",
+              });
             });
-          })
-          .catch((error) => {
-            setLoading(false);
-            toast.error(error.response.detail, {
-              position: "bottom-right",
-              autoClose: 2000,
-              hideProgressBar: true,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored",
-            });
-          });
-      })
-      .catch((error) => {
-        if (error.response.status === 400) {
-          setUsernameError(error.response.data.detail);
-        }
-        if (error.response.status === 403) {
-          setEmailError(error.response.data.detail);
-        }
-        console.log("Đăng ký thất bại");
-        setLoading(false);
-      });
+        })
+        .catch((error) => {
+          if (error.response.status === 400) {
+            setUsernameError(error.response.data.detail);
+          }
+          if (error.response.status === 403) {
+            setEmailError(error.response.data.detail);
+          }
+          console.log("Đăng ký thất bại");
+          setLoading(false);
+        });
+    }
   };
 
   const handleResendCode = () => {
