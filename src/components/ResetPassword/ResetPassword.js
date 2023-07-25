@@ -48,6 +48,16 @@ function Login() {
         setCanResendCode(false);
         setSubmitButtonType("code");
         setLoading(false);
+        toast.success("Mã xác nhận đã được gửi tới email của bạn", {
+          position: "bottom-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       })
       .catch((error) => {
         toast.error(error.response.data.detail, {
