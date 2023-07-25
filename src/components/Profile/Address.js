@@ -379,7 +379,7 @@ function Address() {
     } else {
       setPhoneNumberError("");
     }
-    if (phone_number.length < 10 || phone_number.length > 11) {
+    if (phone_number.length < 10 || phone_number.length > 10) {
       setPhoneNumberError("Số điện thoại không hợp lệ");
       hasError = true;
     } else {
