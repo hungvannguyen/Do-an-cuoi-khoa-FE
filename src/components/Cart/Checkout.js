@@ -507,7 +507,7 @@ function Checkout() {
 
               setInterval(() => {
                 window.location.href = response.data.vnpay_url;
-              }, 2000);
+              }, 1000);
             }
           })
           .catch((error) => {
