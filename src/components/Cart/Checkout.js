@@ -473,6 +473,7 @@ function Checkout() {
     } else {
       if (!hasError) {
         setIsPlacingOrder(true);
+        setLoading(true);
         axios
           .post(
             "/order/add",
@@ -490,7 +491,6 @@ function Checkout() {
           )
           .then((response) => {
             if (selectedPaymentId === 2) {
-              setLoading(true);
               navigate("/success");
             } else {
               console.log(response.data);

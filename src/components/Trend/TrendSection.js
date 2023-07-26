@@ -137,7 +137,11 @@ function TrendSection() {
                 <h4>Siêu giảm giá</h4>
               </div>
               {saleProducts.slice(0, 3).map((saleProduct, index) => (
-                <div className="trend__item" onClick={() => handleOnClick(saleProduct.id)}>
+                <div
+                  className="trend__item"
+                  onClick={() => handleOnClick(saleProduct.id)}
+                  style={{ cursor: "pointer" }}
+                >
                   {index < imageProductSale.length && (
                     <div className="trend__item__pic">
                       <img
@@ -175,6 +179,7 @@ function TrendSection() {
                 <div
                   className="trend__item"
                   onClick={() => handleOnClick(bestSaleProduct.id)}
+                  style={{ cursor: "pointer" }}
                 >
                   {index < imageProductBestSale.length && (
                     <div className="trend__item__pic">
@@ -187,7 +192,7 @@ function TrendSection() {
                   )}
                   <div className="trend__item__text">
                     <h6>{bestSaleProduct.name}</h6>
-                    
+
                     <div className="product__price">
                       {bestSaleProduct.is_sale === 1 ? (
                         <>
