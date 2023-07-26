@@ -23,7 +23,7 @@ function OrderTracking() {
   const [isOpen, setIsOpen] = useState(Array(order.length).fill(false));
 
   let counter = 0;
-
+  // Check token
   useEffect(() => {
     const token = sessionStorage.getItem("token");
     if (token) {
@@ -84,9 +84,6 @@ function OrderTracking() {
           setLoading(false);
         }
       });
-
-    console.log("Order length");
-    console.log(order.length);
   }, [page, currentPage, order_status]);
 
   // Handle Order Status
@@ -138,6 +135,7 @@ function OrderTracking() {
     setCurrentPage(page);
   };
 
+  // Render Pagination
   const renderPagination = () => {
     const displayedPages = 3;
     const startPage = Math.max(currentPage - 1, 1);
@@ -214,6 +212,7 @@ function OrderTracking() {
       });
   };
 
+  // Handle order cancel
   const handleOrderCancel = (id) => {
     axios
       .delete(
@@ -246,6 +245,7 @@ function OrderTracking() {
       });
   };
 
+  // Handle order refund
   const handleOrderRefund = (id) => {
     if (!orderRefundReason) {
       toast.error("Vui lòng nhập lý do trả hàng", {
@@ -300,6 +300,7 @@ function OrderTracking() {
       });
   };
 
+  // Handle order refund cancel
   const handleOrderRefundCancel = (id) => {
     axios
       .get(`/order/update?order_status=100&order_id=${id}`, {
@@ -328,6 +329,7 @@ function OrderTracking() {
       });
   };
 
+  // Handle order complete
   const handleOrderComplete = (id) => {
     axios
       .get(`/order/update?order_status=100&order_id=${id}`, {
