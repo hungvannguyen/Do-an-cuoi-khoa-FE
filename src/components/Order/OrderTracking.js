@@ -247,6 +247,19 @@ function OrderTracking() {
   };
 
   const handleOrderRefund = (id) => {
+    if (!orderRefundReason) {
+      toast.error("Vui lòng nhập lý do trả hàng", {
+        position: "bottom-right",
+        autoClose: 1000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+      });
+      return;
+    }
     axios
       .get(
         `/order/update?order_status=49&order_id=${id}&cancel_reason=${orderRefundReason}`,

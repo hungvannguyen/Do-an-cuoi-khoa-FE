@@ -19,10 +19,6 @@ function HomePage() {
     if (token != null && role_id != null) {
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("role_id", role_id);
-      console.log("token");
-      console.log(token);
-      console.log("role_id");
-      console.log(role_id);
     }
   }, []);
 

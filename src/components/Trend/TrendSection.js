@@ -131,8 +131,8 @@ function TrendSection() {
     <section className="trend spad">
       <div className="container">
         <div className="row">
-          <div className="col-lg-6 col-md-6 col-sm-6">
-            <div className="trend__content">
+          <div className="col-lg-4 col-md-4 col-sm-4">
+            <div className="trend__content ms-5">
               <div className="section-title">
                 <h4>Siêu giảm giá</h4>
               </div>
@@ -169,9 +169,9 @@ function TrendSection() {
               ))}
             </div>
           </div>
-
-          <div className="col-lg-6 col-md-6 col-sm-6">
-            <div className="trend__content">
+          <div className="col-lg-4 col-md-4 col-sm-4"></div>
+          <div className="col-lg-4 col-md-4 col-sm-4">
+            <div className="trend__content ms-5">
               <div className="section-title">
                 <h4>Bán chạy</h4>
               </div>
