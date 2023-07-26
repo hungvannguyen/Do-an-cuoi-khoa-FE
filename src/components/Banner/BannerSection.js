@@ -47,9 +47,9 @@ function BannerSection() {
             <div className="banner__slider">
               <div className="banner__item">
                 <div className="banner__text">
-                  <span>Mở rộng bộ sưu tập</span>
+                  {/* <span>Mở rộng bộ sưu tập</span>
                   <h1>Bằng những mẫu Gundam chất lượng</h1>
-                  <Link to="/products">Mua ngay</Link>
+                  <Link to="/products">Mua ngay</Link> */}
                 </div>
               </div>
               {/* Repeat the banner__item blocks with different content */}
