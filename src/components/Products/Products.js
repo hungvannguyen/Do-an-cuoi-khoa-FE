@@ -281,11 +281,11 @@ function Products() {
                       <div className="filter-range-wrap">
                         <div className="row">
                           <div className="col-lg-12 d-flex flex-column text-center">
-                            <p onClick={() => handlePriceRange(0, 100000)}>
-                              0 đ - 100.000 đ
+                            <p onClick={() => handlePriceRange(0, 300000)}>
+                              0 đ - 300.000 đ
                             </p>
-                            <p onClick={() => handlePriceRange(100000, 500000)}>
-                              100.000 đ - 500.000 đ{" "}
+                            <p onClick={() => handlePriceRange(300000, 500000)}>
+                              300.000 đ - 500.000 đ{" "}
                             </p>
                           </div>
                           <div className="col-lg-12 d-flex flex-column text-center">

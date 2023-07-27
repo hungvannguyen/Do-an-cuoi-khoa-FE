@@ -95,7 +95,6 @@ function Cart() {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
       });
   };
 
@@ -117,7 +116,16 @@ function Cart() {
       })
       .catch((error) => {
         setLoading(false);
-        console.log(error);
+        toast.error(error.response.data.detail, {
+          position: "bottom-right",
+          autoClose: 1000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+        });
       });
   };
 
